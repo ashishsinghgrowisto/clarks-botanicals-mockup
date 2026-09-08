@@ -420,11 +420,13 @@ body.locked .site{visibility:hidden}
 .satc{position:fixed;z-index:88;background:#fff;border:1px solid var(--line);
   box-shadow:0 18px 44px -18px rgb(0 0 0 / .3);
   left:50%;bottom:24px;transform:translateX(-50%) translateY(calc(100% + 40px));
-  width:min(560px,calc(100vw - 40px));max-height:calc(100vh - 48px);overflow-y:auto;
+  width:min(560px,calc(100vw - 40px));max-height:min(calc(100vh - 250px),620px);
+  display:flex;flex-direction:column;overflow:hidden;
   transition:transform .34s cubic-bezier(.22,.7,.3,1),opacity .24s;opacity:0;
   pointer-events:none;visibility:hidden}
 .satc.on{transform:translateX(-50%) translateY(0);opacity:1;pointer-events:auto;visibility:visible}
-.satc__in{padding:22px 24px 24px}
+.satc__in{flex:1 1 auto;min-height:0;overflow-y:auto;padding:22px 24px 4px}
+.satc__foot{flex:0 0 auto;padding:14px 24px 20px;background:#fff;border-top:1px solid var(--line)}
 .satc__close{position:absolute;top:12px;right:12px;width:30px;height:30px;border-radius:9999px;
   border:1px solid var(--line);display:grid;place-items:center;background:#fff;z-index:2}
 .satc__close:hover{border-color:var(--ink)}
@@ -456,7 +458,7 @@ body.locked .site{visibility:hidden}
 .satc__bar{display:block;height:5px;background:var(--soft);position:relative;overflow:hidden}
 .satc__bar i{position:absolute;inset:0 auto 0 0;background:var(--teal);width:0;transition:width .3s}
 .satc__sub{display:flex;align-items:center;gap:14px;flex-wrap:wrap;
-  border:1px solid var(--line);padding:13px 14px;margin-bottom:16px}
+  border:1px solid var(--line);padding:13px 14px;margin-bottom:18px}
 .satc__sub.on{border-color:var(--teal);background:rgb(4 167 136 / .06)}
 .satc__sub label{display:flex;align-items:center;gap:11px;font-size:13px;cursor:pointer;flex:1;min-width:170px}
 .satc__sw{width:42px;height:24px;border-radius:9999px;background:var(--line);position:relative;
@@ -474,9 +476,10 @@ body.locked .site{visibility:hidden}
 .satc__cta:hover{opacity:.85}
 @media(max-width:760px){
   .satc{left:0;right:0;bottom:0;width:100%;max-width:none;border-left:0;border-right:0;border-bottom:0;
-    transform:translateY(100%);max-height:88vh}
+    transform:translateY(100%);max-height:calc(100vh - 150px)}
   .satc.on{transform:translateY(0)}
-  .satc__in{padding:20px 18px calc(20px + env(safe-area-inset-bottom))}
+  .satc__in{padding:20px 18px 4px}
+  .satc__foot{padding:12px 18px calc(16px + env(safe-area-inset-bottom))}
   .satc__hd{grid-template-columns:64px 1fr;gap:13px}
   .satc__hd img{width:64px}
 }

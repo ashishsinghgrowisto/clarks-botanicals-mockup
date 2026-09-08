@@ -540,6 +540,8 @@ def sticky_atc(p):
           '<span>Subscribe &amp; save ' + str(int(SUB_DISCOUNT * 100)) + '%</span></label>'
           '<select data-satc-freq aria-label="Delivery frequency" disabled>' + opts + '</select>'
         '</div>'
+      '</div>'
+      '<div class="satc__foot">'
         '<button class="satc__cta" type="button" data-satc-cta>Add to cart</button>'
       '</div></aside>')
 
