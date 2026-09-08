@@ -280,6 +280,88 @@ function initPDP(){
   });
 }
 
+/* ---------------- sticky add-to-cart panel (PDP) ---------------- */
+function initSATC(){
+  var el = document.querySelector('.satc'); if(!el) return;
+  var anchor = document.querySelector('[data-pdp-add]');
+  var handle = el.dataset.handle;
+  var p = (window.CB_PRODUCTS||[]).find(function(x){ return x.handle===handle; });
+  if(!p) return;
+
+  var FREE_SHIP = +(el.dataset.freeship || 75);
+  var SUB_OFF   = +(el.dataset.suboff || 0.15);
+  var sel = {}, qty = 1, sub = false, dismissed = false;
+  (p.opts||[]).forEach(function(o){ sel[o.name] = o.values[0]; });
+
+  var priceEl = el.querySelector('[data-satc-price]');
+  var ctaEl   = el.querySelector('[data-satc-cta]');
+  var qtyEl   = el.querySelector('[data-satc-qty] span');
+  var shipTxt = el.querySelector('[data-satc-ship]');
+  var shipBar = el.querySelector('[data-satc-bar]');
+  var subWrap = el.querySelector('.satc__sub');
+  var subSel  = el.querySelector('[data-satc-freq]');
+
+  function unit(){ return sub ? p.price * (1 - SUB_OFF) : p.price; }
+  function total(){ return unit() * qty; }
+
+  function paint(){
+    priceEl.textContent = money(unit());
+    ctaEl.textContent = 'Add to cart  ' + money(total());
+    qtyEl.textContent = qty;
+    var left = FREE_SHIP - total();
+    if(left > 0){
+      shipTxt.innerHTML = 'You&rsquo;re <b>' + money(left) + '</b> away from free shipping';
+    } else {
+      shipTxt.innerHTML = '<b>You&rsquo;ve unlocked free shipping</b>';
+    }
+    shipBar.style.width = Math.min(100, total() / FREE_SHIP * 100) + '%';
+    subWrap.classList.toggle('on', sub);
+    if(subSel) subSel.disabled = !sub;
+    el.querySelectorAll('[data-satc-opt]').forEach(function(b){
+      b.classList.toggle('on', sel[b.dataset.satcOpt] === b.dataset.satcVal);
+    });
+    el.querySelectorAll('[data-satc-selname]').forEach(function(sp){
+      sp.textContent = sel[sp.dataset.satcSelname] + ' selected';
+    });
+  }
+
+  el.addEventListener('click', function(e){
+    var o = e.target.closest('[data-satc-opt]');
+    if(o){ sel[o.dataset.satcOpt] = o.dataset.satcVal; paint(); return; }
+    var q = e.target.closest('[data-satc-step]');
+    if(q){ qty = Math.max(1, qty + (+q.dataset.satcStep)); paint(); return; }
+    if(e.target.closest('[data-satc-sub]')){ sub = !sub; paint(); return; }
+    if(e.target.closest('[data-satc-close]')){
+      dismissed = true; el.classList.remove('on'); return;
+    }
+    if(e.target.closest('[data-satc-cta]')){
+      var opt = Object.keys(sel).map(function(k){ return sel[k]; }).join(' / ');
+      var freq = (sub && subSel) ? subSel.value : '';
+      addToCart({handle:p.handle,title:p.title,price:unit(),img:p.img,
+                 opt:opt, sub:freq, q:qty});
+      dismissed = true; el.classList.remove('on');
+    }
+  });
+
+  /* visible only while the main Add to cart button is out of the viewport */
+  function sync(){
+    if(dismissed) return;
+    var r = anchor ? anchor.getBoundingClientRect() : null;
+    var visible = r && r.bottom > 0 && r.top < (window.innerHeight || 0);
+    el.classList.toggle('on', !visible);
+  }
+  if('IntersectionObserver' in window && anchor){
+    new IntersectionObserver(function(en){
+      if(dismissed) return;
+      el.classList.toggle('on', !en[0].isIntersecting);
+    }, {threshold: 0}).observe(anchor);
+  } else {
+    window.addEventListener('scroll', sync, {passive:true});
+  }
+  window.addEventListener('resize', sync);
+  paint(); sync();
+}
+
 /* ---------------- PLP ---------------- */
 function initPLP(){
   var list = document.getElementById('plist'); if(!list) return;
@@ -360,7 +442,7 @@ function initSearch(){
 /* ---------------- boot ---------------- */
 document.addEventListener('DOMContentLoaded', function(){
   gateInit(); metrics(); syncDots(); renderCart();
-  initDrawer(); initSliders(); initBA(); initPDP(); initPLP(); initSearch();
+  initDrawer(); initSliders(); initBA(); initPDP(); initPLP(); initSearch(); initSATC();
   window.addEventListener('resize', metrics);
   window.addEventListener('load', metrics);
 

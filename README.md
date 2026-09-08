@@ -31,6 +31,17 @@ Everything is vanilla JS — no framework, no external runtime.
 - PDP gallery with thumbnail rail, quantity stepper, Subscribe + Save pricing
 - Cart state persists in `localStorage`
 
+## Sticky add-to-cart (PDP)
+
+`product.html` carries a sticky add-to-cart panel that appears whenever the main
+**Add to cart** button is outside the viewport, and hides again when it scrolls back in.
+Desktop renders it as a bottom-centred card; below 760px it becomes a bottom sheet that
+slides up. It mirrors the main buy box — variant options, quantity, free-shipping
+progress, subscribe & save with a delivery frequency — and adds to the same cart.
+
+The free-shipping threshold is a placeholder: `FREE_SHIP` in `build/build_mockups.py`
+(the live store does not publish one). Subscription discount is `SUB_DISCOUNT`.
+
 ## Regenerating
 
 The pages are generated, not hand-edited. Edit the generator and re-run it rather than

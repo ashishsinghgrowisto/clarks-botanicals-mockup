@@ -47,6 +47,8 @@ BAND_1 = [CDN + x for x in [
   'HOMEPAGE_CLINICALS_apec.png?v=1753295713&width=2400']]
 
 ANNOUNCE = 'Early access until Sept 1 | Use code LABOR25'
+FREE_SHIP = 75.0        # placeholder threshold for the sticky panel's progress bar
+SUB_DISCOUNT = 0.15
 
 NAV = [
  ('Shop', 'collection.html', [
@@ -422,13 +424,13 @@ def product():
             'vitality has been rebuilt.<br><br>'
             '42 days. Proven. Measured.')
 
-    sub_price = round(p['price'] * 0.85, 2)
+    sub_price = round(p['price'] * (1 - SUB_DISCOUNT), 2)
     subs = (
       '<div class="subs">'
       '<label class="on"><input type="radio" name="purchase" checked data-price="' + str(p['price']) + '">'
       'One-time purchase<span class="sp">' + money(p['price']) + '</span></label>'
       '<label><input type="radio" name="purchase" data-price="' + str(sub_price) +
-      '" data-sub="Delivery every 1 Month">Subscribe + Save 15%<span class="sp">' + money(sub_price) + '</span></label>'
+      '" data-sub="Delivery every 1 Month">Subscribe + Save ' + str(int(SUB_DISCOUNT * 100)) + '%<span class="sp">' + money(sub_price) + '</span></label>'
       '<span class="tiny">subscription details</span></div>')
 
     love = [('rabbit','Cruelty free'),('leaf','Clean ingredients'),('wheat','Gluten free'),
@@ -494,7 +496,53 @@ def product():
 
       '<section class="sec" style="padding-top:0"><div class="wrap wrap--wide">'
       '<h2 class="h h2 sec__title">Recently viewed products</h2>'
-      '<div class="grid grid--4">' + recent + '</div></div></section>')
+      '<div class="grid grid--4">' + recent + '</div></div></section>'
+
+      + sticky_atc(p))
+
+def sticky_atc(p):
+    """Sticky add-to-cart panel: appears once the main Add to cart scrolls out of view."""
+    groups = ''
+    for o in p['opts']:
+        btns = ''.join(
+          '<button type="button" data-satc-opt="' + o['name'] + '" data-satc-val="' + v + '"'
+          + (' class="on"' if i == 0 else '') + '>' + v + '</button>'
+          for i, v in enumerate(o['values']))
+        groups += ('<div class="satc__grp"><p class="satc__lbl"><b>' + o['name'] + '</b>'
+                   '<span data-satc-selname="' + o['name'] + '"></span></p>'
+                   '<div class="satc__opts">' + btns + '</div></div>')
+    freqs = ['1 week', '2 weeks', '1 month', '2 months', '3 months']
+    opts = ''.join('<option' + (' selected' if f == '1 month' else '') + '>Deliver every ' + f + '</option>'
+                   for f in freqs)
+    badge = p['type'] or 'Regenerative serum'
+    return (
+      '<aside class="satc" data-handle="' + p['handle'] + '" data-freeship="' + str(FREE_SHIP) +
+      '" data-suboff="' + str(SUB_DISCOUNT) + '" aria-label="Add to cart">'
+      '<button class="satc__close" type="button" data-satc-close aria-label="Dismiss">'
+      + IC['close'] + '</button>'
+      '<div class="satc__in">'
+        '<div class="satc__hd"><img src="' + p['imgs'][0] + '" alt="" loading="lazy">'
+        '<div><h3 class="h">' + p['title'] + '</h3>'
+        '<span class="satc__badge">' + badge + '</span>'
+        '<p class="satc__rate"><span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>'
+        '4.9 (6 reviews)</p>'
+        '<p class="satc__price" data-satc-price></p></div></div>'
+        + groups +
+        '<div class="satc__qty"><p class="satc__lbl" style="margin:0"><b>Quantity</b></p>'
+        '<span class="qty" data-satc-qty>'
+        '<button type="button" data-satc-step="-1" aria-label="Decrease quantity">&minus;</button>'
+        '<span>1</span>'
+        '<button type="button" data-satc-step="1" aria-label="Increase quantity">+</button></span></div>'
+        '<div class="satc__ship"><p data-satc-ship></p>'
+        '<span class="satc__bar"><i data-satc-bar></i></span></div>'
+        '<div class="satc__sub">'
+          '<label><span class="satc__sw" data-satc-sub role="switch"></span>'
+          '<span>Subscribe &amp; save ' + str(int(SUB_DISCOUNT * 100)) + '%</span></label>'
+          '<select data-satc-freq aria-label="Delivery frequency" disabled>' + opts + '</select>'
+        '</div>'
+        '<button class="satc__cta" type="button" data-satc-cta>Add to cart</button>'
+      '</div></aside>')
+
 
 def hub():
     cards = [('home.html', 'Home', 'Hero, Editor&rsquo;s Favorites, press bands, Real People rail, before/after'),

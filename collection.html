@@ -416,6 +416,71 @@ body.locked .site{visibility:hidden}
 .vidcard i b{width:34px;height:34px;border-radius:9999px;background:rgb(255 255 255/.9);
   display:grid;place-items:center}
 
+/* ---------- sticky add-to-cart panel (PDP) ---------- */
+.satc{position:fixed;z-index:88;background:#fff;border:1px solid var(--line);
+  box-shadow:0 18px 44px -18px rgb(0 0 0 / .3);
+  left:50%;bottom:24px;transform:translateX(-50%) translateY(calc(100% + 40px));
+  width:min(560px,calc(100vw - 40px));max-height:calc(100vh - 48px);overflow-y:auto;
+  transition:transform .34s cubic-bezier(.22,.7,.3,1),opacity .24s;opacity:0;
+  pointer-events:none;visibility:hidden}
+.satc.on{transform:translateX(-50%) translateY(0);opacity:1;pointer-events:auto;visibility:visible}
+.satc__in{padding:22px 24px 24px}
+.satc__close{position:absolute;top:12px;right:12px;width:30px;height:30px;border-radius:9999px;
+  border:1px solid var(--line);display:grid;place-items:center;background:#fff;z-index:2}
+.satc__close:hover{border-color:var(--ink)}
+.satc__hd{display:grid;grid-template-columns:78px 1fr;gap:16px;align-items:start;
+  padding-right:34px;margin-bottom:18px}
+.satc__hd img{width:78px;aspect-ratio:1;object-fit:cover;background:var(--soft)}
+.satc__hd h3{margin:0 0 8px;font-size:16px}
+.satc__badge{display:inline-flex;align-items:center;gap:6px;background:var(--teal);color:#fff;
+  font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;padding:5px 10px}
+.satc__badge::before{content:"";width:5px;height:5px;border-radius:9999px;background:#fff}
+.satc__rate{display:flex;align-items:center;gap:8px;margin:9px 0 7px;font-size:12px;color:var(--muted)}
+.satc__price{margin:0;font-size:19px;font-weight:600}
+.satc__grp{margin-bottom:16px}
+.satc__lbl{display:flex;align-items:baseline;gap:9px;margin:0 0 9px}
+.satc__lbl b{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:var(--h-ls)}
+.satc__lbl span{font-size:12px;color:var(--muted)}
+.satc__opts{display:flex;flex-wrap:wrap;gap:9px}
+.satc__opts button{border:1px solid var(--line);padding:11px 17px;font-size:12px;font-weight:600;
+  min-width:64px;line-height:1.25}
+.satc__opts button small{display:block;font-size:9px;font-weight:500;color:var(--muted);
+  text-transform:uppercase;letter-spacing:.06em;margin-top:2px}
+.satc__opts button:hover{border-color:var(--ink)}
+.satc__opts button.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.satc__opts button.on small{color:rgb(255 255 255 / .7)}
+.satc__qty{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px}
+.satc__ship{border:1px solid var(--line);padding:12px 14px;margin-bottom:16px}
+.satc__ship p{margin:0 0 9px;font-size:12px;color:var(--muted)}
+.satc__ship p b{color:var(--ink);font-weight:600}
+.satc__bar{display:block;height:5px;background:var(--soft);position:relative;overflow:hidden}
+.satc__bar i{position:absolute;inset:0 auto 0 0;background:var(--teal);width:0;transition:width .3s}
+.satc__sub{display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  border:1px solid var(--line);padding:13px 14px;margin-bottom:16px}
+.satc__sub.on{border-color:var(--teal);background:rgb(4 167 136 / .06)}
+.satc__sub label{display:flex;align-items:center;gap:11px;font-size:13px;cursor:pointer;flex:1;min-width:170px}
+.satc__sw{width:42px;height:24px;border-radius:9999px;background:var(--line);position:relative;
+  flex:0 0 auto;transition:background .2s}
+.satc__sw::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;
+  border-radius:9999px;background:#fff;transition:transform .2s;box-shadow:0 1px 3px rgb(0 0 0/.3)}
+.satc__sub.on .satc__sw{background:var(--teal)}
+.satc__sub.on .satc__sw::after{transform:translateX(18px)}
+.satc__sub select{border:1px solid var(--line);padding:9px 11px;font:inherit;font-size:12px;
+  background:#fff;border-radius:0}
+.satc__sub select:disabled{opacity:.45}
+.satc__cta{display:flex;align-items:center;justify-content:center;gap:14px;width:100%;
+  background:var(--ink);color:#fff;padding:18px;font-size:13px;font-weight:600;
+  text-transform:uppercase;letter-spacing:var(--btn-ls)}
+.satc__cta:hover{opacity:.85}
+@media(max-width:760px){
+  .satc{left:0;right:0;bottom:0;width:100%;max-width:none;border-left:0;border-right:0;border-bottom:0;
+    transform:translateY(100%);max-height:88vh}
+  .satc.on{transform:translateY(0)}
+  .satc__in{padding:20px 18px calc(20px + env(safe-area-inset-bottom))}
+  .satc__hd{grid-template-columns:64px 1fr;gap:13px}
+  .satc__hd img{width:64px}
+}
+
 /* index hub */
 .hub{min-height:100vh;display:grid;place-items:center;padding:60px 20px;background:var(--soft)}
 .hub__in{max-width:980px;width:100%;text-align:center}
@@ -708,6 +773,88 @@ function initPDP(){
   });
 }
 
+/* ---------------- sticky add-to-cart panel (PDP) ---------------- */
+function initSATC(){
+  var el = document.querySelector('.satc'); if(!el) return;
+  var anchor = document.querySelector('[data-pdp-add]');
+  var handle = el.dataset.handle;
+  var p = (window.CB_PRODUCTS||[]).find(function(x){ return x.handle===handle; });
+  if(!p) return;
+
+  var FREE_SHIP = +(el.dataset.freeship || 75);
+  var SUB_OFF   = +(el.dataset.suboff || 0.15);
+  var sel = {}, qty = 1, sub = false, dismissed = false;
+  (p.opts||[]).forEach(function(o){ sel[o.name] = o.values[0]; });
+
+  var priceEl = el.querySelector('[data-satc-price]');
+  var ctaEl   = el.querySelector('[data-satc-cta]');
+  var qtyEl   = el.querySelector('[data-satc-qty] span');
+  var shipTxt = el.querySelector('[data-satc-ship]');
+  var shipBar = el.querySelector('[data-satc-bar]');
+  var subWrap = el.querySelector('.satc__sub');
+  var subSel  = el.querySelector('[data-satc-freq]');
+
+  function unit(){ return sub ? p.price * (1 - SUB_OFF) : p.price; }
+  function total(){ return unit() * qty; }
+
+  function paint(){
+    priceEl.textContent = money(unit());
+    ctaEl.textContent = 'Add to cart  ' + money(total());
+    qtyEl.textContent = qty;
+    var left = FREE_SHIP - total();
+    if(left > 0){
+      shipTxt.innerHTML = 'You&rsquo;re <b>' + money(left) + '</b> away from free shipping';
+    } else {
+      shipTxt.innerHTML = '<b>You&rsquo;ve unlocked free shipping</b>';
+    }
+    shipBar.style.width = Math.min(100, total() / FREE_SHIP * 100) + '%';
+    subWrap.classList.toggle('on', sub);
+    if(subSel) subSel.disabled = !sub;
+    el.querySelectorAll('[data-satc-opt]').forEach(function(b){
+      b.classList.toggle('on', sel[b.dataset.satcOpt] === b.dataset.satcVal);
+    });
+    el.querySelectorAll('[data-satc-selname]').forEach(function(sp){
+      sp.textContent = sel[sp.dataset.satcSelname] + ' selected';
+    });
+  }
+
+  el.addEventListener('click', function(e){
+    var o = e.target.closest('[data-satc-opt]');
+    if(o){ sel[o.dataset.satcOpt] = o.dataset.satcVal; paint(); return; }
+    var q = e.target.closest('[data-satc-step]');
+    if(q){ qty = Math.max(1, qty + (+q.dataset.satcStep)); paint(); return; }
+    if(e.target.closest('[data-satc-sub]')){ sub = !sub; paint(); return; }
+    if(e.target.closest('[data-satc-close]')){
+      dismissed = true; el.classList.remove('on'); return;
+    }
+    if(e.target.closest('[data-satc-cta]')){
+      var opt = Object.keys(sel).map(function(k){ return sel[k]; }).join(' / ');
+      var freq = (sub && subSel) ? subSel.value : '';
+      addToCart({handle:p.handle,title:p.title,price:unit(),img:p.img,
+                 opt:opt, sub:freq, q:qty});
+      dismissed = true; el.classList.remove('on');
+    }
+  });
+
+  /* visible only while the main Add to cart button is out of the viewport */
+  function sync(){
+    if(dismissed) return;
+    var r = anchor ? anchor.getBoundingClientRect() : null;
+    var visible = r && r.bottom > 0 && r.top < (window.innerHeight || 0);
+    el.classList.toggle('on', !visible);
+  }
+  if('IntersectionObserver' in window && anchor){
+    new IntersectionObserver(function(en){
+      if(dismissed) return;
+      el.classList.toggle('on', !en[0].isIntersecting);
+    }, {threshold: 0}).observe(anchor);
+  } else {
+    window.addEventListener('scroll', sync, {passive:true});
+  }
+  window.addEventListener('resize', sync);
+  paint(); sync();
+}
+
 /* ---------------- PLP ---------------- */
 function initPLP(){
   var list = document.getElementById('plist'); if(!list) return;
@@ -788,7 +935,7 @@ function initSearch(){
 /* ---------------- boot ---------------- */
 document.addEventListener('DOMContentLoaded', function(){
   gateInit(); metrics(); syncDots(); renderCart();
-  initDrawer(); initSliders(); initBA(); initPDP(); initPLP(); initSearch();
+  initDrawer(); initSliders(); initBA(); initPDP(); initPLP(); initSearch(); initSATC();
   window.addEventListener('resize', metrics);
   window.addEventListener('load', metrics);
 
