@@ -1,0 +1,808 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>DNA-42 Clinicalift Serum&trade; &ndash; Clark&rsquo;s Botanicals</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet"><style>
+*,*::before,*::after{box-sizing:border-box}
+:root{
+  --ink:#000; --bg:#fff; --line:#e3e3e3; --muted:#6f6f6f; --soft:#f5f5f5;
+  --teal:#04a788; --sale:#01a889; --maroon:#7c0147;
+  --yellow:#ffba64;
+  --ann-bg:#00638d; --ann-fg:#fdc733;
+  --font:"Poppins",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --maxw:1260px; --gut:20px; --wgut:20px;
+  --h-ls:0.14em; --btn-ls:0.1em;
+  --barh:0px;
+}
+@media(min-width:1000px){:root{--gut:40px;--wgut:clamp(24px,3.2vw,62px)}}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font-family:var(--font);font-weight:400;font-size:15px;line-height:1.7;
+  color:var(--ink);background:var(--bg);overflow-x:hidden}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+ul{margin:0;padding:0;list-style:none}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.wrap{max-width:var(--maxw);margin:0 auto;padding-inline:var(--gut)}
+.wrap--wide{max-width:none;padding-inline:var(--wgut)}
+.wrap--narrow{max-width:940px}
+.wrap--pdp{max-width:1400px;padding-inline:var(--gut)}
+.h{font-weight:600;text-transform:uppercase;letter-spacing:var(--h-ls);line-height:1.4}
+.h1{font-size:clamp(22px,2.5vw,32px)}
+.h2{font-size:clamp(17px,1.6vw,21px)}
+.h3{font-size:16px}
+.h5{font-size:15px}
+.h6{font-size:13px}
+.xxs{font-size:12px}
+.sub{color:var(--muted)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  background:var(--ink);color:#fff;border:1px solid var(--ink);border-radius:0;
+  padding:16px 34px;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:var(--btn-ls);
+  transition:opacity .2s;min-height:52px}
+.btn:hover{opacity:.82}
+.btn--ghost{background:transparent;color:var(--ink)}
+.btn--light{background:#fff;color:#1c1c1c;border-color:#fff}
+.btn--yellow{background:var(--yellow);border-color:var(--yellow);color:#fff}
+.btn--full{width:100%}
+.ulink{display:inline-block;border-bottom:1px solid currentColor;padding-bottom:3px;
+  font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:var(--btn-ls)}
+.tlink{border-bottom:1px solid currentColor;padding-bottom:1px}
+
+/* ---------- password gate ---------- */
+#gate{position:fixed;inset:0;z-index:9999;background:#fff;display:none;
+  align-items:center;justify-content:center;padding:24px}
+#gate.on{display:flex}
+.gate-card{max-width:380px;width:100%;text-align:center}
+.gate-card img{width:230px;margin:0 auto 28px}
+.gate-card input{width:100%;padding:14px;border:1px solid var(--line);border-radius:0;
+  font:inherit;font-size:14px;text-align:center;letter-spacing:.08em;margin-bottom:12px}
+.gate-card input:focus{outline:none;border-color:var(--ink)}
+.gate-err{color:#cb2b2b;font-size:12px;min-height:16px;margin-top:10px;
+  text-transform:uppercase;letter-spacing:.1em}
+body.locked{overflow:hidden}
+body.locked .site{visibility:hidden}
+
+/* ---------- announcement ---------- */
+.ann{background:var(--ann-bg);color:var(--ann-fg);text-align:center;padding:14px 16px;
+  font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:var(--h-ls);
+  position:sticky;top:var(--barh);z-index:60;line-height:1.2}
+@media(min-width:1000px){.ann{font-size:13px}}
+
+/* ---------- header ---------- */
+.hdr{position:sticky;top:calc(var(--barh) + var(--annh,44px));z-index:55;background:#fff;
+  padding-top:18px}
+@media(min-width:1000px){.hdr{padding-top:30px}}
+.hdr__in{max-width:none;margin:0 auto;padding-inline:var(--wgut);
+  display:grid;grid-template-areas:"burger logo icons";
+  grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:10px;
+  padding-bottom:18px}
+.hdr__logo{grid-area:logo;justify-self:center;margin:0}
+.hdr__logo img{width:150px}
+.hdr__burger{grid-area:burger;justify-self:start;display:flex;padding:4px}
+.hdr__icons{grid-area:icons;justify-self:end;display:flex;align-items:center;gap:20px}
+.hdr__icons a,.hdr__icons button{display:flex;align-items:center;position:relative;padding:2px}
+.hdr__icons .loc{display:none;font-size:13px;font-weight:600;text-transform:uppercase;
+  letter-spacing:var(--h-ls);align-items:center;gap:6px;color:var(--muted)}
+.hdr__icons .acct{display:none}
+.pnav{display:none}
+@media(min-width:1000px){
+  .hdr__in{grid-template-areas:". logo icons" "pnav pnav pnav";row-gap:26px;padding-bottom:0}
+  .hdr__logo img{width:250px}
+  .hdr__burger{display:none}
+  .hdr__icons .loc{display:flex}
+  .hdr__icons .acct{display:flex}
+  .pnav{grid-area:pnav;display:flex;justify-content:center}
+}
+.pnav>ul{display:flex;flex-wrap:wrap;justify-content:center;gap:0 50px}
+.pnav>ul>li{position:static}
+.navtop{display:flex;align-items:center;gap:6px;font-size:14px;font-weight:600;
+  text-transform:uppercase;letter-spacing:var(--h-ls);white-space:nowrap;
+  padding:6px 0 22px;border-bottom:2px solid transparent}
+.pnav>ul>li:hover>.navtop,.pnav>ul>li:focus-within>.navtop{border-color:var(--ink)}
+.cartdot{position:absolute;top:0;right:-2px;width:7px;height:7px;border-radius:9999px;
+  background:var(--ink);display:block}
+.cartdot.num{width:auto;min-width:16px;height:16px;top:-4px;right:-7px;color:#fff;font-size:9px;
+  font-weight:600;display:flex;align-items:center;justify-content:center;padding:0 4px;letter-spacing:0}
+
+/* mega menu - a single centred row of links */
+.mega{position:absolute;left:0;right:0;top:100%;background:#fff;
+  box-shadow:0 14px 24px -18px rgb(0 0 0 / .25);
+  opacity:0;visibility:hidden;transition:.16s ease;z-index:54}
+.pnav>ul>li:hover>.mega,.pnav>ul>li:focus-within>.mega{opacity:1;visibility:visible}
+.mega__in{padding:26px var(--wgut) 30px;display:flex;flex-wrap:wrap;justify-content:center;gap:16px 42px}
+.mega__in a{font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:var(--h-ls);
+  white-space:nowrap}
+.mega__in a:hover{opacity:.55}
+
+/* ---------- overlays ---------- */
+.ov{position:fixed;inset:0;background:rgb(0 0 0 / .35);opacity:0;visibility:hidden;
+  transition:.25s;z-index:90}
+.ov.on{opacity:1;visibility:visible}
+.panel{position:fixed;top:0;bottom:0;width:min(460px,92vw);background:#fff;z-index:95;
+  display:flex;flex-direction:column;transition:transform .3s ease}
+.panel--l{left:0;transform:translateX(-100%)}
+.panel--r{right:0;transform:translateX(100%)}
+.panel.on{transform:none}
+.panel__hd{display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:26px 30px 22px;flex:0 0 auto}
+.panel__hd .h{font-size:17px;letter-spacing:.16em}
+.panel__bd{flex:1 1 auto;overflow-y:auto;padding:0 30px}
+.panel__ft{flex:0 0 auto;padding:18px 30px 26px;background:#fff;border-top:1px solid var(--line)}
+
+/* mobile drawer drill-down */
+.dd{position:relative;overflow:hidden;height:100%}
+.dd__view{position:absolute;inset:0;overflow-y:auto;background:#fff;padding:8px 30px 30px;
+  transition:transform .28s ease}
+.dd__view.sub{transform:translateX(100%)}
+.dd__view.sub.on{transform:none}
+.dd__item{display:flex;align-items:center;justify-content:space-between;width:100%;
+  padding:16px 0;border-bottom:1px solid var(--line);
+  font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:var(--h-ls);text-align:left}
+.dd__back{display:flex;align-items:center;gap:8px;padding:8px 0 18px;font-size:12px;
+  font-weight:600;text-transform:uppercase;letter-spacing:var(--h-ls);color:var(--muted)}
+
+/* ---------- predictive search panel ---------- */
+.search{position:fixed;left:0;right:0;background:#fff;z-index:96;
+  border-top:1px solid var(--line);box-shadow:0 20px 30px -24px rgb(0 0 0 / .3);
+  opacity:0;visibility:hidden;transform:translateY(-8px);transition:.22s ease;
+  max-height:76vh;overflow-y:auto}
+.search.on{opacity:1;visibility:visible;transform:none}
+.search__in{padding:0 var(--wgut) 40px}
+.search__row{display:flex;align-items:center;gap:14px;border-bottom:1px solid var(--line);
+  padding:18px 0}
+.search__row input{flex:1;border:0;font:inherit;font-size:17px;padding:6px 0;background:none}
+.search__row input:focus{outline:none}
+.search__res{display:grid;gap:26px;padding-top:22px}
+@media(min-width:1000px){.search__res{grid-template-columns:220px minmax(0,1fr);gap:60px}}
+.search__hd{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:var(--h-ls);
+  color:var(--muted);padding-bottom:12px;border-bottom:1px solid var(--line);margin:0 0 18px}
+.search__tabwrap{border-bottom:1px solid var(--line);margin-bottom:22px}
+.search__tab{display:inline-block;font-size:12px;font-weight:600;text-transform:uppercase;
+  letter-spacing:var(--h-ls);border-bottom:2px solid var(--ink);padding-bottom:11px;margin-bottom:-1px}
+.search__sug{display:grid;gap:14px;font-size:15px}
+.search__sug b{font-weight:600}
+.search__tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:22px}
+@media(min-width:800px){.search__tiles{grid-template-columns:repeat(4,1fr)}}
+
+/* ---------- product card ---------- */
+.grid{display:grid;gap:56px 26px;grid-template-columns:repeat(2,minmax(0,1fr))}
+@media(min-width:1000px){.grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:80px 40px}}
+.grid--4{grid-template-columns:repeat(2,minmax(0,1fr));gap:40px 20px}
+@media(min-width:1000px){.grid--4{grid-template-columns:repeat(4,minmax(0,1fr));gap:54px 30px}}
+.pc{position:relative}
+.pc__fig{position:relative;background:var(--soft);overflow:hidden}
+.pc__fig img{width:100%;aspect-ratio:1;object-fit:cover;transition:opacity .35s}
+.pc__fig img.sec{position:absolute;inset:0;opacity:0}
+.pc:hover .pc__fig img.sec{opacity:1}
+.badge{position:absolute;top:8px;left:8px;z-index:2;background:var(--sale);color:#fff;
+  font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;padding:7px 13px}
+.pc__info{margin-top:26px;display:grid;justify-items:center;gap:10px;text-align:center}
+.pc__title{font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:.12em;line-height:1.5}
+.price{display:flex;align-items:baseline;gap:10px;justify-content:center;flex-wrap:wrap;
+  font-size:14px;font-weight:600;letter-spacing:.06em;color:var(--sale);text-transform:uppercase}
+.price.plain{color:var(--muted)}
+.price s{color:var(--muted);font-weight:600;white-space:nowrap}
+.price b{font-weight:600;white-space:nowrap}
+.pc__quick{position:absolute;left:14px;right:14px;bottom:14px;z-index:3;
+  padding:13px 12px;font-size:12px;min-height:auto;background:#fff;border-color:#fff;color:#000;
+  opacity:0;transform:translateY(6px);transition:.2s;pointer-events:none}
+@media(min-width:1000px){.pc:hover .pc__quick{opacity:1;transform:none;pointer-events:auto}}
+
+/* ---------- sections ---------- */
+.sec{padding-block:clamp(40px,5vw,74px)}
+.sec--tight{padding-block:clamp(26px,3vw,44px)}
+.bleed{position:relative}
+.bleed img{width:100%;display:block}
+.scrollcue{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);z-index:3;
+  width:42px;height:42px;border-radius:9999px;background:rgb(255 255 255/.9);
+  display:grid;place-items:center}
+.intro{max-width:1000px;margin:0 auto;text-align:center;font-size:13px;font-weight:600;
+  text-transform:uppercase;letter-spacing:var(--h-ls);line-height:1.9}
+.sec__title{text-align:center;margin:0 0 40px}
+.rail{display:flex;gap:30px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;
+  padding-bottom:4px}
+.rail::-webkit-scrollbar{display:none}
+.rail>*{flex:0 0 calc(50% - 15px);scroll-snap-align:start}
+@media(min-width:1000px){.rail>*{flex:0 0 calc(25% - 23px)}}
+.arrows{display:flex;gap:10px;justify-content:center;margin-top:30px}
+.arrows button{width:38px;height:38px;border:1px solid var(--line);display:grid;place-items:center}
+.arrows button:hover{border-color:var(--ink)}
+
+/* press band */
+.band{padding-block:clamp(40px,4.5vw,62px)}
+.band--maroon{background:var(--maroon);color:#fff}
+.band--teal{background:var(--teal);color:#fff}
+.press{display:grid;gap:36px;text-align:center;align-items:start}
+@media(min-width:1000px){.press{grid-template-columns:repeat(3,1fr);gap:60px}}
+.press blockquote{margin:0;font-size:clamp(14px,1.15vw,16px);line-height:1.75}
+.press img{height:26px;width:auto;margin:26px auto 0;object-fit:contain}
+
+/* overlay banner */
+.ovb{position:relative;display:grid;min-height:clamp(340px,29vw,470px)}
+.ovb>img{grid-area:1/1;width:100%;height:100%;object-fit:cover}
+.ovb::after{content:"";grid-area:1/1;background:rgb(255 255 255 / .34);pointer-events:none}
+.ovb--dark::after{background:rgb(0 0 0 / .3)}
+.ovb__t{grid-area:1/1;position:relative;z-index:2;display:grid;align-content:center;
+  justify-items:center;text-align:center;padding:32px;gap:16px;max-width:820px;margin:0 auto}
+.ovb__t .h1,.ovb__t .h6,.ovb__t p{margin:0}
+.ovb__t p.lede{max-width:560px;font-size:14px;line-height:1.8}
+
+/* split image + text */
+.split{display:grid;align-items:center}
+@media(min-width:900px){.split{grid-template-columns:1fr 1fr}}
+.split img{width:100%;height:100%;object-fit:cover;min-height:280px}
+.split__t{padding:clamp(28px,4vw,70px)}
+.split__t h2{margin:0 0 18px}
+.split__t p{margin:0 0 14px;font-size:15px;line-height:1.8}
+
+/* UGC rail */
+.ugc{display:flex;gap:16px;overflow-x:auto;scrollbar-width:none}
+.ugc::-webkit-scrollbar{display:none}
+.ugc__card{flex:0 0 200px;position:relative}
+.ugc__card>img{aspect-ratio:9/14;object-fit:cover;background:var(--soft)}
+.ugc__tag{display:flex;align-items:center;gap:9px;margin-top:10px}
+.ugc__tag img{width:34px;height:34px;object-fit:cover;background:var(--soft)}
+.ugc__tag p{margin:0;font-size:11px;line-height:1.35}
+.ugc__tag span{display:block;color:var(--muted)}
+.ugc__play{position:absolute;top:10px;right:10px;width:26px;height:26px;border-radius:9999px;
+  background:rgb(0 0 0/.45);color:#fff;display:grid;place-items:center}
+
+/* before/after */
+.ba{position:relative;overflow:hidden;user-select:none;touch-action:pan-y;margin:0 auto}
+.ba img{width:100%;display:block}
+.ba__after{position:absolute;inset:0;overflow:hidden;width:50%}
+.ba__after img{position:absolute;top:0;left:0;height:auto;max-width:none}
+.ba__handle{position:absolute;top:0;bottom:0;left:50%;width:2px;background:#fff;z-index:3;cursor:ew-resize}
+.ba__handle::after{content:"";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:38px;height:38px;border-radius:9999px;background:#fff;box-shadow:0 2px 10px rgb(0 0 0/.25)}
+.ba__lbl{position:absolute;bottom:16px;z-index:4;color:#fff;font-size:11px;font-weight:600;
+  text-transform:uppercase;letter-spacing:var(--h-ls);text-shadow:0 1px 6px rgb(0 0 0/.5)}
+
+/* slideshow */
+.slider{position:relative}
+.slider__track{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
+.slider__track::-webkit-scrollbar{display:none}
+.slider__track>*{flex:0 0 100%;scroll-snap-align:center}
+.dots{display:flex;gap:9px;justify-content:center;padding:18px 0 0}
+.dots button{width:8px;height:8px;border-radius:9999px;background:var(--line)}
+.dots button.on{background:var(--ink)}
+
+/* ---------- footer ---------- */
+.ft{background:var(--teal);color:#fff;padding-block:clamp(44px,4.5vw,68px)}
+.ft__grid{display:grid;gap:38px}
+@media(min-width:900px){.ft__grid{grid-template-columns:1.55fr 1fr 1fr 1.25fr;gap:44px}}
+.ft p.h6{margin:0 0 24px;font-size:13px;letter-spacing:.14em}
+.ft li{margin-bottom:14px;font-size:15px}
+.ft li a:hover{opacity:.75}
+.ft__about{font-size:15px;line-height:1.8;margin:0}
+.ft__form{display:grid;gap:22px;justify-items:start;margin-top:20px}
+.ft__form input{width:100%;padding:15px 16px;border:1px solid rgb(255 255 255/.45);
+  background:transparent;color:#fff;font:inherit;font-size:15px}
+.ft__form input::placeholder{color:rgb(255 255 255/.85)}
+.ft__form input:focus{outline:none;border-color:#fff}
+.ft__soc{display:flex;gap:38px;margin-top:44px}
+.ft__aside{margin-top:44px;display:grid;gap:20px;align-items:center;font-size:13px;
+  font-weight:600;letter-spacing:var(--h-ls);text-transform:uppercase}
+@media(min-width:900px){.ft__aside{grid-template-columns:1fr auto 1fr}}
+.ft__loc{display:flex;align-items:center;gap:10px}
+.ft__loc img{width:24px;height:17px;object-fit:cover}
+.ft__cc{text-align:center}
+.ft__pay{display:flex;flex-wrap:wrap;gap:7px;justify-content:flex-start}
+@media(min-width:900px){.ft__pay{justify-content:flex-end;max-width:430px;margin-left:auto}}
+.ft__pay span{width:40px;height:26px;background:#fff;border-radius:4px;display:grid;
+  place-items:center;font-size:7px;font-weight:700;letter-spacing:0;
+  text-transform:none;overflow:hidden;line-height:1;padding:0 2px;text-align:center}
+
+/* ---------- cart drawer ---------- */
+.ci{display:grid;grid-template-columns:88px 1fr;gap:18px;padding:22px 0}
+.ci+.ci{border-top:1px solid var(--line)}
+.ci img{width:88px;aspect-ratio:1;object-fit:cover;background:var(--soft)}
+.ci__t{font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;line-height:1.5}
+.ci__p{font-size:15px;color:var(--muted);margin-top:6px}
+.ci__o{font-size:13px;color:var(--muted);margin-top:6px;text-transform:uppercase;letter-spacing:.06em}
+.ci__sub{font-size:15px;margin-top:6px}
+.ci__row{display:flex;align-items:center;gap:20px;margin-top:14px;flex-wrap:wrap}
+.qty{display:inline-flex;align-items:center;border:1px solid var(--line)}
+.qty button{width:38px;height:42px;display:grid;place-items:center;font-size:15px}
+.qty span{min-width:34px;text-align:center;font-size:15px}
+.cart__div{border-top:1px solid var(--line)}
+.ml{padding:26px 0 30px}
+.ml h4{margin:0 0 20px;font-size:12px;font-weight:600;text-transform:uppercase;
+  letter-spacing:var(--h-ls);color:var(--muted)}
+.ml__row{display:grid;grid-template-columns:66px 1fr;gap:18px;align-items:center}
+.ml__row img{width:66px;aspect-ratio:1;object-fit:cover;background:var(--soft)}
+.ml__row p{margin:0}
+.cart__note{margin:0 0 16px;font-size:14px;color:var(--teal)}
+.cart__co{display:flex;align-items:center;justify-content:center;gap:14px;width:100%;
+  background:var(--ink);color:#fff;padding:20px;font-size:14px;font-weight:600;
+  text-transform:uppercase;letter-spacing:var(--btn-ls)}
+.empty{text-align:center;padding:60px 0;color:var(--muted);font-size:13px;
+  text-transform:uppercase;letter-spacing:var(--h-ls)}
+
+/* ---------- variant modal ---------- */
+.modal{position:fixed;inset:0;z-index:97;display:none;align-items:center;justify-content:center;padding:20px}
+.modal.on{display:flex}
+.modal__bg{position:absolute;inset:0;background:rgb(0 0 0/.45)}
+.modal__card{position:relative;background:#fff;width:min(760px,100%);max-height:90vh;overflow-y:auto;
+  display:grid;grid-template-columns:1fr;z-index:2}
+@media(min-width:700px){.modal__card{grid-template-columns:300px 1fr}}
+.modal__img{background:var(--soft)}
+.modal__img img{width:100%;aspect-ratio:1;object-fit:cover}
+.modal__body{padding:30px}
+.modal__close{position:absolute;top:12px;right:14px;z-index:3;width:32px;height:32px;
+  display:grid;place-items:center;background:#fff}
+.opt{margin-top:22px}
+.opt>p{margin:0 0 10px;font-size:12px;text-transform:uppercase;letter-spacing:var(--h-ls);color:var(--muted)}
+.opt__row{display:flex;flex-wrap:wrap;gap:9px}
+.opt__row button{border:1px solid var(--line);padding:11px 16px;font-size:12px;font-weight:600;
+  text-transform:uppercase;letter-spacing:var(--btn-ls)}
+.opt__row button.on{border-color:var(--ink);background:var(--ink);color:#fff}
+.stars{display:inline-flex;gap:2px;color:#000;font-size:12px;letter-spacing:1px}
+
+/* ---------- PLP ---------- */
+.ctool{border-block:1px solid var(--line);position:sticky;
+  top:calc(var(--barh) + var(--annh,44px) + var(--hdrh,120px));z-index:40;background:#fff}
+.ctool__in{display:flex;justify-content:flex-end}
+.ctool__in button{padding:20px 34px;font-size:14px;font-weight:600;text-transform:uppercase;
+  letter-spacing:var(--h-ls);color:var(--muted);display:flex;align-items:center;gap:10px;
+  border-left:1px solid var(--line);min-width:200px;justify-content:center}
+.ctool__in button:hover{color:var(--ink)}
+.sheet{position:fixed;right:0;top:0;bottom:0;width:min(420px,92vw);background:#fff;z-index:95;
+  transform:translateX(100%);transition:transform .3s ease;display:flex;flex-direction:column}
+.sheet.on{transform:none}
+.fgroup{padding:6px 0 16px}
+.fgroup>p{margin:0 0 14px;font-size:12px;font-weight:600;text-transform:uppercase;
+  letter-spacing:var(--h-ls);color:var(--muted)}
+.fopt{display:flex;align-items:center;gap:12px;padding:9px 0;font-size:15px;cursor:pointer}
+.fopt input{width:16px;height:16px;accent-color:#000}
+.achips{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:30px}
+.achips button{border:1px solid var(--ink);padding:8px 14px;font-size:11px;font-weight:600;
+  text-transform:uppercase;letter-spacing:var(--h-ls);display:flex;gap:8px;align-items:center}
+.sortopt{display:block;width:100%;text-align:left;padding:14px 0;font-size:15px;
+  border-bottom:1px solid var(--line)}
+.sortopt.on{font-weight:600}
+
+/* ---------- PDP ---------- */
+.pdp{display:grid;gap:34px}
+@media(min-width:1000px){.pdp{grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:70px;align-items:start}}
+.gal{display:grid;gap:16px}
+@media(min-width:1000px){.gal{grid-template-columns:64px minmax(0,1fr)}}
+.gal__thumbs{display:none;gap:12px;overflow-y:auto;scrollbar-width:none}
+.gal__thumbs::-webkit-scrollbar{display:none}
+@media(min-width:1000px){.gal__thumbs{display:grid;grid-auto-rows:64px}}
+.gal__thumbs button{border:1px solid transparent;padding:0;overflow:hidden;height:64px}
+.gal__thumbs button.on{border-color:var(--ink)}
+.gal__thumbs img{width:100%;height:100%;object-fit:cover;background:var(--soft)}
+.gal__main{position:relative}
+.gal__mrail{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
+.gal__mrail::-webkit-scrollbar{display:none}
+.gal__mrail img{flex:0 0 100%;scroll-snap-align:center;width:100%;aspect-ratio:1;object-fit:contain}
+@media(min-width:1000px){.gal__mrail{display:block}.gal__mrail img{display:none}.gal__mrail img.on{display:block}}
+.pinfo{display:grid;align-content:start}
+.pinfo__top{display:flex;align-items:flex-start;justify-content:space-between;gap:24px}
+.pinfo h1{margin:0;font-size:clamp(16px,1.4vw,19px)}
+.pinfo__price{font-size:17px;font-weight:600;white-space:nowrap}
+.pinfo .rr{display:flex;align-items:center;gap:10px;margin-top:14px}
+.pinfo .afterpay{margin:18px 0 0;font-size:14px;color:#333;display:flex;align-items:center;
+  gap:7px;flex-wrap:wrap}
+.pinfo .afterpay b{font-weight:600}
+.chipdark{background:#000;color:#fff;font-size:11px;padding:3px 8px;font-weight:600}
+.pinfo .lede{font-size:15px;line-height:1.8;margin:22px 0 0}
+.subs{display:grid;gap:10px;margin-top:24px}
+.subs label{display:flex;align-items:center;gap:12px;border:1px solid var(--line);
+  padding:15px 16px;font-size:14px;cursor:pointer}
+.subs label.on{border-color:var(--ink);background:#fafafa}
+.subs input{accent-color:#000;width:16px;height:16px}
+.subs .sp{margin-left:auto;font-weight:600}
+.subs .tiny{font-size:12px;color:var(--muted);padding-left:2px}
+.qtyrow{margin-top:24px}
+.acc{margin-top:8px}
+.acc details{border-bottom:1px solid var(--line)}
+.acc summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;
+  gap:14px;padding:20px 0;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:var(--h-ls)}
+.acc summary::-webkit-details-marker{display:none}
+.acc summary i{font-style:normal;font-size:17px;line-height:1;transition:transform .2s}
+.acc details[open] summary i{transform:rotate(45deg)}
+.acc__c{padding:0 0 22px;font-size:15px;line-height:1.8}
+.acc__c p{margin:0 0 14px}
+.acc__c ul{list-style:disc;padding-left:20px;margin:0 0 14px}
+.acc__c li{margin-bottom:7px}
+.wyl{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;justify-items:center}
+@media(min-width:800px){.wyl{grid-template-columns:repeat(5,1fr)}}
+.wyl div{text-align:center}
+.wyl span{width:88px;height:88px;background:var(--teal);color:#fff;display:grid;place-items:center;
+  margin:0 auto 14px}
+.wyl p{margin:0;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:var(--h-ls)}
+.vidcard{display:flex;align-items:center;gap:16px;margin-top:14px}
+.vidcard>div{position:relative;width:118px}
+.vidcard img{width:118px;aspect-ratio:3/4;object-fit:cover;background:var(--soft)}
+.vidcard i{position:absolute;inset:0;display:grid;place-items:center}
+.vidcard i b{width:34px;height:34px;border-radius:9999px;background:rgb(255 255 255/.9);
+  display:grid;place-items:center}
+
+/* index hub */
+.hub{min-height:100vh;display:grid;place-items:center;padding:60px 20px;background:var(--soft)}
+.hub__in{max-width:980px;width:100%;text-align:center}
+.hub__in>img{width:250px;margin:0 auto 14px}
+.hub__grid{display:grid;gap:18px;margin-top:40px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.hub__card{background:#fff;border:1px solid var(--line);padding:28px 24px;text-align:left;display:block}
+.hub__card:hover{border-color:var(--ink)}
+.hub__card p{margin:0 0 8px;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:var(--h-ls)}
+.hub__card span{font-size:14px;color:var(--muted);line-height:1.6}
+.hub__note{margin-top:38px;font-size:13px;color:var(--muted)}
+</style></head><body class="locked"><div id="gate"><div class="gate-card"><img src="assets/caad2fb494c9ff6d6524ec12fe885a8d.jpg" alt="Clark&rsquo;s Botanicals"><p class="h h6" style="margin:0 0 18px">Private preview</p><input type="password" placeholder="ENTER PASSWORD" autocomplete="off"><button class="btn btn--full" type="button">Enter</button><p class="gate-err"></p></div></div><div class="site"><div class="ann">Early access until Sept 1 | Use code LABOR25</div><header class="hdr"><div class="hdr__in"><button class="hdr__burger" data-open="#menu" aria-label="Navigation menu"><svg width="24" height="24" fill="none" viewBox="0 0 24 24"><path d="M1 19h22M1 12h22M1 5h22" stroke="currentColor" stroke-width="1.7" stroke-linecap="square"/></svg></button><p class="hdr__logo"><a href="home.html"><img src="assets/caad2fb494c9ff6d6524ec12fe885a8d.jpg" alt="Clark&rsquo;s Botanicals"></a></p><div class="hdr__icons"><button class="loc" type="button">USD $ <svg width="11" height="11" fill="none" viewBox="0 0 10 10"><path d="m1 3 4 4 4-4" stroke="currentColor" stroke-linecap="square"/></svg></button><a class="acct" href="#" aria-label="Login"><svg width="23" height="23" fill="none" viewBox="0 0 24 24"><path d="M16.125 8.75c-.184 2.478-2.063 4.5-4.125 4.5s-3.944-2.021-4.125-4.5c-.187-2.578 1.64-4.5 4.125-4.5 2.484 0 4.313 1.969 4.125 4.5Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.017 20.747C3.783 16.5 7.922 14.25 12 14.25s8.217 2.25 8.984 6.497" stroke="currentColor" stroke-width="1.6" stroke-miterlimit="10"/></svg></a><button type="button" data-open-search aria-label="Search"><svg width="23" height="23" fill="none" viewBox="0 0 24 24"><path d="M10.364 3a7.364 7.364 0 1 0 0 14.727 7.364 7.364 0 0 0 0-14.727Z" stroke="currentColor" stroke-width="1.6" stroke-miterlimit="10"/><path d="M15.857 15.858 21 21.001" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button><button type="button" data-open="#cart" aria-label="Cart"><svg width="23" height="23" fill="none" viewBox="0 0 24 24"><path d="M21.5 21.5v-15h-19v15h19ZM8 6V5a4 4 0 1 1 8 0v1" stroke="currentColor" stroke-width="1.6"/></svg><span class="cartdot"></span></button></div><nav class="pnav" aria-label="Primary"><ul><li><a class="navtop" href="collection.html">Shop</a><div class="mega"><div class="mega__in"><a href="collection.html">Shop All</a><a href="collection.html">Cleansers &amp; Exfoliators</a><a href="collection.html">Eye Cream</a><a href="collection.html">Moisturizers</a><a href="collection.html">Lip Treatment</a><a href="collection.html">Treatments and Masks</a><a href="collection.html">Sets</a></div></div></li><li><a class="navtop" href="collection.html">Skin Benefit</a><div class="mega"><div class="mega__in"><a href="collection.html">Age Defying</a><a href="collection.html">Hydrating</a><a href="collection.html">Brightening</a><a href="collection.html">Soothing</a><a href="collection.html">Oil Control</a></div></div></li><li><a class="navtop" href="collection.html">Skin Type</a><div class="mega"><div class="mega__in"><a href="collection.html">All Skin Types</a><a href="collection.html">Normal Skin</a><a href="collection.html">Oily Skin</a><a href="collection.html">Combination Skin</a><a href="collection.html">Very Drying &amp; Aging Skin</a><a href="collection.html">Dry / Redness Prone Skin</a></div></div></li><li><a class="navtop" href="collection.html">Subscribe + Save</a><div class="mega"><div class="mega__in"><a href="collection.html">Subscribe + Save</a><a href="#">Manage Subscription</a></div></div></li><li><a class="navtop" href="#">Ritual Rewards</a></li><li><a class="navtop" href="#">Skincare Quiz</a></li><li><a class="navtop" href="#">Skin Edu</a><div class="mega"><div class="mega__in"><a href="#">Blog</a></div></div></li><li><a class="navtop" href="#">About</a><div class="mega"><div class="mega__in"><a href="#">Our Story</a><a href="#">Formulation Innovation</a><a href="#">FSA / HSA Eligibility</a><a href="#">Customer Service</a></div></div></li></ul></nav></div></header><main><section class="sec sec--tight"><div class="wrap wrap--pdp"><div class="pdp"><div class="gal"><div class="gal__thumbs"><button type="button" data-i="0" class="on" aria-label="Image 1"><img src="assets/8b8e69043cbaa10edbc62a1bd863f9a3.jpg" alt="" loading="lazy"></button><button type="button" data-i="1" class="" aria-label="Image 2"><img src="assets/247d4ab46622051cd647af720b0e3f3d.jpg" alt="" loading="lazy"></button><button type="button" data-i="2" class="" aria-label="Image 3"><img src="assets/9c1fc8760772d614d8b453934fddfa08.jpg" alt="" loading="lazy"></button><button type="button" data-i="3" class="" aria-label="Image 4"><img src="assets/aadef965cb0008726695a8b4ce978ba2.jpg" alt="" loading="lazy"></button><button type="button" data-i="4" class="" aria-label="Image 5"><img src="assets/1a67b910182b804ae9ebbf57ace67518.jpg" alt="" loading="lazy"></button><button type="button" data-i="5" class="" aria-label="Image 6"><img src="assets/8c9ac452aaa7ffbefa922345a08e11ce.jpg" alt="" loading="lazy"></button><button type="button" data-i="6" class="" aria-label="Image 7"><img src="assets/df7777f3f0838628516134dd45edec3e.jpg" alt="" loading="lazy"></button><button type="button" data-i="7" class="" aria-label="Image 8"><img src="assets/6d09808926f6896fc9755a8175dc2a0d.jpg" alt="" loading="lazy"></button></div><div class="gal__main"><div class="gal__mrail"><img src="assets/8b8e69043cbaa10edbc62a1bd863f9a3.jpg" class="on" alt="DNA-42 Clinicalift Serum™"><img src="assets/247d4ab46622051cd647af720b0e3f3d.jpg" class="" alt="DNA-42 Clinicalift Serum™" loading="lazy"><img src="assets/9c1fc8760772d614d8b453934fddfa08.jpg" class="" alt="DNA-42 Clinicalift Serum™" loading="lazy"><img src="assets/aadef965cb0008726695a8b4ce978ba2.jpg" class="" alt="DNA-42 Clinicalift Serum™" loading="lazy"><img src="assets/1a67b910182b804ae9ebbf57ace67518.jpg" class="" alt="DNA-42 Clinicalift Serum™" loading="lazy"><img src="assets/8c9ac452aaa7ffbefa922345a08e11ce.jpg" class="" alt="DNA-42 Clinicalift Serum™" loading="lazy"><img src="assets/df7777f3f0838628516134dd45edec3e.jpg" class="" alt="DNA-42 Clinicalift Serum™" loading="lazy"><img src="assets/6d09808926f6896fc9755a8175dc2a0d.jpg" class="" alt="DNA-42 Clinicalift Serum™" loading="lazy"></div></div></div><div class="pinfo"><div class="pinfo__top"><h1 class="h">DNA-42 Clinicalift Serum™</h1><span class="pinfo__price">$150.00 USD</span></div><div class="rr"><span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span><span class="xxs sub">(6)</span></div><p class="afterpay">or 4 interest-free payments of <b>$37.50</b> with <span class="chipdark">Afterpay</span></p><p class="lede">In 42 days, skin appears up to 8 years younger, without irritation.<br><br>The first serum powered by Vegan dual PDRN regenerative science and plant-derived exosome delivery technology, clinically engineered to visibly lift, redensify, and restore skin by activating cellular renewal at its source.<br><br>Not slowing the aging process. Biologically reversing it.<br><br>Designed around your skin&rsquo;s natural 42-day turnover cycle, this formula allows collagen stimulation, cellular repair, and visible structural renewal to unfold completely and without irritation. The result is skin that looks smoother, firmer, and luminous because its own vitality has been rebuilt.<br><br>42 days. Proven. Measured.</p><div class="acc"><details><summary>Why Clark's Botanicals<i>+</i></summary><div class="acc__c"><table> <tbody> <tr> <td><img src="assets/202177f793dcdfdf700b544f9372de76.png" alt="" width="60" height="62"></td> <td> <p>60-DAY MONEY GUARANTEE</p> <p>We understand that sometimes an item that was purchased is not right for you. You have 60 days to return it and receive a refund.</p> </td> </tr> <tr> <td><img src="assets/67934386e2ec3faebddc67ccda421232.png" alt="" width="60" height="62"></td> <td> <p>CLINICALLY PROVEN</p> <p>Our products have been tested and proven to provide noticeable and satisfying results.</p> </td> </tr> <tr> <td><img src="assets/181b15e320c5d8be0d9a4e60bb98c64b.png" alt="" width="60" height="62"></td> <td> <p>VEGAN AND NATURAL</p> <p>We are dedicated to delivering the purest and most natural ingredients for your skincare needs.</p> </td> </tr> </tbody> </table></div></details><details><summary>Shipping and Returns<i>+</i></summary><div class="acc__c"><h4><strong>SHIPPING AND HANDLING INFORMATION</strong></h4> <table width="477"> <tbody> <tr> <td data-sheets-value='{"1":2,"2":"APEC"}' width="184"> <p><strong>United States</strong></p> </td> <td width="99"></td> <td width="130"></td> <td width="64"></td> </tr> <tr> <td> <p><strong>Rate name</strong></p> </td> <td><strong>Condition</strong></td> <td><strong>Transit time</strong></td> <td><strong>Price</strong></td> </tr> <tr> <td>Economy</td> <td><br></td> <td>5 to 8 business days</td> <td> <p>$5.00 USD</p> </td> </tr> <tr> <td></td> <td></td> <td></td> <td></td> </tr> </tbody> </table> <p> </p> <table width="413"> <tbody> <tr> <td width="184"> <p><strong>United Kingdom</strong></p> </td> <td width="99"></td> <td width="130"></td> </tr> <tr> <td> <p><strong>Rate name</strong></p> </td> <td><strong>Condition</strong></td> <td><strong>Price</strong></td> </tr> <tr> <td></td> <td></td> <td></td> </tr> <tr> <td>International Shipping</td> <td>$100.00 and up</td> <td> <p>$25.00 USD</p> </td> </tr> <tr> <td>International Shipping</td> <td>$0.00–$99.99</td> <td> <p>$35.00 USD</p> </td> </tr> </tbody> </table> <p> </p> <table width="413"> <tbody> <tr> <td width="184"> <p><strong>Canada</strong></p> </td> <td width="99"></td> <td width="130"></td> </tr> <tr> <td> <p><strong>Rate name</strong></p> </td> <td><strong>Condition</strong></td> <td><strong>Price</strong></td> </tr> <tr> <td></td> <td></td> <td></td> </tr> <tr> <td>International Shipping</td> <td>$0.00–$99.99</td> <td> <p>$35.00 USD</p> </td> </tr> <tr> <td>International Shipping</td> <td>$100.00–$199.99</td> <td> <p>$15.00 USD</p> </td> </tr> </tbody> </table> <p> </p> <table width="413"> <tbody> <tr> <td width="184"> <p><strong>Rest of World</strong></p> </td> <td width="99"></td> <td width="130"></td> </tr> <tr> <td> <p><strong>Rate name</strong></p> </td> <td><strong>Condition</strong></td> <td><strong>Price</strong></td> </tr> <tr> <td>International Shipping</td> <td>—</td> <td> <p>$35.00 USD</p> </td> </tr> </tbody> </table> <p><strong><br>Multiple addresses</strong></p> <p>At this time, we do not ship to more than one address per order.</p> <p><strong><br>Maximum Purchase</strong></p> <p>You may purchase up to five units of each item.</p> <p><strong><br>Sales Tax</strong></p> <p>We are required by law to apply sales tax to orders (including shipping &amp; handling) for the following states: NJ, NY, PA, TX.</p> <p> </p> <h4>RETURNS</h4> <p> </p> <p>Full Returns within 30 days for Domestic Orders on ClarksBotanicals.com: We understand that skincare is a personal purchase. Sometimes an item that was purchased is not right for you. Please email cs@clarksbotanicals.com for a pre-paid shipping label for your return and we will issue a full refund to your original form of payment. </p> <ul> <li>Your satisfaction is our top priority. In case you are not 100% satisfied with any of our products, you may return the product(s) that is/are more than half full for a full refund within 30 days after receiving your purchase.</li> <li>We are so committed to your satisfaction that we will cover the cost of your return shipping – please contact cs@clarksbotanicals.com for a return shipping label</li> <li>Refunds are processed to the card/method of payment that was used in the original order.</li> <li>If the product is a gift, we can refund it via a gift card using the name of the purchaser or order number</li> <li>Empty bottles/tubes of products cannot be accepted.</li> <li>You may not receive a (full) refund in cases where the product has been used beyond what is deemed reasonable to trial the product. For example, a product that is empty or almost empty. This also applies to a product that has been damaged after you have received it.</li> <li>Returns that exceed the 60 day guarantee period cannot be accepted.</li> <li>We do not accept returns from orders placed via a reseller.</li> </ul></div></details></div><div class="qtyrow"><span class="qty" data-pdp-qty><button type="button" data-step="-1" aria-label="Decrease quantity">&minus;</button><span>1</span><button type="button" data-step="1" aria-label="Increase quantity">+</button></span></div><div class="subs"><label class="on"><input type="radio" name="purchase" checked data-price="150.0">One-time purchase<span class="sp">$150.00</span></label><label><input type="radio" name="purchase" data-price="127.5" data-sub="Delivery every 1 Month">Subscribe + Save 15%<span class="sp">$127.50</span></label><span class="tiny">subscription details</span></div><button class="btn btn--full" type="button" data-pdp-add="dna-42-clinicalift-serum" style="margin-top:20px">Add to cart</button><div class="acc"><details><summary>Description<i>+</i></summary><div class="acc__c"><p><b>Repair the Biology. Reverse the Damage. Reclaim Your Skin.</b></p> <p>A physician-formulated regenerative serum that visibly lifts, densifies, and restores skin not by masking the signs of aging, but by activating the biological pathways responsible for structural renewal.</p> <p>Long before "longevity skincare" became a trend, Clark's Botanicals was studying the cellular resilience mechanisms of the Amalfi Coast, one of the world's most biodiverse and protected coastal ecosystems, and translating them into measurable pathways for human skin. In this uniquely protected environment, botanicals and marine organisms thrive under constant environmental stress. DNA-42 captures the science behind that survival.</p> <p>DNA-42 Clinicalift™ Serum is the first expression of Amalfi Born Biotechnology™, and the first topical serum to combine plant-derived exosome delivery technology with a Vegan PDRN regenerative complex. Together, they ensure that repair signals reach the dermal cells where visible renewal truly begins. Polydeoxyribonucleotide (PDRN) has long been studied in regenerative dermatology historically sourced from animal tissue.</p> <p>DNA-42 advances this science entirely: our plant-derived Vegan PDRN complex, drawn from rice and barley, is clinically shown to outperform legacy animal-derived formulations in collagen synthesis, fibroblast vitality, and epidermal renewal. This is not an ethical compromise. It is a clinically superior evolution. The result is a serum that works with your skin's biology not against it. Skin appears smoother, clearer, and more luminous not because something has been erased, but because the skin's own structural vitality has been rebuilt.</p> <p><b>Your skin's been keeping score. DNA-42 is here to settle it.</b></p></div></details><details><summary>How to Use<i>+</i></summary><div class="acc__c"><p><span>Apply 3-5 drops to cleansed face AM and/or PM. Press gently into skin using fingertips, working outward from the center of the face. Allow to absorb fully before layering moisturizer or SPF.<br /> <br /> For optimal results, use consistently through a complete 42-day renewal cycle. Do not interrupt the cycle, visible structural change requires the full biological timeline.<br /> <br /> Pro Tip: Unlike retinol or strong acid treatments, DNA-42 works with your skin&#39;s biology rather than against it. There is no downtime, no cycling, and no irritation phase. You can layer it with your existing routine from day one. Sensitive skin approved.</span></p></div></details><details><summary>BENEFITS<i>+</i></summary><div class="acc__c"><p><span>• Visibly lifts and firms contours across a complete 42-day renewal cycle<br /> • Stimulates collagen synthesis and supports extracellular matrix reinforcement<br /> • Reduces visible wrinkle depth and softens expression lines<br /> • Increases dermal density and improves structural integrity from within<br /> • Restores skin vitality: smoothness, clarity, tone, and luminosity<br /> • Strengthens the skin&#39;s barrier integrity and epidermal resilience<br /> • Activates cellular repair and improves intercellular communication<br /> • No irritation. Safe for sensitive skin. Suitable for all skin types.</span></p></div></details><details><summary>CLINICALS<i>+</i></summary><div class="acc__c"><p><span>Clinically Measured. 42 Days. No Irritation.<br /> Tested using advanced reconstructed human skin models designed to replicate human biological response. Compared to traditional animal-derived PDRN systems, the Vegan Dual PDRN Complex in DNA-42 demonstrates:<br /> <br /> +266% Acceleration in visible cellular repair.<br /> +200% Increase in collagen synthesis<br /> +180% Acceleration in epidermal renewal<br /> +115% Enhancement in fibroblast vitality<br /> +111% Strengthening of visible skin resilience<br /> +90% Improvement in intercellular communication<br /> 8.2 years Skin age reversal with Decrease in visible wrinkle depth vs. baseline (independent analysis, 42 days)</span></p></div></details><details><summary>VISIBLE PROGRESSION<i>+</i></summary><div class="acc__c"><p><span>Day 1: Deep hydration and immediately refined texture. Skin feels plumped and prepared.<br /> <br /> Day 14: Improved elasticity and smoother surface appearance. Lines appear softened.<br /> <br /> Day 42: Visibly lifted contours. Increased dermal density. Softened expression lines. Strengthened barrier integrity. Skin appears up to 8 years younger.</span></p></div></details><details><summary>KEY INGREDIENTS<i>+</i></summary><div class="acc__c"><p><span>Vegan PDRN Complex — Sodium DNA (Rice-Derived) + Hydrolyzed DNA (Barley-Derived): A plant-derived evolution of polydeoxyribonucleotide technology, clinically shown to outperform traditional animal-derived PDRN in fibroblast stimulation, collagen synthesis, and epidermal<br /> renewal rate. This is not an ethical substitute for legacy technology. It is a clinically superior advancement of regenerative DNA science, delivering +200% increase in collagen synthesis and +266% acceleration in cellular repair vs. legacy formulations.<br /> <br /> Plant Exosome Delivery Technology — Lycium Barbarum Callus Culture Extract (Phytocelltec™): Stem cell–derived phospholipid vesicle structures that enhance cellular communication and deepen the penetration of high molecular weight actives, including Vegan PDRN. The same delivery mechanism at the forefront of aesthetic dermatology, now available in a topical serum. Optimizes performance at a cellular level, ensuring repair signals reach the dermis where structural renewal begins.<br /> <br /> Pro-Scaffolding Peptide Architecture — Acetyl Hexapeptide-8 + Palmitoyl Tripeptide-5: Acetyl Hexapeptide-8 reduces the appearance of expression lines through neuromodulating signaling mechanisms. Palmitoyl Tripeptide-5 activates TGF-beta pathways associated with collagen production and extracellular matrix reinforcement. Together, they support visible smoothing while strengthening dermal architecture at depth.<br /> <br /> Amalfi Marine Biomimetic Support Matrix — Hydrolyzed Algin, Hydrolyzed, Rhodophyceae Extract, Chondrus Crispus Extract, Plankton Extract, Mineral-Rich Sea Water: <br /> A mineral and polysaccharide complex drawn from the bioactive-rich coastline of the Amalfi Coast, the ecological foundation of Amalfi Born Biotechnology™. Supports extracellular hydration, reinforces elasticity, improves barrier integrity, and provides glycosaminoglycan support for tensile skin resilience.<br /> <br /> Ingredients: Aqua (Water), Glycerin, Acetyl Hexapeptide-8, Palmitoyl Tripeptide-5, Citrus Reticulata (Tangerine) Fruit Extract, Pistacia Lentiscus (Mastic) Gum, Sodium Hyaluronate, Saccharide Isomerate, Aloe Barbadensis Leaf Extract, Helianthus Annuus (Sunflower) Sprout Extract, Hydrolyzed Algin, Plankton Extract, Sodium DNA, Hydrolyzed DNA, Lycium Barbarum Callus Culture Extract, Niacinamide, Chondrus Crispus Extract, Hydrolyzed Rhodophyceae Extract, Maris Aqua (Sea Water), Lecithin, Maltodextrin, Sucrose, Propanediol, Pentylene Glycol, Butylene Glycol, Phenethyl Alcohol, Glyceryl Caprylate, Glyceryl Caprate.<br /> <br /> Doesn&#39;t Contain: Parabens, phthalates, sulfates, hydroquinone, formaldehyde, ethanolamines (MEA/DEA/TEA), BHA/BHT, triclosan/triclocarban, petrolatum, silicones, synthetic fragrance, artificial colors and plastic beads. Gluten free. Certified vegan and cruelty-free. Made in the USA.</span></p></div></details></div><div style="margin-top:30px"><p class="h h6" style="margin:0">Don&rsquo;t just take our word for it.</p><div class="vidcard"><div><img src="assets/9c1fc8760772d614d8b453934fddfa08.jpg" alt="" loading="lazy"><i><b><svg width="11" height="11" viewBox="0 0 12 12" fill="currentColor"><path d="M3 1.5 10 6l-7 4.5V1.5Z"/></svg></b></i></div></div></div></div></div></div></section><section class="sec" style="background:var(--soft)"><div class="wrap wrap--narrow"><div style="text-align:center;margin-bottom:26px"><h2 class="h h2" style="margin:0 0 8px">Before / After</h2><p class="xxs sub" style="margin:0">Visible improvement of aging signs after 42 days</p></div><div class="ba" style="max-width:900px"><img src="assets/31bd685414c9cfa4221c4e4d966500f1.jpg" alt="Before"><span class="ba__lbl" style="left:16px">Before</span><div class="ba__after"><img src="assets/8b6fc282201e9b6be03e67222ab8bbcb.jpg" alt="After"></div><span class="ba__lbl" style="right:16px">After</span><div class="ba__handle"></div></div></div></section><section class="split"><img src="assets/9986f190766d23975cdcbc23bab2f048.jpg" alt="Amalfi Coast" loading="lazy"><div class="split__t"><h2 class="h h2">Amalfi Born Biotechnology&trade;</h2><p>The Amalfi Coast is not just one of the world&rsquo;s most beautiful coastlines. It is one of its most demanding. Shaped by the Campanian volcanic arc, its soils are saturated with ancient mineral deposits: sulfur, potassium, magnesium, and trace elements forged under intense geological pressure.</p><p>The species that thrive anyway are classified as extremophiles: organisms that have evolved not just to tolerate extreme conditions, but to flourish under them. Amalfi Born Biotechnology&trade; is our proprietary research platform for translating those cellular resilience mechanisms into measurable pathways for human skin.</p></div></section><section class="sec"><div class="wrap wrap--wide"><h2 class="h h2 sec__title">Why you will love it</h2><div class="wyl"><div><span><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M8 12c-1-4-2-7-4-8 0 3 .5 6 2 8"/><path d="M13 12c1-4 2-7 4-8 0 3-.5 6-2 8"/><circle cx="11.5" cy="16" r="5"/><circle cx="10" cy="15" r=".7" fill="currentColor"/><circle cx="13" cy="15" r=".7" fill="currentColor"/></svg></span><p>Cruelty free</p></div><div><span><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M20 4C10 4 4 9 4 16c0 2 .7 3.4.7 3.4S8 12 18 9c0 0-6 3-9.5 8.5"/></svg></span><p>Clean ingredients</p></div><div><span><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M12 21V9"/><path d="M12 9c0-3 2-5 4-5 0 3-2 5-4 5Zm0 0c0-3-2-5-4-5 0 3 2 5 4 5Zm0 5c0-2.5 2-4 4-4 0 2.5-2 4-4 4Zm0 0c0-2.5-2-4-4-4 0 2.5 2 4 4 4Z"/></svg></span><p>Gluten free</p></div><div><span><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M5 4l7 16 7-16"/></svg></span><p>Vegan</p></div><div><span><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="3" y="6" width="18" height="12"/><path d="M3 10h18M3 14h18M3 6v12"/></svg></span><p>Made in USA</p></div></div></div></section><section class="sec" style="padding-top:0"><div class="wrap wrap--wide"><h2 class="h h2 sec__title">You may also like</h2><div class="grid grid--4"><article class="pc" data-type="Other" data-price="199.75" data-title="3-Minute Reset"><div class="pc__fig"><span class="badge">Save 15%</span><a href="product.html" aria-label="3-Minute Reset"><img src="assets/092a55505007826d5028cff37cbb5ca0.jpg" alt="3-Minute Reset" loading="lazy"><img class="sec" src="assets/f10e0c34355ddf40319fb6508b6079d6.jpg" alt="" loading="lazy"></a><button class="btn btn--ghost pc__quick" type="button" data-quick="3-minute-reset">Quick add</button></div><div class="pc__info"><a class="pc__title" href="product.html">3-Minute Reset</a><div class="price"><b>$199.75 USD</b><s>$235.00 USD</s></div></div></article><article class="pc" data-type="Moisturizers" data-price="112.5" data-title="Retinol Rescue Overnight Cream"><div class="pc__fig"><span class="badge">Save 25%</span><a href="product.html" aria-label="Retinol Rescue Overnight Cream"><img src="assets/7da3ed861a97bfb8edc8538508c5c99c.jpg" alt="Retinol Rescue Overnight Cream" loading="lazy"><img class="sec" src="assets/0497b9c56441f7a8db77c65425d3ddc3.gif" alt="" loading="lazy"></a><button class="btn btn--ghost pc__quick" type="button" data-quick="retinol-rescue-overnight-cream">Quick add</button></div><div class="pc__info"><a class="pc__title" href="product.html">Retinol Rescue Overnight Cream</a><div class="price"><b>From $112.50 USD</b><s>$150.00 USD</s></div></div></article><article class="pc" data-type="Sets" data-price="199.75" data-title="Regeneration 24/7"><div class="pc__fig"><span class="badge">Save 15%</span><a href="product.html" aria-label="Regeneration 24/7"><img src="assets/384dcafb114dae78f491b3ecc7c71d6b.jpg" alt="Regeneration 24/7" loading="lazy"><img class="sec" src="assets/7688e0c6333ae2608f539b831766a742.jpg" alt="" loading="lazy"></a><button class="btn btn--ghost pc__quick" type="button" data-quick="regeneration-24-7-180-value">Quick add</button></div><div class="pc__info"><a class="pc__title" href="product.html">Regeneration 24/7</a><div class="price"><b>$199.75 USD</b><s>$235.00 USD</s></div></div></article><article class="pc" data-type="Serums + Masks" data-price="63.75" data-title="Deep Moisture Mask"><div class="pc__fig"><span class="badge">Save 25%</span><a href="product.html" aria-label="Deep Moisture Mask"><img src="assets/130d79ec9c8e8abb97ba9ed8a92f904e.jpg" alt="Deep Moisture Mask" loading="lazy"><img class="sec" src="assets/82a32fc3c6eabd9464a55167e832fe08.gif" alt="" loading="lazy"></a><button class="btn btn--ghost pc__quick" type="button" data-quick="deep-moisture-mask">Quick add</button></div><div class="pc__info"><a class="pc__title" href="product.html">Deep Moisture Mask</a><div class="price"><b>From $63.75 USD</b><s>$85.00 USD</s></div></div></article></div></div></section><section class="sec" style="padding-top:0"><div class="wrap wrap--wide"><h2 class="h h2 sec__title">Recently viewed products</h2><div class="grid grid--4"><article class="pc" data-type="Moisturizers" data-price="105.0" data-title="Smoothing Marine Cream"><div class="pc__fig"><span class="badge">Save 25%</span><a href="product.html" aria-label="Smoothing Marine Cream"><img src="assets/30b071657e3a10030a0b473466d97634.jpg" alt="Smoothing Marine Cream" loading="lazy"><img class="sec" src="assets/528f8594efc801e11281d8807e2752dd.gif" alt="" loading="lazy"></a><button class="btn btn--ghost pc__quick" type="button" data-quick="smooth-marine-cream">Quick add</button></div><div class="pc__info"><a class="pc__title" href="product.html">Smoothing Marine Cream</a><div class="price"><b>From $105.00 USD</b><s>$140.00 USD</s></div></div></article><article class="pc" data-type="Moisturizers" data-price="112.5" data-title="Retinol Rescue Overnight Cream"><div class="pc__fig"><span class="badge">Save 25%</span><a href="product.html" aria-label="Retinol Rescue Overnight Cream"><img src="assets/7da3ed861a97bfb8edc8538508c5c99c.jpg" alt="Retinol Rescue Overnight Cream" loading="lazy"><img class="sec" src="assets/0497b9c56441f7a8db77c65425d3ddc3.gif" alt="" loading="lazy"></a><button class="btn btn--ghost pc__quick" type="button" data-quick="retinol-rescue-overnight-cream">Quick add</button></div><div class="pc__info"><a class="pc__title" href="product.html">Retinol Rescue Overnight Cream</a><div class="price"><b>From $112.50 USD</b><s>$150.00 USD</s></div></div></article><article class="pc" data-type="Serums + Masks" data-price="71.25" data-title="Jasmine Vital Cream"><div class="pc__fig"><span class="badge">Save 25%</span><a href="product.html" aria-label="Jasmine Vital Cream"><img src="assets/890b1aa3a4ce775b178a5afdbdfd000b.jpg" alt="Jasmine Vital Cream" loading="lazy"><img class="sec" src="assets/d8ce25e5874d16b533632cbc59efee37.gif" alt="" loading="lazy"></a><button class="btn btn--ghost pc__quick" type="button" data-quick="jasmine-vital-cream">Quick add</button></div><div class="pc__info"><a class="pc__title" href="product.html">Jasmine Vital Cream</a><div class="price"><b>From $71.25 USD</b><s>$95.00 USD</s></div></div></article><article class="pc" data-type="Cleansers & Exfoliators" data-price="63.75" data-title="7-Acid Daily Glow Peel"><div class="pc__fig"><span class="badge">Save 25%</span><a href="product.html" aria-label="7-Acid Daily Glow Peel"><img src="assets/632c67d400213f9d7729e27cba5e09e7.jpg" alt="7-Acid Daily Glow Peel" loading="lazy"><img class="sec" src="assets/ef4d1f9a27f2af81aaaf054ad3b160d7.jpg" alt="" loading="lazy"></a><button class="btn btn--ghost pc__quick" type="button" data-quick="7-acid-daily-glow-peel">Quick add</button></div><div class="pc__info"><a class="pc__title" href="product.html">7-Acid Daily Glow Peel</a><div class="price"><b>From $63.75 USD</b><s>$85.00 USD</s></div></div></article></div></div></section></main><footer class="ft"><div class="wrap wrap--wide"><div class="ft__grid"><div><p class="h h6">About Clark&rsquo;s Botanicals</p><p class="ft__about">Doctor-formulated skincare that gets stronger the longer you use it. Founded by Francesco Clark after a spinal cord injury transformed how he understood skin, healing, and what formulas should actually do. Sourced and studied at our research estate on the Amalfi Coast. Tested on sensitive skin. 74% of customers come back.</p></div><div><p class="h h6">Service</p><ul><li><a href="#">Search</a></li><li><a href="#">About Us</a></li><li><a href="#">Customer Service</a></li><li><a href="#">Where to Find Us</a></li><li><a href="#">Corporate Gifting</a></li><li><a href="#">Contact Us</a></li></ul></div><div><p class="h h6">Help</p><ul><li><a href="#">Terms &amp; Conditions</a></li><li><a href="#">Shipping and Returns</a></li><li><a href="#">FAQs</a></li><li><a href="#">Privacy Policy</a></li><li><a href="#">Accessibility Statement</a></li></ul></div><div><p class="h h6">From the Lab</p><p class="ft__about">Subscribe for formulation insights, new science, and first access to what we are building next.</p><div class="ft__form"><input type="email" placeholder="E-mail" aria-label="E-mail"><button class="btn btn--yellow" type="button">Subscribe</button></div></div></div><div class="ft__soc"><a href="#" aria-label="Follow on Facebook"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M15 3h-2.5A3.5 3.5 0 0 0 9 6.5V9H7v3h2v9h3v-9h2.5l.5-3h-3V6.75c0-.41.34-.75.75-.75H15V3Z"/></svg></a><a href="#" aria-label="Follow on Instagram"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.4" cy="6.6" r=".9" fill="currentColor" stroke="none"/></svg></a><a href="#" aria-label="Follow on Pinterest"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M9.5 20.5c-.4-1.4-.2-3 .1-4.3l1.3-5.4"/><path d="M12 3a7 7 0 0 0-2.6 13.5"/><path d="M10.6 13.4c.4.8 1.3 1.3 2.3 1.3 2.2 0 3.8-2.3 3.8-5.3C16.7 6.4 14.6 4.6 12 4.6"/></svg></a></div><div class="ft__aside"><span class="ft__loc"><img src="assets/271f42596c1680150da836759e84ba03.jpg" alt="">India (USD $) <svg width="11" height="11" fill="none" viewBox="0 0 10 10"><path d="m1 3 4 4 4-4" stroke="currentColor" stroke-linecap="square"/></svg></span><span class="ft__cc">&copy; 2026 &ndash; Clark&rsquo;s Botanicals</span><span class="ft__pay"><span style="color:#FF9900">amazon</span><span style="color:#1F72CD">AMEX</span><span style="color:#000000">Pay</span><span style="color:#0079BE">Diners</span><span style="color:#FF6000">DISCOVER</span><span style="color:#5F6368">G Pay</span><span style="color:#EB001B">MC</span><span style="color:#003087">PayPal</span><span style="color:#5A31F4">shop</span><span style="color:#1A1F71">VISA</span></span></div></div></footer></div><aside class="panel panel--l" id="menu"><div class="panel__hd"><span class="h">Menu</span><button data-close aria-label="Close"><svg width="16" height="16" fill="none" viewBox="0 0 16 16"><path d="m1 1 14 14M1 15 15 1" stroke="currentColor" stroke-width="1.6"/></svg></button></div><div class="panel__bd" style="padding:0"><div class="dd"><div class="dd__view"><button class="dd__item" type="button" data-sub="s0">Shop<svg width="10" height="10" fill="none" viewBox="0 0 10 10"><path d="m3 1 4 4-4 4" stroke="currentColor" stroke-linecap="square"/></svg></button><button class="dd__item" type="button" data-sub="s1">Skin Benefit<svg width="10" height="10" fill="none" viewBox="0 0 10 10"><path d="m3 1 4 4-4 4" stroke="currentColor" stroke-linecap="square"/></svg></button><button class="dd__item" type="button" data-sub="s2">Skin Type<svg width="10" height="10" fill="none" viewBox="0 0 10 10"><path d="m3 1 4 4-4 4" stroke="currentColor" stroke-linecap="square"/></svg></button><button class="dd__item" type="button" data-sub="s3">Subscribe + Save<svg width="10" height="10" fill="none" viewBox="0 0 10 10"><path d="m3 1 4 4-4 4" stroke="currentColor" stroke-linecap="square"/></svg></button><a class="dd__item" href="#">Ritual Rewards</a><a class="dd__item" href="#">Skincare Quiz</a><button class="dd__item" type="button" data-sub="s6">Skin Edu<svg width="10" height="10" fill="none" viewBox="0 0 10 10"><path d="m3 1 4 4-4 4" stroke="currentColor" stroke-linecap="square"/></svg></button><button class="dd__item" type="button" data-sub="s7">About<svg width="10" height="10" fill="none" viewBox="0 0 10 10"><path d="m3 1 4 4-4 4" stroke="currentColor" stroke-linecap="square"/></svg></button><a class="dd__item" href="#">Login</a><a class="dd__item" href="#">USD $</a></div><div class="dd__view sub" data-view="s0"><button class="dd__back" type="button"><svg width="10" height="10" fill="none" viewBox="0 0 10 10"><path d="m7 1-4 4 4 4" stroke="currentColor" stroke-linecap="square"/></svg> All categories</button><p class="h h5" style="margin:0 0 10px">Shop</p><a class="dd__item" href="collection.html">Shop All</a><a class="dd__item" href="collection.html">Cleansers &amp; Exfoliators</a><a class="dd__item" href="collection.html">Eye Cream</a><a class="dd__item" href="collection.html">Moisturizers</a><a class="dd__item" href="collection.html">Lip Treatment</a><a class="dd__item" href="collection.html">Treatments and Masks</a><a class="dd__item" href="collection.html">Sets</a></div><div class="dd__view sub" data-view="s1"><button class="dd__back" type="button"><svg width="10" height="10" fill="none" viewBox="0 0 10 10"><path d="m7 1-4 4 4 4" stroke="currentColor" stroke-linecap="square"/></svg> All categories</button><p class="h h5" style="margin:0 0 10px">Skin Benefit</p><a class="dd__item" href="collection.html">Age Defying</a><a class="dd__item" href="collection.html">Hydrating</a><a class="dd__item" href="collection.html">Brightening</a><a class="dd__item" href="collection.html">Soothing</a><a class="dd__item" href="collection.html">Oil Control</a></div><div class="dd__view sub" data-view="s2"><button class="dd__back" type="button"><svg width="10" height="10" fill="none" viewBox="0 0 10 10"><path d="m7 1-4 4 4 4" stroke="currentColor" stroke-linecap="square"/></svg> All categories</button><p class="h h5" style="margin:0 0 10px">Skin Type</p><a class="dd__item" href="collection.html">All Skin Types</a><a class="dd__item" href="collection.html">Normal Skin</a><a class="dd__item" href="collection.html">Oily Skin</a><a class="dd__item" href="collection.html">Combination Skin</a><a class="dd__item" href="collection.html">Very Drying &amp; Aging Skin</a><a class="dd__item" href="collection.html">Dry / Redness Prone Skin</a></div><div class="dd__view sub" data-view="s3"><button class="dd__back" type="button"><svg width="10" height="10" fill="none" viewBox="0 0 10 10"><path d="m7 1-4 4 4 4" stroke="currentColor" stroke-linecap="square"/></svg> All categories</button><p class="h h5" style="margin:0 0 10px">Subscribe + Save</p><a class="dd__item" href="collection.html">Subscribe + Save</a><a class="dd__item" href="#">Manage Subscription</a></div><div class="dd__view sub" data-view="s6"><button class="dd__back" type="button"><svg width="10" height="10" fill="none" viewBox="0 0 10 10"><path d="m7 1-4 4 4 4" stroke="currentColor" stroke-linecap="square"/></svg> All categories</button><p class="h h5" style="margin:0 0 10px">Skin Edu</p><a class="dd__item" href="#">Blog</a></div><div class="dd__view sub" data-view="s7"><button class="dd__back" type="button"><svg width="10" height="10" fill="none" viewBox="0 0 10 10"><path d="m7 1-4 4 4 4" stroke="currentColor" stroke-linecap="square"/></svg> All categories</button><p class="h h5" style="margin:0 0 10px">About</p><a class="dd__item" href="#">Our Story</a><a class="dd__item" href="#">Formulation Innovation</a><a class="dd__item" href="#">FSA / HSA Eligibility</a><a class="dd__item" href="#">Customer Service</a></div></div></div></aside><div class="search"><div class="search__in"><div class="search__row"><svg width="23" height="23" fill="none" viewBox="0 0 24 24"><path d="M10.364 3a7.364 7.364 0 1 0 0 14.727 7.364 7.364 0 0 0 0-14.727Z" stroke="currentColor" stroke-width="1.6" stroke-miterlimit="10"/><path d="M15.857 15.858 21 21.001" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><input type="search" placeholder="Search for..." aria-label="Search"><button data-close aria-label="Close"><svg width="16" height="16" fill="none" viewBox="0 0 16 16"><path d="m1 1 14 14M1 15 15 1" stroke="currentColor" stroke-width="1.6"/></svg></button></div><div class="search__res"><div><p class="search__hd">Suggestions</p><div class="search__sug"></div></div><div><div class="search__tabwrap"><span class="search__tab">Products</span></div><div class="search__tiles"></div></div></div></div></div><aside class="panel panel--r" id="cart"><div class="panel__hd"><span class="h">Cart</span><button data-close aria-label="Close"><svg width="16" height="16" fill="none" viewBox="0 0 16 16"><path d="m1 1 14 14M1 15 15 1" stroke="currentColor" stroke-width="1.6"/></svg></button></div><div class="panel__bd"></div><div class="panel__ft"></div></aside><div class="modal" id="vmodal"><div class="modal__bg"></div><div class="modal__card"><button class="modal__close" aria-label="Close"><svg width="16" height="16" fill="none" viewBox="0 0 16 16"><path d="m1 1 14 14M1 15 15 1" stroke="currentColor" stroke-width="1.6"/></svg></button><div class="modal__img"><img alt=""></div><div class="modal__body"></div></div></div><div class="ov"></div><script>window.CB_PRODUCTS=[{"handle": "the-renewal-ritual", "title": "The Renewal Ritual", "price": 327.25, "cmp": 385.0, "img": "assets/5fbaeb017703ce28a1bafc2251b4fd90.jpg", "opts": [], "rev": 6}, {"handle": "the-longevity-lift-duo", "title": "The Longevity Lift Duo", "price": 246.5, "cmp": 290.0, "img": "assets/24dfd8437ecf60cdef1b182a2f5a1f23.jpg", "opts": [], "rev": 6}, {"handle": "pdrn-retinol-liquid-facelift-duo", "title": "PDRN + Retinol Liquid Facelift Duo", "price": 255.0, "cmp": 300.0, "img": "assets/51bd7234c89c645bc0530b850a141f8d.jpg", "opts": [], "rev": 6}, {"handle": "3-minute-reset", "title": "3-Minute Reset", "price": 199.75, "cmp": 235.0, "img": "assets/092a55505007826d5028cff37cbb5ca0.jpg", "opts": [], "rev": 6}, {"handle": "dna-42-clinicalift-serum", "title": "DNA-42 Clinicalift Serum\u2122", "price": 150.0, "cmp": null, "img": "assets/8b8e69043cbaa10edbc62a1bd863f9a3.jpg", "opts": [{"name": "SIZE", "values": ["30 ml"]}], "rev": 6}, {"handle": "regeneration-24-7-180-value", "title": "Regeneration 24/7", "price": 199.75, "cmp": 235.0, "img": "assets/384dcafb114dae78f491b3ecc7c71d6b.jpg", "opts": [], "rev": 6}, {"handle": "the-glow-edit-set", "title": "Bounce and Glow Edit", "price": 144.5, "cmp": 170.0, "img": "assets/7063593ee60b1c269a160133b6bdaf03.jpg", "opts": [], "rev": 6}, {"handle": "anti-puff-eye-cream", "title": "Anti-Puff Eye Cream", "price": 63.75, "cmp": 85.0, "img": "assets/f92b80e16348125470ead4b41692d942.jpg", "opts": [{"name": "Pack", "values": ["1 Pack", "2 Pack"]}], "rev": 6}, {"handle": "7-acid-daily-glow-peel", "title": "7-Acid Daily Glow Peel", "price": 63.75, "cmp": 85.0, "img": "assets/632c67d400213f9d7729e27cba5e09e7.jpg", "opts": [{"name": "Size", "values": ["120 ml"]}, {"name": "Pack", "values": ["1 Pack"]}], "rev": 6}, {"handle": "24-hour-hormone-calm-ritual", "title": "Recovery Ritual", "price": 199.75, "cmp": 235.0, "img": "assets/3a603edb81bf13d9c4e1a18b304394bb.jpg", "opts": [], "rev": 6}, {"handle": "power-couple", "title": "The Power Couple", "price": 161.0, "cmp": 190.0, "img": "assets/0ca22b73b6d9326c9adc34d6f54f6b2b.jpg", "opts": [], "rev": 6}, {"handle": "deep-moisture-mask", "title": "Deep Moisture Mask", "price": 63.75, "cmp": 85.0, "img": "assets/130d79ec9c8e8abb97ba9ed8a92f904e.jpg", "opts": [{"name": "Pack", "values": ["1 Pack", "2 Pack"]}], "rev": 6}, {"handle": "retinol-rescue-overnight-cream", "title": "Retinol Rescue Overnight Cream", "price": 112.5, "cmp": 150.0, "img": "assets/7da3ed861a97bfb8edc8538508c5c99c.jpg", "opts": [{"name": "Size", "values": ["60 ml", "30ml"]}, {"name": "Pack", "values": ["1 Pack", "2 Pack"]}], "rev": 6}, {"handle": "smooth-marine-cream", "title": "Smoothing Marine Cream", "price": 105.0, "cmp": 140.0, "img": "assets/30b071657e3a10030a0b473466d97634.jpg", "opts": [{"name": "Pack", "values": ["1 Pack", "2 Pack"]}], "rev": 6}, {"handle": "travel-lip-duo", "title": "Travel Lip Duo ($44 Value)", "price": 44.0, "cmp": null, "img": "assets/36d11393cc46437eb2bc25932f80fc3c.jpg", "opts": [], "rev": 6}, {"handle": "jasmine-vital-cream", "title": "Jasmine Vital Cream", "price": 71.25, "cmp": 95.0, "img": "assets/890b1aa3a4ce775b178a5afdbdfd000b.jpg", "opts": [{"name": "Pack", "values": ["1 Pack"]}, {"name": "Size", "values": ["30ml", "50ml"]}], "rev": 6}];</script><script>
+(function(){
+var PW = "clarks2026";
+
+/* ---------------- password gate ---------------- */
+function gateInit(){
+  var g = document.getElementById('gate');
+  if(!g) return;
+  try{ if(localStorage.getItem('cb_gate_ok')==='1'){ g.remove(); document.body.classList.remove('locked'); return; } }catch(e){}
+  document.body.classList.add('locked'); g.classList.add('on');
+  var inp = g.querySelector('input'), err = g.querySelector('.gate-err');
+  function submit(){
+    if(inp.value.trim().toLowerCase() === PW){
+      try{ localStorage.setItem('cb_gate_ok','1'); }catch(e){}
+      g.remove(); document.body.classList.remove('locked');
+    } else { err.textContent = 'Incorrect password'; inp.value=''; inp.focus(); }
+  }
+  g.querySelector('button').addEventListener('click', submit);
+  inp.addEventListener('keydown', function(e){ if(e.key==='Enter') submit(); });
+  setTimeout(function(){ inp.focus(); }, 60);
+}
+
+/* ---------------- layout metrics ---------------- */
+function metrics(){
+  var ann = document.querySelector('.ann'), hdr = document.querySelector('.hdr');
+  var root = document.documentElement;
+  if(ann) root.style.setProperty('--annh', ann.offsetHeight + 'px');
+  if(hdr) root.style.setProperty('--hdrh', hdr.offsetHeight + 'px');
+  var s = document.querySelector('.search');
+  if(s && ann && hdr) s.style.top = (ann.offsetHeight + hdr.offsetHeight) + 'px';
+}
+
+/* ---------------- overlays ---------------- */
+function overlay(){ return document.querySelector('.ov'); }
+function openPanel(sel){
+  var p = document.querySelector(sel); if(!p) return;
+  p.classList.add('on');
+  var o = overlay(); if(o) o.classList.add('on');
+  document.body.style.overflow='hidden';
+}
+function closeAll(){
+  document.querySelectorAll('.panel.on,.sheet.on,.search.on').forEach(function(x){ x.classList.remove('on'); });
+  var o = overlay(); if(o) o.classList.remove('on');
+  document.body.style.overflow='';
+}
+
+/* ---------------- cart ---------------- */
+var CART = [];
+try{ CART = JSON.parse(localStorage.getItem('cb_cart')||'[]'); }catch(e){ CART=[]; }
+function saveCart(){ try{ localStorage.setItem('cb_cart', JSON.stringify(CART)); }catch(e){} }
+function cartCount(){ return CART.reduce(function(a,b){ return a + b.q; },0); }
+function cartTotal(){ return CART.reduce(function(a,b){ return a + b.q*b.price; },0); }
+function money(n){ return '$' + n.toFixed(2); }
+function syncDots(){
+  var n = cartCount();
+  document.querySelectorAll('.cartdot').forEach(function(d){
+    if(n > 0){ d.classList.add('num'); d.textContent = n; }
+    else { d.classList.remove('num'); d.textContent = ''; }
+  });
+}
+function addToCart(item){
+  var k = CART.find(function(c){ return c.handle===item.handle && c.opt===item.opt && c.sub===item.sub; });
+  if(k) k.q += item.q||1;
+  else CART.push({handle:item.handle,title:item.title,price:item.price,img:item.img,
+                  opt:item.opt||'',sub:item.sub||'',q:item.q||1});
+  saveCart(); syncDots(); renderCart(); openPanel('#cart');
+}
+
+function mostLoved(){
+  var pool = (window.CB_PRODUCTS||[]).filter(function(p){
+    return !CART.some(function(c){ return c.handle===p.handle; });
+  });
+  var p = pool[0]; if(!p) return '';
+  return '<div class="cart__div ml"><h4>Most loved</h4><div class="ml__row">' +
+    '<img src="' + p.img + '" alt="">' +
+    '<div><p class="ci__t">' + p.title + '</p>' +
+    '<p class="ci__p">' + money(p.price) + ' USD</p>' +
+    '<p style="margin-top:8px"><button class="tlink" type="button" data-quick="' + p.handle + '">Add to cart</button></p>' +
+    '</div></div></div>';
+}
+
+function renderCart(){
+  var bd = document.querySelector('#cart .panel__bd'), ft = document.querySelector('#cart .panel__ft');
+  if(!bd) return;
+  if(!CART.length){
+    bd.innerHTML = '<p class="empty">Your cart is empty</p>' + mostLoved();
+    ft.innerHTML = '<a class="cart__co" href="collection.html">Continue shopping</a>';
+    return;
+  }
+  var rows = CART.map(function(c,i){
+    return '<div class="ci">' +
+      '<img src="' + c.img + '" alt="">' +
+      '<div><div class="ci__t">' + c.title + '</div>' +
+      '<div class="ci__p">' + money(c.price) + ' USD</div>' +
+      (c.opt ? '<div class="ci__o">' + c.opt + '</div>' : '') +
+      (c.sub ? '<div class="ci__sub">' + c.sub + '</div>' : '') +
+      '<div class="ci__row">' +
+        '<span class="qty"><button data-q="-1" data-i="' + i + '" aria-label="Decrease">&minus;</button>' +
+        '<span>' + c.q + '</span>' +
+        '<button data-q="1" data-i="' + i + '" aria-label="Increase">+</button></span>' +
+        '<button class="tlink" data-rm="' + i + '">Remove</button>' +
+      '</div></div></div>';
+  }).join('');
+  bd.innerHTML = rows + mostLoved();
+  ft.innerHTML =
+    '<p class="cart__note">*Discounts, taxes &amp; shipping shown at checkout</p>' +
+    '<button class="cart__co" type="button">Checkout <span>&middot;</span> ' + money(cartTotal()) + '</button>';
+}
+
+document.addEventListener('click', function(e){
+  var t = e.target.closest('[data-q],[data-rm]');
+  if(t && t.closest('#cart')){
+    if(t.hasAttribute('data-q')){ var i=+t.dataset.i; CART[i].q = Math.max(1, CART[i].q + (+t.dataset.q)); }
+    if(t.hasAttribute('data-rm')){ CART.splice(+t.dataset.rm,1); }
+    saveCart(); syncDots(); renderCart();
+  }
+});
+
+/* ---------------- variant modal ---------------- */
+var MODAL_SEL = {};
+function openQuick(handle){
+  var p = (window.CB_PRODUCTS||[]).find(function(x){ return x.handle===handle; });
+  if(!p) return;
+  var m = document.getElementById('vmodal'); if(!m) return;
+  MODAL_SEL = {}; (p.opts||[]).forEach(function(o){ MODAL_SEL[o.name] = o.values[0]; });
+  m.querySelector('.modal__img img').src = p.img;
+  m.querySelector('.modal__body').innerHTML =
+    '<p class="h h5" style="margin:0">' + p.title + '</p>' +
+    '<div style="display:flex;gap:12px;align-items:center;margin-top:12px">' +
+      '<span class="stars">' + '★★★★★' + '</span>' +
+      '<span class="xxs sub">(' + (p.rev||6) + ')</span>' +
+      '<span class="price' + (p.cmp ? '' : ' plain') + '" style="justify-content:flex-start">' +
+        money(p.price) + ' USD' + (p.cmp ? '<s>' + money(p.cmp) + ' USD</s>' : '') + '</span>' +
+    '</div>' +
+    (p.opts||[]).map(function(o){
+      return '<div class="opt"><p>' + o.name + '</p><div class="opt__row">' + o.values.map(function(v,i){
+        return '<button type="button" data-opt="' + o.name + '" data-val="' + v + '" class="' + (i===0?'on':'') + '">' + v + '</button>';
+      }).join('') + '</div></div>';
+    }).join('') +
+    '<div style="margin-top:26px;display:grid;gap:14px;justify-items:start">' +
+      '<button class="btn btn--full" type="button" data-madd="' + p.handle + '">Add to cart</button>' +
+      '<a class="ulink" href="product.html">View full product details</a>' +
+    '</div>';
+  m.classList.add('on'); document.body.style.overflow='hidden';
+}
+function closeQuick(){
+  var m=document.getElementById('vmodal'); if(m) m.classList.remove('on');
+  if(!document.querySelector('.panel.on,.sheet.on')) document.body.style.overflow='';
+}
+
+document.addEventListener('click', function(e){
+  var q = e.target.closest('[data-quick]');
+  if(q){ e.preventDefault(); openQuick(q.dataset.quick); return; }
+  var o = e.target.closest('[data-opt]');
+  if(o){
+    MODAL_SEL[o.dataset.opt] = o.dataset.val;
+    o.parentElement.querySelectorAll('button').forEach(function(x){ x.classList.remove('on'); });
+    o.classList.add('on'); return;
+  }
+  var a = e.target.closest('[data-madd]');
+  if(a){
+    var p = (window.CB_PRODUCTS||[]).find(function(x){ return x.handle===a.dataset.madd; });
+    var opt = Object.keys(MODAL_SEL).map(function(k){ return MODAL_SEL[k]; }).join(' / ');
+    closeQuick(); addToCart({handle:p.handle,title:p.title,price:p.price,img:p.img,opt:opt,q:1});
+    return;
+  }
+  if(e.target.closest('.modal__bg') || e.target.closest('.modal__close')) closeQuick();
+});
+
+/* ---------------- mobile drawer ---------------- */
+function initDrawer(){
+  var dd = document.querySelector('#menu .dd'); if(!dd) return;
+  dd.addEventListener('click', function(e){
+    var it = e.target.closest('[data-sub]');
+    if(it){ var v = dd.querySelector('[data-view="' + it.dataset.sub + '"]'); if(v) v.classList.add('on'); return; }
+    if(e.target.closest('.dd__back')){ e.target.closest('.dd__view').classList.remove('on'); }
+  });
+}
+function resetDrawer(){ document.querySelectorAll('#menu .dd__view.sub').forEach(function(v){ v.classList.remove('on'); }); }
+
+/* ---------------- sliders ---------------- */
+function initSliders(){
+  document.querySelectorAll('.slider').forEach(function(s){
+    var tr = s.querySelector('.slider__track'), dots = s.querySelector('.dots');
+    if(!tr || !dots) return;
+    var n = tr.children.length;
+    dots.innerHTML = Array.from({length:n}).map(function(_,i){
+      return '<button type="button" class="' + (i===0?'on':'') + '" aria-label="Go to item ' + (i+1) + '"></button>'; }).join('');
+    dots.addEventListener('click', function(e){
+      var b = e.target.closest('button'); if(!b) return;
+      var i = Array.prototype.indexOf.call(dots.children, b);
+      tr.scrollTo({left: i*tr.clientWidth, behavior:'smooth'});
+    });
+    tr.addEventListener('scroll', function(){
+      var i = Math.round(tr.scrollLeft / tr.clientWidth);
+      Array.prototype.forEach.call(dots.children, function(d,j){ d.classList.toggle('on', j===i); });
+    });
+  });
+  document.querySelectorAll('[data-rail]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var rail = document.querySelector(btn.dataset.rail);
+      if(rail) rail.scrollBy({left: (+btn.dataset.dir) * rail.clientWidth * 0.8, behavior:'smooth'});
+    });
+  });
+}
+
+/* ---------------- before / after ---------------- */
+function initBA(){
+  document.querySelectorAll('.ba').forEach(function(ba){
+    var af = ba.querySelector('.ba__after'), hd = ba.querySelector('.ba__handle');
+    var afImg = af.querySelector('img');
+    function sizeAfter(){ afImg.style.width = ba.clientWidth + 'px'; }
+    sizeAfter();
+    window.addEventListener('resize', sizeAfter);
+    afImg.addEventListener('load', sizeAfter);
+    ba.querySelectorAll('img').forEach(function(i){ i.addEventListener('load', sizeAfter); });
+    var drag = false;
+    function set(x){
+      var r = ba.getBoundingClientRect();
+      var p = Math.min(100, Math.max(0, (x - r.left)/r.width*100));
+      af.style.width = p + '%'; hd.style.left = p + '%';
+    }
+    function down(e){ drag = true; set(e.touches?e.touches[0].clientX:e.clientX); }
+    function move(e){ if(!drag) return; set(e.touches?e.touches[0].clientX:e.clientX); }
+    function up(){ drag = false; }
+    ba.addEventListener('mousedown', down); ba.addEventListener('touchstart', down, {passive:true});
+    window.addEventListener('mousemove', move); window.addEventListener('touchmove', move, {passive:true});
+    window.addEventListener('mouseup', up); window.addEventListener('touchend', up);
+  });
+}
+
+/* ---------------- PDP ---------------- */
+function initPDP(){
+  var gal = document.querySelector('.gal');
+  if(gal){
+    var thumbs = gal.querySelector('.gal__thumbs'), rail = gal.querySelector('.gal__mrail');
+    var main = rail.querySelector('img');
+    function fit(){ if(thumbs && main && main.clientHeight) thumbs.style.maxHeight = main.clientHeight + 'px'; }
+    window.addEventListener('resize', fit); setTimeout(fit, 300);
+    if(main) main.addEventListener('load', fit);
+    if(thumbs) thumbs.addEventListener('click', function(e){
+      var b = e.target.closest('button'); if(!b) return;
+      var i = +b.dataset.i;
+      thumbs.querySelectorAll('button').forEach(function(x,j){ x.classList.toggle('on', j===i); });
+      rail.querySelectorAll('img').forEach(function(x,j){ x.classList.toggle('on', j===i); });
+      if(window.innerWidth < 1000) rail.scrollTo({left: i*rail.clientWidth, behavior:'smooth'});
+    });
+  }
+  /* subscription selector */
+  var subs = document.querySelector('.subs');
+  if(subs){
+    subs.addEventListener('change', function(){
+      subs.querySelectorAll('label').forEach(function(l){
+        l.classList.toggle('on', l.querySelector('input').checked);
+      });
+    });
+  }
+  /* qty stepper on PDP */
+  document.querySelectorAll('[data-pdp-qty]').forEach(function(w){
+    var out = w.querySelector('span');
+    w.addEventListener('click', function(e){
+      var b = e.target.closest('button'); if(!b) return;
+      var v = Math.max(1, (+out.textContent) + (+b.dataset.step));
+      out.textContent = v;
+    });
+  });
+  var atc = document.querySelector('[data-pdp-add]');
+  if(atc) atc.addEventListener('click', function(){
+    var h = atc.dataset.pdpAdd;
+    var p = (window.CB_PRODUCTS||[]).find(function(x){ return x.handle===h; });
+    if(!p) return;
+    var qEl = document.querySelector('[data-pdp-qty] span');
+    var q = qEl ? +qEl.textContent : 1;
+    var chosen = document.querySelector('.subs input:checked');
+    var sub = chosen && chosen.dataset.sub ? chosen.dataset.sub : '';
+    var price = chosen && chosen.dataset.price ? +chosen.dataset.price : p.price;
+    var optEl = document.querySelector('[data-pdp-opt]');
+    addToCart({handle:p.handle,title:p.title,price:price,img:p.img,
+               opt:optEl?optEl.textContent.trim():'', sub:sub, q:q});
+  });
+}
+
+/* ---------------- PLP ---------------- */
+function initPLP(){
+  var list = document.getElementById('plist'); if(!list) return;
+  var active = new Set(), sort = 'manual';
+  var chips = document.getElementById('achips');
+  function apply(){
+    var cards = Array.prototype.slice.call(list.children);
+    cards.forEach(function(c){
+      c.style.display = (!active.size || active.has(c.dataset.type)) ? '' : 'none';
+    });
+    var vis = cards.filter(function(c){ return c.style.display !== 'none'; });
+    if(sort !== 'manual'){
+      vis.sort(function(a,b){
+        if(sort==='price-asc') return (+a.dataset.price) - (+b.dataset.price);
+        if(sort==='price-desc') return (+b.dataset.price) - (+a.dataset.price);
+        if(sort==='az') return a.dataset.title.localeCompare(b.dataset.title);
+        if(sort==='za') return b.dataset.title.localeCompare(a.dataset.title);
+        return 0;
+      });
+      vis.forEach(function(c){ list.appendChild(c); });
+    }
+    chips.innerHTML = Array.from(active).map(function(t){
+      return '<button type="button" data-chip="' + t + '">' + t + ' <span>&times;</span></button>';
+    }).join('');
+  }
+  document.addEventListener('change', function(e){
+    var f = e.target.closest('[data-filter]'); if(!f) return;
+    if(f.checked) active.add(f.value); else active.delete(f.value);
+    apply();
+  });
+  document.addEventListener('click', function(e){
+    var c = e.target.closest('[data-chip]');
+    if(c){ active.delete(c.dataset.chip);
+      document.querySelectorAll('[data-filter]').forEach(function(i){ if(i.value===c.dataset.chip) i.checked=false; });
+      apply(); return; }
+    var s = e.target.closest('[data-sort]');
+    if(s){ sort = s.dataset.sort;
+      s.parentElement.querySelectorAll('[data-sort]').forEach(function(x){ x.classList.remove('on'); });
+      s.classList.add('on'); apply(); closeAll(); }
+  });
+  apply();
+}
+
+/* ---------------- predictive search ---------------- */
+function initSearch(){
+  var s = document.querySelector('.search'); if(!s) return;
+  var input = s.querySelector('input');
+  var sug = s.querySelector('.search__sug');
+  var tiles = s.querySelector('.search__tiles');
+  var all = window.CB_PRODUCTS || [];
+  function render(){
+    var q = input.value.trim().toLowerCase();
+    var hits = q ? all.filter(function(p){ return p.title.toLowerCase().indexOf(q) > -1; }) : all;
+    hits = hits.slice(0,4);
+    sug.innerHTML = q
+      ? '<p style="margin:0"><b>' + q + '</b></p>'
+      : ['retinol','eye cream','serum','moisturizer'].map(function(t){
+          return '<p style="margin:0">' + t + '</p>'; }).join('');
+    tiles.innerHTML = hits.map(function(p){
+      return '<a href="product.html"><img src="' + p.img + '" alt="" loading="lazy">' +
+        '<p class="pc__title" style="margin:14px 0 6px;text-align:center">' + p.title + '</p>' +
+        '<p class="price' + (p.cmp?'':' plain') + '" style="margin:0">' + money(p.price) + ' USD' +
+        (p.cmp ? '<s>' + money(p.cmp) + ' USD</s>' : '') + '</p></a>';
+    }).join('');
+  }
+  input.addEventListener('input', render);
+  render();
+  var btn = document.querySelector('[data-open-search]');
+  if(btn) btn.addEventListener('click', function(){
+    metrics();
+    var open = s.classList.contains('on');
+    closeAll();
+    if(!open){ s.classList.add('on'); document.body.style.overflow='hidden';
+      setTimeout(function(){ input.focus(); }, 120); }
+  });
+}
+
+/* ---------------- boot ---------------- */
+document.addEventListener('DOMContentLoaded', function(){
+  gateInit(); metrics(); syncDots(); renderCart();
+  initDrawer(); initSliders(); initBA(); initPDP(); initPLP(); initSearch();
+  window.addEventListener('resize', metrics);
+  window.addEventListener('load', metrics);
+
+  document.querySelectorAll('[data-open]').forEach(function(b){
+    b.addEventListener('click', function(e){
+      e.preventDefault();
+      var sel = b.dataset.open;
+      if(sel === '#menu') resetDrawer();
+      openPanel(sel);
+    });
+  });
+  document.querySelectorAll('[data-close]').forEach(function(b){ b.addEventListener('click', closeAll); });
+  var o = overlay(); if(o) o.addEventListener('click', closeAll);
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape'){ closeAll(); closeQuick(); } });
+});
+})();
+</script></body></html>
