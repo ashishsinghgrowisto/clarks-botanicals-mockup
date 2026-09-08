@@ -40,6 +40,7 @@ function openPanel(sel){
 }
 function closeAll(){
   document.querySelectorAll('.panel.on,.sheet.on,.search.on').forEach(function(x){ x.classList.remove('on'); });
+  if(window.cbCloseSATC) window.cbCloseSATC();
   var o = overlay(); if(o) o.classList.remove('on');
   document.body.style.overflow='';
 }
@@ -280,17 +281,17 @@ function initPDP(){
   });
 }
 
-/* ---------------- sticky add-to-cart panel (PDP) ---------------- */
+/* ---------------- sticky bar + add-to-cart panel (PDP) ---------------- */
 function initSATC(){
   var el = document.querySelector('.satc'); if(!el) return;
+  var bar = document.querySelector('.satcbar');
   var anchor = document.querySelector('[data-pdp-add]');
-  var handle = el.dataset.handle;
-  var p = (window.CB_PRODUCTS||[]).find(function(x){ return x.handle===handle; });
+  var p = (window.CB_PRODUCTS||[]).find(function(x){ return x.handle===el.dataset.handle; });
   if(!p) return;
 
   var FREE_SHIP = +(el.dataset.freeship || 75);
   var SUB_OFF   = +(el.dataset.suboff || 0.15);
-  var sel = {}, qty = 1, sub = true, dismissed = false;   /* subscription on by default */
+  var sel = {}, qty = 1, sub = true, mode = 'cart';
   (p.opts||[]).forEach(function(o){ sel[o.name] = o.values[0]; });
 
   var priceEl = el.querySelector('[data-satc-price]');
@@ -300,20 +301,21 @@ function initSATC(){
   var shipBar = el.querySelector('[data-satc-bar]');
   var subWrap = el.querySelector('.satc__sub');
   var subSel  = el.querySelector('[data-satc-freq]');
+  var barPrice = bar && bar.querySelector('[data-satcbar-price]');
+  var barOpt   = bar && bar.querySelector('[data-satcbar-opt]');
 
   function unit(){ return sub ? p.price * (1 - SUB_OFF) : p.price; }
   function total(){ return unit() * qty; }
+  function optText(){ return Object.keys(sel).map(function(k){ return sel[k]; }).join(' · '); }
 
   function paint(){
     priceEl.textContent = money(unit());
-    ctaEl.textContent = 'Add to cart  ' + money(total());
+    ctaEl.textContent = (mode === 'buy' ? 'Buy now  ' : 'Add to cart  ') + money(total());
     qtyEl.textContent = qty;
     var left = FREE_SHIP - total();
-    if(left > 0){
-      shipTxt.innerHTML = 'You&rsquo;re <b>' + money(left) + '</b> away from free shipping';
-    } else {
-      shipTxt.innerHTML = '<b>You&rsquo;ve unlocked free shipping</b>';
-    }
+    shipTxt.innerHTML = left > 0
+      ? 'You&rsquo;re <b>' + money(left) + '</b> away from free shipping'
+      : '<b>You&rsquo;ve unlocked free shipping</b>';
     shipBar.style.width = Math.min(100, total() / FREE_SHIP * 100) + '%';
     subWrap.classList.toggle('on', sub);
     if(subSel) subSel.disabled = !sub;
@@ -323,7 +325,30 @@ function initSATC(){
     el.querySelectorAll('[data-satc-selname]').forEach(function(sp){
       sp.textContent = sel[sp.dataset.satcSelname] + ' selected';
     });
+    if(barPrice) barPrice.textContent = money(unit());
+    if(barOpt) barOpt.textContent = optText();
   }
+
+  function openPanel_(m){
+    mode = m || 'cart';
+    paint();
+    el.classList.add('on');
+    if(bar) bar.classList.remove('on');
+    var o = document.querySelector('.ov'); if(o) o.classList.add('on');
+    document.body.style.overflow = 'hidden';
+  }
+  function closePanel(){
+    el.classList.remove('on');
+    var o = document.querySelector('.ov'); if(o) o.classList.remove('on');
+    document.body.style.overflow = '';
+    sync();
+  }
+  window.cbCloseSATC = closePanel;
+
+  if(bar) bar.addEventListener('click', function(e){
+    var t = e.target.closest('[data-satcbar-open]');
+    if(t) openPanel_(t.dataset.satcbarOpen);
+  });
 
   el.addEventListener('click', function(e){
     var o = e.target.closest('[data-satc-opt]');
@@ -331,33 +356,29 @@ function initSATC(){
     var q = e.target.closest('[data-satc-step]');
     if(q){ qty = Math.max(1, qty + (+q.dataset.satcStep)); paint(); return; }
     if(e.target.closest('[data-satc-sub]')){ sub = !sub; paint(); return; }
-    if(e.target.closest('[data-satc-close]')){
-      dismissed = true; el.classList.remove('on'); return;
-    }
+    if(e.target.closest('[data-satc-close]')){ closePanel(); return; }
     if(e.target.closest('[data-satc-cta]')){
-      var opt = Object.keys(sel).map(function(k){ return sel[k]; }).join(' / ');
       var freq = (sub && subSel) ? subSel.value : '';
+      closePanel();
       addToCart({handle:p.handle,title:p.title,price:unit(),img:p.img,
-                 opt:opt, sub:freq, q:qty});
-      dismissed = true; el.classList.remove('on');
+                 opt:optText(), sub:freq, q:qty});
     }
   });
 
-  /* visible only while the main Add to cart button is out of the viewport */
+  /* the bar rides on the main Add to cart button leaving the viewport */
   function sync(){
-    if(dismissed) return;
+    if(!bar || el.classList.contains('on')) return;
     var r = anchor ? anchor.getBoundingClientRect() : null;
     var visible = r && r.bottom > 0 && r.top < (window.innerHeight || 0);
-    el.classList.toggle('on', !visible);
+    bar.classList.toggle('on', !visible);
   }
-  if('IntersectionObserver' in window && anchor){
+  if('IntersectionObserver' in window && anchor && bar){
     new IntersectionObserver(function(en){
-      if(dismissed) return;
-      el.classList.toggle('on', !en[0].isIntersecting);
+      if(el.classList.contains('on')) return;
+      bar.classList.toggle('on', !en[0].isIntersecting);
     }, {threshold: 0}).observe(anchor);
-  } else {
-    window.addEventListener('scroll', sync, {passive:true});
   }
+  window.addEventListener('scroll', sync, {passive:true});
   window.addEventListener('resize', sync);
   paint(); sync();
 }

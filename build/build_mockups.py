@@ -498,7 +498,25 @@ def product():
       '<h2 class="h h2 sec__title">Recently viewed products</h2>'
       '<div class="grid grid--4">' + recent + '</div></div></section>'
 
-      + sticky_atc(p))
+      + sticky_bar(p) + sticky_atc(p))
+
+def sticky_bar(p):
+    """Slim sticky bar shown once the main Add to cart leaves the viewport.
+    Both buttons open the sticky panel."""
+    first = ' &middot; '.join(o['values'][0] for o in p['opts']) if p['opts'] else ''
+    return (
+      '<div class="satcbar" data-satcbar>'
+      '<div class="satcbar__in">'
+        '<img class="satcbar__img" src="' + p['imgs'][0] + '" alt="" loading="lazy">'
+        '<div class="satcbar__t"><p>' + p['title'] + '</p>'
+        '<span data-satcbar-opt>' + first + '</span></div>'
+        '<span class="satcbar__price" data-satcbar-price>' + money(p['price']) + '</span>'
+        '<div class="satcbar__act">'
+          '<button class="btn" type="button" data-satcbar-open="cart">Add to cart</button>'
+          '<button class="btn btn--ghost" type="button" data-satcbar-open="buy">Buy now</button>'
+        '</div>'
+      '</div></div>')
+
 
 def sticky_atc(p):
     """Sticky add-to-cart panel: appears once the main Add to cart scrolls out of view."""

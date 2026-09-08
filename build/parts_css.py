@@ -416,8 +416,33 @@ body.locked .site{visibility:hidden}
 .vidcard i b{width:34px;height:34px;border-radius:9999px;background:rgb(255 255 255/.9);
   display:grid;place-items:center}
 
+/* ---------- sticky bar (PDP trigger) ---------- */
+.satcbar{position:fixed;left:0;right:0;bottom:0;z-index:86;background:#fff;
+  border-top:1px solid var(--line);box-shadow:0 -10px 28px -20px rgb(0 0 0 / .45);
+  transform:translateY(100%);transition:transform .3s cubic-bezier(.22,.7,.3,1);
+  visibility:hidden}
+.satcbar.on{transform:none;visibility:visible}
+.satcbar__in{display:flex;align-items:center;gap:16px;padding:10px var(--wgut)}
+.satcbar__img{width:38px;height:38px;object-fit:cover;background:var(--soft);flex:0 0 auto}
+.satcbar__t{flex:1 1 auto;min-width:0}
+.satcbar__t p{margin:0;font-size:13px;font-weight:600;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis}
+.satcbar__t span{display:block;font-size:12px;color:var(--muted);white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis}
+.satcbar__price{flex:0 0 auto;font-size:15px;font-weight:600}
+.satcbar__act{flex:0 0 auto;display:flex;gap:10px}
+.satcbar__act .btn{min-height:44px;padding:12px 24px;font-size:12px}
+@media(max-width:760px){
+  .satcbar__in{flex-wrap:wrap;gap:10px 12px;padding:10px 16px calc(10px + env(safe-area-inset-bottom))}
+  .satcbar__t p{font-size:12px}
+  .satcbar__t span{font-size:11px}
+  .satcbar__price{font-size:14px}
+  .satcbar__act{width:100%;gap:8px}
+  .satcbar__act .btn{flex:1;padding:12px 8px;min-height:46px}
+}
+
 /* ---------- sticky add-to-cart panel (PDP) ---------- */
-.satc{position:fixed;z-index:88;background:#fff;border:1px solid var(--line);
+.satc{position:fixed;z-index:93;background:#fff;border:1px solid var(--line);
   box-shadow:0 18px 44px -18px rgb(0 0 0 / .3);
   left:50%;bottom:24px;transform:translateX(-50%) translateY(calc(100% + 40px));
   width:min(560px,calc(100vw - 40px));
