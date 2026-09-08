@@ -74,13 +74,15 @@ NAV = [
     ('FSA / HSA Eligibility','#'), ('Customer Service','#')]),
 ]
 
+# label, hero image handle, product types it covers, extra handles (products with no type set)
 CATEGORIES = [
-  ('Cleansers &amp; Exfoliators', '7-acid-daily-glow-peel'),
-  ('Eye Cream',                   'anti-puff-eye-cream'),
-  ('Moisturizers',                'smooth-marine-cream'),
-  ('Lip Treatment',               'travel-lip-duo'),
-  ('Treatments and Masks',        'deep-moisture-mask'),
-  ('Sets',                        'the-renewal-ritual'),
+  ('Cleansers &amp; Exfoliators', '7-acid-daily-glow-peel', ['Cleansers & Exfoliators'], []),
+  ('Eye Cream',                   'anti-puff-eye-cream',    ['Eye Moisturizers'],        []),
+  ('Moisturizers',                'smooth-marine-cream',    ['Moisturizers'],            []),
+  ('Lip Treatment',               'travel-lip-duo',         ['Lip Treatment'],           []),
+  ('Treatments and Masks',        'deep-moisture-mask',     ['Serums + Masks'],
+                                                            ['dna-42-clinicalift-serum']),
+  ('Sets',                        'the-renewal-ritual',     ['Sets'],  ['3-minute-reset']),
 ]
 
 PLP_ORDER = ['dna-42-clinicalift-serum','retinol-rescue-overnight-cream','deep-moisture-mask',
@@ -293,12 +295,23 @@ def product_card(p):
       '<a class="pc__title" href="product.html">' + p['title'] + '</a>'
       + price + '</div></article>')
 
+def category_from(types, extra):
+    """Lowest live price across the products in a category."""
+    prices = [p['price'] for p in P if p['type'] in types]
+    prices += [BY[h]['price'] for h in extra if h in BY]
+    return min(prices) if prices else None
+
 def category_row():
     """Shop-by-category tiles, directly under the hero banner."""
-    tiles = ''.join(
-      '<a class="cat" href="collection.html">'
-      '<img src="' + BY[h]['imgs'][0] + '" alt="' + H.unescape(label) + '" loading="lazy">'
-      '<p>' + label + '</p></a>' for label, h in CATEGORIES)
+    tiles = ''
+    for label, h, types, extra in CATEGORIES:
+        low = category_from(types, extra)
+        tag = ('<span class="cat__from">From ' + money(low) + '</span>') if low else ''
+        tiles += ('<a class="cat" href="collection.html">'
+                  '<span class="cat__fig">'
+                  '<img src="' + BY[h]['imgs'][0] + '" alt="' + H.unescape(label) + '" loading="lazy">'
+                  + tag + '</span>'
+                  '<p>' + label + '</p></a>')
     return ('<section class="sec sec--tight"><div class="wrap wrap--wide">'
             '<h2 class="h h2 sec__title" style="margin-bottom:30px">Shop by category</h2>'
             '<div class="cats">' + tiles + '</div></div></section>')

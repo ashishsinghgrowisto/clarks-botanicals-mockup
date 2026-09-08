@@ -420,8 +420,13 @@ body.locked .site{visibility:hidden}
 .cats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px 14px}
 @media(min-width:760px){.cats{grid-template-columns:repeat(6,minmax(0,1fr));gap:28px 22px}}
 .cat{display:block;text-align:center}
+.cat__fig{position:relative;display:block}
 .cat img{width:100%;aspect-ratio:1;object-fit:cover;background:var(--soft);transition:opacity .25s}
 .cat:hover img{opacity:.82}
+.cat__from{position:absolute;left:8px;bottom:8px;background:rgb(255 255 255 / .94);
+  color:var(--ink);font-size:10px;font-weight:600;text-transform:uppercase;
+  letter-spacing:.08em;padding:5px 9px;line-height:1.2;white-space:nowrap}
+@media(min-width:760px){.cat__from{left:10px;bottom:10px;font-size:11px;padding:6px 11px}}
 .cat p{margin:14px 0 0;font-size:11px;font-weight:600;text-transform:uppercase;
   letter-spacing:var(--h-ls);line-height:1.5}
 @media(min-width:760px){.cat p{font-size:12px;margin-top:16px}}
