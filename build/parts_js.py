@@ -290,7 +290,7 @@ function initSATC(){
 
   var FREE_SHIP = +(el.dataset.freeship || 75);
   var SUB_OFF   = +(el.dataset.suboff || 0.15);
-  var sel = {}, qty = 1, sub = false, dismissed = false;
+  var sel = {}, qty = 1, sub = true, dismissed = false;   /* subscription on by default */
   (p.opts||[]).forEach(function(o){ sel[o.name] = o.values[0]; });
 
   var priceEl = el.querySelector('[data-satc-price]');

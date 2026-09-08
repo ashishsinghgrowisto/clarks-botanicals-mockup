@@ -514,7 +514,6 @@ def sticky_atc(p):
     freqs = ['1 week', '2 weeks', '1 month', '2 months', '3 months']
     opts = ''.join('<option' + (' selected' if f == '1 month' else '') + '>Deliver every ' + f + '</option>'
                    for f in freqs)
-    badge = p['type'] or 'Regenerative serum'
     return (
       '<aside class="satc" data-handle="' + p['handle'] + '" data-freeship="' + str(FREE_SHIP) +
       '" data-suboff="' + str(SUB_DISCOUNT) + '" aria-label="Add to cart">'
@@ -523,7 +522,6 @@ def sticky_atc(p):
       '<div class="satc__in">'
         '<div class="satc__hd"><img src="' + p['imgs'][0] + '" alt="" loading="lazy">'
         '<div><h3 class="h">' + p['title'] + '</h3>'
-        '<span class="satc__badge">' + badge + '</span>'
         '<p class="satc__rate"><span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>'
         '4.9 (6 reviews)</p>'
         '<p class="satc__price" data-satc-price></p></div></div>'
@@ -535,13 +533,13 @@ def sticky_atc(p):
         '<button type="button" data-satc-step="1" aria-label="Increase quantity">+</button></span></div>'
         '<div class="satc__ship"><p data-satc-ship></p>'
         '<span class="satc__bar"><i data-satc-bar></i></span></div>'
-        '<div class="satc__sub">'
-          '<label><span class="satc__sw" data-satc-sub role="switch"></span>'
-          '<span>Subscribe &amp; save ' + str(int(SUB_DISCOUNT * 100)) + '%</span></label>'
-          '<select data-satc-freq aria-label="Delivery frequency" disabled>' + opts + '</select>'
-        '</div>'
       '</div>'
       '<div class="satc__foot">'
+        '<div class="satc__sub on">'
+          '<label><span class="satc__sw" data-satc-sub role="switch" aria-checked="true"></span>'
+          '<span><b>Subscribed.</b> Saving ' + str(int(SUB_DISCOUNT * 100)) + '%</span></label>'
+          '<select data-satc-freq aria-label="Delivery frequency">' + opts + '</select>'
+        '</div>'
         '<button class="satc__cta" type="button" data-satc-cta>Add to cart</button>'
       '</div></aside>')
 
