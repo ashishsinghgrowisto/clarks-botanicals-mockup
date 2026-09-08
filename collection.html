@@ -526,8 +526,8 @@ body.locked .site{visibility:hidden}
   .satc__cta{padding:15px}
 }
 @media (max-height:580px){
-  .satc__hd{grid-template-columns:0 1fr;gap:0}
-  .satc__hd img{display:none}
+  .satc__hd{grid-template-columns:46px 1fr;gap:11px;margin-bottom:10px}
+  .satc__hd img{width:46px}
   .satc__ship{display:none}
   .satc__in{padding:13px 18px 2px}
   .satc__grp,.satc__qty,.satc__sub{margin-bottom:9px}
