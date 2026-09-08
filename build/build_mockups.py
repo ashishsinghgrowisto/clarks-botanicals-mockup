@@ -74,6 +74,15 @@ NAV = [
     ('FSA / HSA Eligibility','#'), ('Customer Service','#')]),
 ]
 
+CATEGORIES = [
+  ('Cleansers &amp; Exfoliators', '7-acid-daily-glow-peel'),
+  ('Eye Cream',                   'anti-puff-eye-cream'),
+  ('Moisturizers',                'smooth-marine-cream'),
+  ('Lip Treatment',               'travel-lip-duo'),
+  ('Treatments and Masks',        'deep-moisture-mask'),
+  ('Sets',                        'the-renewal-ritual'),
+]
+
 PLP_ORDER = ['dna-42-clinicalift-serum','retinol-rescue-overnight-cream','deep-moisture-mask',
              'smooth-marine-cream','jasmine-vital-cream','anti-puff-eye-cream',
              '7-acid-daily-glow-peel','pdrn-retinol-liquid-facelift-duo','power-couple',
@@ -284,6 +293,17 @@ def product_card(p):
       '<a class="pc__title" href="product.html">' + p['title'] + '</a>'
       + price + '</div></article>')
 
+def category_row():
+    """Shop-by-category tiles, directly under the hero banner."""
+    tiles = ''.join(
+      '<a class="cat" href="collection.html">'
+      '<img src="' + BY[h]['imgs'][0] + '" alt="' + H.unescape(label) + '" loading="lazy">'
+      '<p>' + label + '</p></a>' for label, h in CATEGORIES)
+    return ('<section class="sec sec--tight"><div class="wrap wrap--wide">'
+            '<h2 class="h h2 sec__title" style="margin-bottom:30px">Shop by category</h2>'
+            '<div class="cats">' + tiles + '</div></div></section>')
+
+
 def press_band(cls):
     inner = ''.join('<div><blockquote>' + q + '</blockquote>'
                     '<img src="' + l + '" alt="" loading="lazy"></div>' for q, l in PRESS)
@@ -307,6 +327,8 @@ def home():
       '<section class="bleed"><a href="collection.html">'
       '<img src="' + HERO + '" alt="The Sale Edit &ndash; 25% off select formulas" fetchpriority="high"></a>'
       '<span class="scrollcue">' + IC['arrowDown'] + '</span></section>'
+
+      + category_row() +
 
       '<section class="sec sec--tight"><div class="wrap wrap--wide">'
       '<p class="intro">The first skincare brand built on regenerative coastal biotechnology, '

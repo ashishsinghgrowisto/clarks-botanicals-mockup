@@ -416,6 +416,16 @@ body.locked .site{visibility:hidden}
 .vidcard i b{width:34px;height:34px;border-radius:9999px;background:rgb(255 255 255/.9);
   display:grid;place-items:center}
 
+/* ---------- shop by category ---------- */
+.cats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px 14px}
+@media(min-width:760px){.cats{grid-template-columns:repeat(6,minmax(0,1fr));gap:28px 22px}}
+.cat{display:block;text-align:center}
+.cat img{width:100%;aspect-ratio:1;object-fit:cover;background:var(--soft);transition:opacity .25s}
+.cat:hover img{opacity:.82}
+.cat p{margin:14px 0 0;font-size:11px;font-weight:600;text-transform:uppercase;
+  letter-spacing:var(--h-ls);line-height:1.5}
+@media(min-width:760px){.cat p{font-size:12px;margin-top:16px}}
+
 /* ---------- sticky bar (PDP trigger) ---------- */
 .satcbar{position:fixed;left:0;right:0;bottom:0;z-index:86;background:#fff;
   border-top:1px solid var(--line);box-shadow:0 -10px 28px -20px rgb(0 0 0 / .45);
