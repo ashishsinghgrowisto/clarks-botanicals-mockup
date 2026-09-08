@@ -130,9 +130,6 @@ def money(v):
 def img_for(p, i=0):
     return p['imgs'][i] if len(p['imgs']) > i else p['imgs'][0]
 
-def has_from(p):
-    return sum(len(o['values']) for o in p['opts']) > 1 if p['opts'] else False
-
 # ---------------------------------------------------------------- chrome
 def gate():
     return (
@@ -211,13 +208,6 @@ def cart_drawer():
       '<button data-close aria-label="Close">' + IC['close'] + '</button></div>'
       '<div class="panel__bd"></div><div class="panel__ft"></div></aside>')
 
-def variant_modal():
-    return (
-      '<div class="modal" id="vmodal"><div class="modal__bg"></div>'
-      '<div class="modal__card"><button class="modal__close" aria-label="Close">' + IC['close'] + '</button>'
-      '<div class="modal__img"><img alt=""></div>'
-      '<div class="modal__body"></div></div></div>')
-
 def footer():
     svc = ['Search','About Us','Customer Service','Where to Find Us','Corporate Gifting','Contact Us']
     hlp = ['Terms &amp; Conditions','Shipping and Returns','FAQs','Privacy Policy','Accessibility Statement']
@@ -263,7 +253,7 @@ def page(title, body):
       '<style>' + CSS + '</style></head><body class="locked">'
       + gate() +
       '<div class="site">' + announce() + header() + '<main>' + body + '</main>' + footer() + '</div>'
-      + mobile_drawer() + search_panel() + cart_drawer() + variant_modal() +
+      + mobile_drawer() + search_panel() + cart_drawer() + variant_panel() +
       '<div class="ov"></div>'
       '<script>window.CB_PRODUCTS=' + products_js + ';</script>'
       '<script>' + JS.replace('__PW__', PASSWORD) + '</script>'
@@ -277,7 +267,7 @@ def product_card(p):
     elif p['cmp']:
         badge = '<span class="badge">Save ' + str(round((1 - p['price'] / p['cmp']) * 100)) + '%</span>'
     if p['cmp']:
-        price = ('<div class="price"><b>' + ('From ' if has_from(p) else '') + money(p['price']) +
+        price = ('<div class="price"><b>' + money(p['price']) +
                  ' USD</b><s>' + money(p['cmp']) + ' USD</s></div>')
     else:
         price = '<div class="price plain"><b>' + money(p['price']) + ' USD</b></div>'
@@ -289,11 +279,12 @@ def product_card(p):
       '<a href="product.html" aria-label="' + title + '">'
       '<img src="' + p['imgs'][0] + '" alt="' + title + '" loading="lazy">'
       '<img class="sec" src="' + img_for(p, 1) + '" alt="" loading="lazy"></a>'
-      '<button class="btn btn--ghost pc__quick" type="button" data-quick="' + p['handle'] + '">Quick add</button>'
       '</div>'
       '<div class="pc__info">'
       '<a class="pc__title" href="product.html">' + p['title'] + '</a>'
-      + price + '</div></article>')
+      + price +
+      '<button class="btn pc__add" type="button" data-quick="' + p['handle'] + '">Add to cart</button>'
+      '</div></article>')
 
 def category_from(types, extra):
     """Lowest live price across the products in a category."""
@@ -533,14 +524,14 @@ def product():
       '<h2 class="h h2 sec__title">Recently viewed products</h2>'
       '<div class="grid grid--4">' + recent + '</div></div></section>'
 
-      + sticky_bar(p) + sticky_atc(p))
+      + sticky_bar(p))
 
 def sticky_bar(p):
     """Slim sticky bar shown once the main Add to cart leaves the viewport.
     Both buttons open the sticky panel."""
     first = ' &middot; '.join(o['values'][0] for o in p['opts']) if p['opts'] else ''
     return (
-      '<div class="satcbar" data-satcbar>'
+      '<div class="satcbar" data-satcbar data-handle="' + p['handle'] + '">'
       '<div class="satcbar__in">'
         '<img class="satcbar__img" src="' + p['imgs'][0] + '" alt="" loading="lazy">'
         '<div class="satcbar__t"><p>' + p['title'] + '</p>'
@@ -553,48 +544,12 @@ def sticky_bar(p):
       '</div></div>')
 
 
-def sticky_atc(p):
-    """Sticky add-to-cart panel: appears once the main Add to cart scrolls out of view."""
-    groups = ''
-    for o in p['opts']:
-        btns = ''.join(
-          '<button type="button" data-satc-opt="' + o['name'] + '" data-satc-val="' + v + '"'
-          + (' class="on"' if i == 0 else '') + '>' + v + '</button>'
-          for i, v in enumerate(o['values']))
-        groups += ('<div class="satc__grp"><p class="satc__lbl"><b>' + o['name'] + '</b>'
-                   '<span data-satc-selname="' + o['name'] + '"></span></p>'
-                   '<div class="satc__opts">' + btns + '</div></div>')
-    freqs = ['1 week', '2 weeks', '1 month', '2 months', '3 months']
-    opts = ''.join('<option' + (' selected' if f == '1 month' else '') + '>Deliver every ' + f + '</option>'
-                   for f in freqs)
-    return (
-      '<aside class="satc" data-handle="' + p['handle'] + '" data-freeship="' + str(FREE_SHIP) +
-      '" data-suboff="' + str(SUB_DISCOUNT) + '" aria-label="Add to cart">'
-      '<button class="satc__close" type="button" data-satc-close aria-label="Dismiss">'
-      + IC['close'] + '</button>'
-      '<div class="satc__in">'
-        '<div class="satc__hd"><img src="' + p['imgs'][0] + '" alt="" loading="lazy">'
-        '<div><h3 class="h">' + p['title'] + '</h3>'
-        '<p class="satc__rate"><span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>'
-        '4.9 (6 reviews)</p>'
-        '<p class="satc__price" data-satc-price></p></div></div>'
-        + groups +
-        '<div class="satc__qty"><p class="satc__lbl" style="margin:0"><b>Quantity</b></p>'
-        '<span class="qty" data-satc-qty>'
-        '<button type="button" data-satc-step="-1" aria-label="Decrease quantity">&minus;</button>'
-        '<span>1</span>'
-        '<button type="button" data-satc-step="1" aria-label="Increase quantity">+</button></span></div>'
-        '<div class="satc__ship"><p data-satc-ship></p>'
-        '<span class="satc__bar"><i data-satc-bar></i></span></div>'
-      '</div>'
-      '<div class="satc__foot">'
-        '<div class="satc__sub on">'
-          '<label><span class="satc__sw" data-satc-sub role="switch" aria-checked="true"></span>'
-          '<span><b>Subscribed.</b> Saving ' + str(int(SUB_DISCOUNT * 100)) + '%</span></label>'
-          '<select data-satc-freq aria-label="Delivery frequency">' + opts + '</select>'
-        '</div>'
-        '<button class="satc__cta" type="button" data-satc-cta>Add to cart</button>'
-      '</div></aside>')
+def variant_panel():
+    """Shared variant-selection panel. Contents are rendered by JS for whichever
+    product was clicked, so every card and the PDP sticky bar reuse one modal."""
+    return ('<aside class="satc" id="vpanel" data-freeship="' + str(FREE_SHIP) +
+            '" data-suboff="' + str(SUB_DISCOUNT) + '" data-subword="' +
+            str(int(SUB_DISCOUNT * 100)) + '" aria-label="Choose options"></aside>')
 
 
 def hub():

@@ -179,10 +179,7 @@ body.locked .site{visibility:hidden}
 .price.plain{color:var(--muted)}
 .price s{color:var(--muted);font-weight:600;white-space:nowrap}
 .price b{font-weight:600;white-space:nowrap}
-.pc__quick{position:absolute;left:14px;right:14px;bottom:14px;z-index:3;
-  padding:13px 12px;font-size:12px;min-height:auto;background:#fff;border-color:#fff;color:#000;
-  opacity:0;transform:translateY(6px);transition:.2s;pointer-events:none}
-@media(min-width:1000px){.pc:hover .pc__quick{opacity:1;transform:none;pointer-events:auto}}
+.pc__add{width:100%;margin-top:6px;padding:13px 14px;font-size:12px;min-height:46px}
 
 /* ---------- sections ---------- */
 .sec{padding-block:clamp(40px,5vw,74px)}
@@ -677,55 +674,129 @@ document.addEventListener('click', function(e){
   }
 });
 
-/* ---------------- variant modal ---------------- */
-var MODAL_SEL = {};
-function openQuick(handle){
-  var p = (window.CB_PRODUCTS||[]).find(function(x){ return x.handle===handle; });
-  if(!p) return;
-  var m = document.getElementById('vmodal'); if(!m) return;
-  MODAL_SEL = {}; (p.opts||[]).forEach(function(o){ MODAL_SEL[o.name] = o.values[0]; });
-  m.querySelector('.modal__img img').src = p.img;
-  m.querySelector('.modal__body').innerHTML =
-    '<p class="h h5" style="margin:0">' + p.title + '</p>' +
-    '<div style="display:flex;gap:12px;align-items:center;margin-top:12px">' +
-      '<span class="stars">' + '★★★★★' + '</span>' +
-      '<span class="xxs sub">(' + (p.rev||6) + ')</span>' +
-      '<span class="price' + (p.cmp ? '' : ' plain') + '" style="justify-content:flex-start">' +
-        money(p.price) + ' USD' + (p.cmp ? '<s>' + money(p.cmp) + ' USD</s>' : '') + '</span>' +
-    '</div>' +
-    (p.opts||[]).map(function(o){
-      return '<div class="opt"><p>' + o.name + '</p><div class="opt__row">' + o.values.map(function(v,i){
-        return '<button type="button" data-opt="' + o.name + '" data-val="' + v + '" class="' + (i===0?'on':'') + '">' + v + '</button>';
+/* ---------------- shared variant panel ---------------- */
+/* One panel serves every entry point: product cards, the cart's Most loved
+   row, and the PDP sticky bar. Contents are built per product on open. */
+var VP = { handle:null, sel:{}, qty:1, sub:true, mode:'cart' };
+
+function vp(){ return document.getElementById('vpanel'); }
+function vpProduct(){ return (window.CB_PRODUCTS||[]).find(function(x){ return x.handle===VP.handle; }); }
+function vpFreeShip(){ var e=vp(); return e ? +(e.dataset.freeship||75) : 75; }
+function vpSubOff(){ var e=vp(); return e ? +(e.dataset.suboff||0.15) : 0.15; }
+function vpSubWord(){ var e=vp(); return e ? (e.dataset.subword||'15') : '15'; }
+
+function vpUnit(){ var p=vpProduct(); if(!p) return 0;
+  return VP.sub ? p.price * (1 - vpSubOff()) : p.price; }
+function vpTotal(){ return vpUnit() * VP.qty; }
+function vpOptText(){ return Object.keys(VP.sel).map(function(k){ return VP.sel[k]; }).join(' · '); }
+
+function vpRender(){
+  var el = vp(), p = vpProduct(); if(!el || !p) return;
+  var groups = (p.opts||[]).map(function(o){
+    return '<div class="satc__grp"><p class="satc__lbl"><b>' + o.name + '</b>' +
+      '<span data-satc-selname="' + o.name + '"></span></p><div class="satc__opts">' +
+      o.values.map(function(v){
+        return '<button type="button" data-satc-opt="' + o.name + '" data-satc-val="' + v + '">' + v + '</button>';
       }).join('') + '</div></div>';
-    }).join('') +
-    '<div style="margin-top:26px;display:grid;gap:14px;justify-items:start">' +
-      '<button class="btn btn--full" type="button" data-madd="' + p.handle + '">Add to cart</button>' +
-      '<a class="ulink" href="product.html">View full product details</a>' +
+  }).join('');
+  var freqs = ['1 week','2 weeks','1 month','2 months','3 months'];
+  var opts = freqs.map(function(f){
+    return '<option' + (f==='1 month' ? ' selected' : '') + '>Deliver every ' + f + '</option>'; }).join('');
+  el.innerHTML =
+    '<button class="satc__close" type="button" data-satc-close aria-label="Close">' +
+      '<svg width="16" height="16" fill="none" viewBox="0 0 16 16">' +
+      '<path d="m1 1 14 14M1 15 15 1" stroke="currentColor" stroke-width="1.6"/></svg></button>' +
+    '<div class="satc__in">' +
+      '<div class="satc__hd"><img src="' + p.img + '" alt="">' +
+        '<div><h3 class="h">' + p.title + '</h3>' +
+        '<p class="satc__rate"><span class="stars">★★★★★</span>4.9 (' + (p.rev||6) + ' reviews)</p>' +
+        '<p class="satc__price" data-satc-price></p></div></div>' +
+      groups +
+      '<div class="satc__qty"><p class="satc__lbl" style="margin:0"><b>Quantity</b></p>' +
+        '<span class="qty" data-satc-qty>' +
+        '<button type="button" data-satc-step="-1" aria-label="Decrease quantity">&minus;</button>' +
+        '<span>1</span>' +
+        '<button type="button" data-satc-step="1" aria-label="Increase quantity">+</button></span></div>' +
+      '<div class="satc__ship"><p data-satc-ship></p>' +
+        '<span class="satc__bar"><i data-satc-bar></i></span></div>' +
+    '</div>' +
+    '<div class="satc__foot">' +
+      '<div class="satc__sub">' +
+        '<label><span class="satc__sw" data-satc-sub role="switch"></span>' +
+        '<span><b>Subscribed.</b> Saving ' + vpSubWord() + '%</span></label>' +
+        '<select data-satc-freq aria-label="Delivery frequency">' + opts + '</select>' +
+      '</div>' +
+      '<button class="satc__cta" type="button" data-satc-cta>Add to cart</button>' +
     '</div>';
-  m.classList.add('on'); document.body.style.overflow='hidden';
+  vpPaint();
 }
-function closeQuick(){
-  var m=document.getElementById('vmodal'); if(m) m.classList.remove('on');
-  if(!document.querySelector('.panel.on,.sheet.on')) document.body.style.overflow='';
+
+function vpPaint(){
+  var el = vp(), p = vpProduct(); if(!el || !p) return;
+  var price = el.querySelector('[data-satc-price]'), cta = el.querySelector('[data-satc-cta]');
+  if(!price || !cta) return;
+  price.textContent = money(vpUnit());
+  cta.textContent = (VP.mode === 'buy' ? 'Buy now  ' : 'Add to cart  ') + money(vpTotal());
+  el.querySelector('[data-satc-qty] span').textContent = VP.qty;
+  var left = vpFreeShip() - vpTotal();
+  el.querySelector('[data-satc-ship]').innerHTML = left > 0
+    ? 'You&rsquo;re <b>' + money(left) + '</b> away from free shipping'
+    : '<b>You&rsquo;ve unlocked free shipping</b>';
+  el.querySelector('[data-satc-bar]').style.width =
+    Math.min(100, vpTotal() / vpFreeShip() * 100) + '%';
+  var subWrap = el.querySelector('.satc__sub'), subSel = el.querySelector('[data-satc-freq]');
+  subWrap.classList.toggle('on', VP.sub);
+  if(subSel) subSel.disabled = !VP.sub;
+  el.querySelectorAll('[data-satc-opt]').forEach(function(b){
+    b.classList.toggle('on', VP.sel[b.dataset.satcOpt] === b.dataset.satcVal);
+  });
+  el.querySelectorAll('[data-satc-selname]').forEach(function(sp){
+    sp.textContent = VP.sel[sp.dataset.satcSelname] + ' selected';
+  });
+  window.VPSTATE = { handle: VP.handle, price: money(vpUnit()), opt: vpOptText() };
+  if(window.cbSyncBar) window.cbSyncBar();
 }
+
+function openVariant(handle, mode){
+  var p = (window.CB_PRODUCTS||[]).find(function(x){ return x.handle===handle; });
+  var el = vp(); if(!p || !el) return;
+  VP = { handle:handle, sel:{}, qty:1, sub:true, mode:mode||'cart' };
+  (p.opts||[]).forEach(function(o){ VP.sel[o.name] = o.values[0]; });
+  vpRender();
+  el.classList.add('on');
+  var bar = document.querySelector('.satcbar'); if(bar) bar.classList.remove('on');
+  var o = overlay(); if(o) o.classList.add('on');
+  document.body.style.overflow = 'hidden';
+}
+window.openVariant = openVariant;
+
+function closeVariant(){
+  var el = vp(); if(el) el.classList.remove('on');
+  var o = overlay(); if(o) o.classList.remove('on');
+  document.body.style.overflow = '';
+  if(window.cbSyncBar) window.cbSyncBar();
+}
+window.cbCloseSATC = closeVariant;
 
 document.addEventListener('click', function(e){
   var q = e.target.closest('[data-quick]');
-  if(q){ e.preventDefault(); openQuick(q.dataset.quick); return; }
-  var o = e.target.closest('[data-opt]');
-  if(o){
-    MODAL_SEL[o.dataset.opt] = o.dataset.val;
-    o.parentElement.querySelectorAll('button').forEach(function(x){ x.classList.remove('on'); });
-    o.classList.add('on'); return;
+  if(q){ e.preventDefault(); openVariant(q.dataset.quick, 'cart'); return; }
+  var el = vp(); if(!el || !el.contains(e.target)) return;
+  var o = e.target.closest('[data-satc-opt]');
+  if(o){ VP.sel[o.dataset.satcOpt] = o.dataset.satcVal; vpPaint(); return; }
+  var st = e.target.closest('[data-satc-step]');
+  if(st){ VP.qty = Math.max(1, VP.qty + (+st.dataset.satcStep)); vpPaint(); return; }
+  if(e.target.closest('[data-satc-sub]')){ VP.sub = !VP.sub; vpPaint(); return; }
+  if(e.target.closest('[data-satc-close]')){ closeVariant(); return; }
+  if(e.target.closest('[data-satc-cta]')){
+    var p = vpProduct(); if(!p) return;
+    var sel = el.querySelector('[data-satc-freq]');
+    var freq = (VP.sub && sel) ? sel.value : '';
+    var item = { handle:p.handle, title:p.title, price:vpUnit(), img:p.img,
+                 opt:vpOptText(), sub:freq, q:VP.qty };
+    closeVariant();
+    addToCart(item);
   }
-  var a = e.target.closest('[data-madd]');
-  if(a){
-    var p = (window.CB_PRODUCTS||[]).find(function(x){ return x.handle===a.dataset.madd; });
-    var opt = Object.keys(MODAL_SEL).map(function(k){ return MODAL_SEL[k]; }).join(' / ');
-    closeQuick(); addToCart({handle:p.handle,title:p.title,price:p.price,img:p.img,opt:opt,q:1});
-    return;
-  }
-  if(e.target.closest('.modal__bg') || e.target.closest('.modal__close')) closeQuick();
 });
 
 /* ---------------- mobile drawer ---------------- */
@@ -841,106 +912,41 @@ function initPDP(){
   });
 }
 
-/* ---------------- sticky bar + add-to-cart panel (PDP) ---------------- */
+/* ---------------- PDP sticky bar ---------------- */
 function initSATC(){
-  var el = document.querySelector('.satc'); if(!el) return;
-  var bar = document.querySelector('.satcbar');
+  var bar = document.querySelector('.satcbar'); if(!bar) return;
   var anchor = document.querySelector('[data-pdp-add]');
-  var p = (window.CB_PRODUCTS||[]).find(function(x){ return x.handle===el.dataset.handle; });
+  var handle = bar.dataset.handle;
+  var p = (window.CB_PRODUCTS||[]).find(function(x){ return x.handle===handle; });
   if(!p) return;
+  var barPrice = bar.querySelector('[data-satcbar-price]');
+  var barOpt   = bar.querySelector('[data-satcbar-opt]');
 
-  var FREE_SHIP = +(el.dataset.freeship || 75);
-  var SUB_OFF   = +(el.dataset.suboff || 0.15);
-  var sel = {}, qty = 1, sub = true, mode = 'cart';
-  (p.opts||[]).forEach(function(o){ sel[o.name] = o.values[0]; });
-
-  var priceEl = el.querySelector('[data-satc-price]');
-  var ctaEl   = el.querySelector('[data-satc-cta]');
-  var qtyEl   = el.querySelector('[data-satc-qty] span');
-  var shipTxt = el.querySelector('[data-satc-ship]');
-  var shipBar = el.querySelector('[data-satc-bar]');
-  var subWrap = el.querySelector('.satc__sub');
-  var subSel  = el.querySelector('[data-satc-freq]');
-  var barPrice = bar && bar.querySelector('[data-satcbar-price]');
-  var barOpt   = bar && bar.querySelector('[data-satcbar-opt]');
-
-  function unit(){ return sub ? p.price * (1 - SUB_OFF) : p.price; }
-  function total(){ return unit() * qty; }
-  function optText(){ return Object.keys(sel).map(function(k){ return sel[k]; }).join(' · '); }
-
-  function paint(){
-    priceEl.textContent = money(unit());
-    ctaEl.textContent = (mode === 'buy' ? 'Buy now  ' : 'Add to cart  ') + money(total());
-    qtyEl.textContent = qty;
-    var left = FREE_SHIP - total();
-    shipTxt.innerHTML = left > 0
-      ? 'You&rsquo;re <b>' + money(left) + '</b> away from free shipping'
-      : '<b>You&rsquo;ve unlocked free shipping</b>';
-    shipBar.style.width = Math.min(100, total() / FREE_SHIP * 100) + '%';
-    subWrap.classList.toggle('on', sub);
-    if(subSel) subSel.disabled = !sub;
-    el.querySelectorAll('[data-satc-opt]').forEach(function(b){
-      b.classList.toggle('on', sel[b.dataset.satcOpt] === b.dataset.satcVal);
-    });
-    el.querySelectorAll('[data-satc-selname]').forEach(function(sp){
-      sp.textContent = sel[sp.dataset.satcSelname] + ' selected';
-    });
-    if(barPrice) barPrice.textContent = money(unit());
-    if(barOpt) barOpt.textContent = optText();
-  }
-
-  function openPanel_(m){
-    mode = m || 'cart';
-    paint();
-    el.classList.add('on');
-    if(bar) bar.classList.remove('on');
-    var o = document.querySelector('.ov'); if(o) o.classList.add('on');
-    document.body.style.overflow = 'hidden';
-  }
-  function closePanel(){
-    el.classList.remove('on');
-    var o = document.querySelector('.ov'); if(o) o.classList.remove('on');
-    document.body.style.overflow = '';
-    sync();
-  }
-  window.cbCloseSATC = closePanel;
-
-  if(bar) bar.addEventListener('click', function(e){
+  bar.addEventListener('click', function(e){
     var t = e.target.closest('[data-satcbar-open]');
-    if(t) openPanel_(t.dataset.satcbarOpen);
+    if(t) openVariant(handle, t.dataset.satcbarOpen);
   });
 
-  el.addEventListener('click', function(e){
-    var o = e.target.closest('[data-satc-opt]');
-    if(o){ sel[o.dataset.satcOpt] = o.dataset.satcVal; paint(); return; }
-    var q = e.target.closest('[data-satc-step]');
-    if(q){ qty = Math.max(1, qty + (+q.dataset.satcStep)); paint(); return; }
-    if(e.target.closest('[data-satc-sub]')){ sub = !sub; paint(); return; }
-    if(e.target.closest('[data-satc-close]')){ closePanel(); return; }
-    if(e.target.closest('[data-satc-cta]')){
-      var freq = (sub && subSel) ? subSel.value : '';
-      closePanel();
-      addToCart({handle:p.handle,title:p.title,price:unit(),img:p.img,
-                 opt:optText(), sub:freq, q:qty});
-    }
-  });
-
-  /* the bar rides on the main Add to cart button leaving the viewport */
   function sync(){
-    if(!bar || el.classList.contains('on')) return;
+    var panel = document.getElementById('vpanel');
+    if(panel && panel.classList.contains('on')){ bar.classList.remove('on'); return; }
+    /* mirror whatever the panel currently holds for this product */
+    if(barPrice && window.VPSTATE && window.VPSTATE.handle === handle){
+      barPrice.textContent = window.VPSTATE.price;
+      if(barOpt) barOpt.textContent = window.VPSTATE.opt;
+    }
     var r = anchor ? anchor.getBoundingClientRect() : null;
     var visible = r && r.bottom > 0 && r.top < (window.innerHeight || 0);
     bar.classList.toggle('on', !visible);
   }
-  if('IntersectionObserver' in window && anchor && bar){
-    new IntersectionObserver(function(en){
-      if(el.classList.contains('on')) return;
-      bar.classList.toggle('on', !en[0].isIntersecting);
-    }, {threshold: 0}).observe(anchor);
+  window.cbSyncBar = sync;
+
+  if('IntersectionObserver' in window && anchor){
+    new IntersectionObserver(function(){ sync(); }, {threshold:0}).observe(anchor);
   }
   window.addEventListener('scroll', sync, {passive:true});
   window.addEventListener('resize', sync);
-  paint(); sync();
+  sync();
 }
 
 /* ---------------- PLP ---------------- */
@@ -1037,7 +1043,7 @@ document.addEventListener('DOMContentLoaded', function(){
   });
   document.querySelectorAll('[data-close]').forEach(function(b){ b.addEventListener('click', closeAll); });
   var o = overlay(); if(o) o.addEventListener('click', closeAll);
-  document.addEventListener('keydown', function(e){ if(e.key==='Escape'){ closeAll(); closeQuick(); } });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape'){ closeAll(); } });
 });
 })();
 </script></body></html>

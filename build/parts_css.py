@@ -179,10 +179,7 @@ body.locked .site{visibility:hidden}
 .price.plain{color:var(--muted)}
 .price s{color:var(--muted);font-weight:600;white-space:nowrap}
 .price b{font-weight:600;white-space:nowrap}
-.pc__quick{position:absolute;left:14px;right:14px;bottom:14px;z-index:3;
-  padding:13px 12px;font-size:12px;min-height:auto;background:#fff;border-color:#fff;color:#000;
-  opacity:0;transform:translateY(6px);transition:.2s;pointer-events:none}
-@media(min-width:1000px){.pc:hover .pc__quick{opacity:1;transform:none;pointer-events:auto}}
+.pc__add{width:100%;margin-top:6px;padding:13px 14px;font-size:12px;min-height:46px}
 
 /* ---------- sections ---------- */
 .sec{padding-block:clamp(40px,5vw,74px)}
