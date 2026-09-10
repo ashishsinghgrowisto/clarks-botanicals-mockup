@@ -75,7 +75,7 @@ function mostLoved(){
   return '<div class="cart__div ml"><h4>Most loved</h4><div class="ml__row">' +
     '<img src="' + p.img + '" alt="">' +
     '<div><p class="ci__t">' + p.title + '</p>' +
-    '<p class="ci__p">' + money(p.price) + ' USD</p>' +
+    '<p class="ci__p">' + money(p.price) + '</p>' +
     '<p style="margin-top:8px"><button class="tlink" type="button" data-quick="' + p.handle + '">Add to cart</button></p>' +
     '</div></div></div>';
 }
@@ -92,7 +92,7 @@ function renderCart(){
     return '<div class="ci">' +
       '<img src="' + c.img + '" alt="">' +
       '<div><div class="ci__t">' + c.title + '</div>' +
-      '<div class="ci__p">' + money(c.price) + ' USD</div>' +
+      '<div class="ci__p">' + money(c.price) + '</div>' +
       (c.opt ? '<div class="ci__o">' + c.opt + '</div>' : '') +
       (c.sub ? '<div class="ci__sub">' + c.sub + '</div>' : '') +
       '<div class="ci__row">' +
@@ -462,8 +462,8 @@ function initSearch(){
     tiles.innerHTML = hits.map(function(p){
       return '<a href="product.html"><img src="' + p.img + '" alt="" loading="lazy">' +
         '<p class="pc__title" style="margin:14px 0 6px;text-align:center">' + p.title + '</p>' +
-        '<p class="price' + (p.cmp?'':' plain') + '" style="margin:0">' + money(p.price) + ' USD' +
-        (p.cmp ? '<s>' + money(p.cmp) + ' USD</s>' : '') + '</p></a>';
+        '<p class="price' + (p.cmp?'':' plain') + '" style="margin:0">' + money(p.price) +
+        (p.cmp ? '<s>' + money(p.cmp) + '</s>' : '') + '</p></a>';
     }).join('');
   }
   input.addEventListener('input', render);
@@ -497,5 +497,129 @@ document.addEventListener('DOMContentLoaded', function(){
   var o = overlay(); if(o) o.addEventListener('click', closeAll);
   document.addEventListener('keydown', function(e){ if(e.key==='Escape'){ closeAll(); } });
 });
+})();
+
+
+/* ---- 9. desktop sticky nav: pin .pnav once the logo row has scrolled off ---- */
+(function(){
+  var hdr = document.querySelector('.hdr');
+  var pnav = document.querySelector('.pnav');
+  if(!hdr || !pnav) return;
+  var spacer = document.querySelector('.navspacer');
+  if(!spacer){
+    spacer = document.createElement('div');
+    spacer.className = 'navspacer';
+    hdr.parentNode.insertBefore(spacer, hdr.nextSibling);
+  }
+  var desktop = window.matchMedia('(min-width:1000px)');
+  function trigger(){
+    /* stick the moment the nav's own top edge would leave the viewport */
+    return pnav.getBoundingClientRect().top + window.scrollY;
+  }
+  var point = 0, stuck = false, navH = 0;
+  function measure(){
+    if(document.body.classList.contains('nav-stuck')) return;
+    point = trigger();
+    navH = pnav.offsetHeight;
+  }
+  function onScroll(){
+    if(!desktop.matches){
+      document.body.classList.remove('nav-stuck');
+      spacer.style.height = '0px';
+      stuck = false;
+      return;
+    }
+    var should = window.scrollY > point;
+    if(should === stuck) return;
+    stuck = should;
+    document.body.classList.toggle('nav-stuck', stuck);
+    spacer.style.height = stuck ? navH + 'px' : '0px';
+  }
+  measure();
+  window.addEventListener('scroll', onScroll, {passive:true});
+  window.addEventListener('resize', function(){
+    document.body.classList.remove('nav-stuck');
+    spacer.style.height = '0px';
+    stuck = false;
+    measure();
+    onScroll();
+  });
+  window.addEventListener('load', function(){ measure(); onScroll(); });
+  onScroll();
+})();
+
+/* ---- 6. mobile bottom nav: mirror the cart count, flag the current page ---- */
+(function(){
+  var bar = document.querySelector('.mobnav');
+  if(!bar) return;
+  var src = document.querySelector('.hdr__icons .cartdot');
+  var dst = bar.querySelector('.mobnav__dot');
+  function sync(){
+    if(!dst) return;
+    var n = src ? (src.textContent || '').trim() : '';
+    var on = !!(src && src.offsetParent !== null) || !!n;
+    dst.textContent = n;
+    dst.style.display = on && n ? 'block' : 'none';
+  }
+  sync();
+  if(src && window.MutationObserver){
+    new MutationObserver(sync).observe(src, {childList:true, characterData:true, subtree:true, attributes:true});
+  }
+  document.addEventListener('click', function(){ setTimeout(sync, 60); });
+
+  var here = (location.pathname.split('/').pop() || 'home.html');
+  bar.querySelectorAll('a[href]').forEach(function(a){
+    if(a.getAttribute('href') === here) a.setAttribute('aria-current','page');
+  });
+})();
+
+/* ---- 5. marquee: only animate when the text would actually overflow ---- */
+(function(){
+  var track = document.querySelector('.ann__track');
+  if(!track) return;
+  function check(){
+    var first = track.querySelector('span');
+    if(!first) return;
+    var fits = first.scrollWidth <= track.parentNode.clientWidth;
+    track.style.animationPlayState =
+      (window.matchMedia('(max-width:999px)').matches && !fits) ? 'running' : '';
+  }
+  window.addEventListener('resize', check);
+  check();
+})();
+
+/* ---- signed-in demo toggle for the recommendations block ---- */
+(function(){
+  var btn = document.querySelector('.authtoggle');
+  if(!btn) return;
+  var KEY = 'cb_mock_signed_in';
+  function paint(){
+    var on = false;
+    try{ on = localStorage.getItem(KEY) === '1'; }catch(e){}
+    document.body.classList.toggle('is-signed-in', on);
+    btn.textContent = on ? 'Signed in \u00b7 demo' : 'Signed out \u00b7 demo';
+  }
+  btn.addEventListener('click', function(){
+    var on = document.body.classList.contains('is-signed-in');
+    try{ localStorage.setItem(KEY, on ? '0' : '1'); }catch(e){}
+    paint();
+  });
+  paint();
+})();
+
+
+/* keep the demo toggle clear of the sticky add-to-cart bar */
+(function(){
+  var bar = document.querySelector('.satcbar');
+  if(!bar) return;
+  function sync(){
+    var on = bar.classList.contains('on');
+    document.documentElement.style.setProperty('--satc-h', on ? (bar.offsetHeight + 10) + 'px' : '0px');
+  }
+  if(window.MutationObserver){
+    new MutationObserver(sync).observe(bar, {attributes:true, attributeFilter:['class']});
+  }
+  window.addEventListener('resize', sync);
+  sync();
 })();
 """

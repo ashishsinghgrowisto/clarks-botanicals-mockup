@@ -596,4 +596,223 @@ body.locked .site{visibility:hidden}
 .hub__card p{margin:0 0 8px;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:var(--h-ls)}
 .hub__card span{font-size:14px;color:var(--muted);line-height:1.6}
 .hub__note{margin-top:38px;font-size:13px;color:var(--muted)}
+
+/* ============================================================
+   CRO revision — Growisto
+   1 price suffix · 2 star colour · 3 title clamp · 4 button baseline
+   5 mobile marquee · 6 mobile bottom nav · 7 logo-only mobile header
+   9 scroll-away sticky desktop nav
+   ============================================================ */
+:root{ --star:#C8880A; --mobnav-h:60px; }
+
+/* 2 — rating star reads at a glance against white */
+.pc__star,.stars,.rev__stars{ color:var(--star); }
+.pc__rev{ color:var(--ink); }
+
+/* 3 — card title locked to two lines, so every card is the same height */
+.pc__title{
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  line-clamp:2;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+  /* reserve both lines even when the title is one line long */
+  min-height:calc(2 * 1.5 * 14px);
+}
+
+/* 4 — add-to-cart sits on the card's baseline whatever the title length */
+.pc{ display:flex; flex-direction:column; height:100%; }
+.pc__info{ display:flex; flex-direction:column; flex:1 1 auto; }
+.pc__add{ margin-top:auto; }
+.pc__info > .price{ margin-top:8px; }
+.rail{ align-items:stretch; }
+.rail > *{ height:auto; }
+.grid > .pc{ height:100%; }
+
+/* 5 — announcement: one line, always moving, on small screens */
+.ann__track{ display:block; }
+.ann__track span + span{ display:none; }
+
+@media(max-width:999px){
+  .ann{
+    padding-inline:0;
+    overflow:hidden;
+    white-space:nowrap;
+    line-height:1.2;
+  }
+  .ann__track{
+    display:inline-flex;
+    align-items:center;
+    white-space:nowrap;
+    will-change:transform;
+    animation:ann-marquee 18s linear infinite;
+  }
+  .ann__track span{
+    display:inline-block;
+    white-space:nowrap;
+    padding-inline:2.5rem;
+  }
+  .ann__track span + span{ display:inline-block; }
+  .ann:hover .ann__track,
+  .ann:focus-within .ann__track{ animation-play-state:paused; }
+}
+@keyframes ann-marquee{
+  from{ transform:translateX(0); }
+  to  { transform:translateX(-50%); }
+}
+@media (prefers-reduced-motion:reduce){
+  .ann__track{ animation:none !important; }
+  .ann{ text-align:center; }
+}
+
+/* 7 — mobile header carries the logo and nothing else */
+@media(max-width:999px){
+  .hdr__in{
+    grid-template-areas:"logo";
+    grid-template-columns:minmax(0,1fr);
+    justify-items:center;
+  }
+  .hdr__burger{ display:none; }
+  .hdr__icons{ display:none; }
+  .hdr__logo{ justify-self:center; }
+  .hdr__logo img{ width:170px; }
+}
+
+/* 6 — mobile bottom navigation */
+.mobnav{ display:none; }
+@media(max-width:999px){
+  .mobnav{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    position:fixed;
+    left:0; right:0; bottom:0;
+    z-index:70;
+    background:#fff;
+    border-top:1px solid var(--line);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+    box-shadow:0 -2px 14px rgb(0 0 0 / .06);
+  }
+  .mobnav__item{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:3px;
+    min-height:var(--mobnav-h);
+    padding:8px 2px;
+    position:relative;
+    color:var(--ink);
+    font-size:10px;
+    font-weight:600;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    line-height:1;
+    background:none;
+    border:0;
+    cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .mobnav__item svg{ display:block; }
+  .mobnav__item[aria-current="page"]{ color:var(--teal); }
+  .mobnav__dot{
+    position:absolute;
+    top:6px;
+    right:calc(50% - 18px);
+    min-width:16px;
+    height:16px;
+    padding:0 4px;
+    border-radius:9999px;
+    background:var(--ink);
+    color:#fff;
+    font-size:10px;
+    font-weight:600;
+    line-height:16px;
+    text-align:center;
+  }
+  /* keep the last section clear of the fixed bar */
+  body{ padding-bottom:calc(var(--mobnav-h) + env(safe-area-inset-bottom,0px)); }
+}
+
+/* 9 — desktop: announcement + logo scroll away, primary nav pins to the top */
+@media(min-width:1000px){
+  .ann{ position:static; }
+  .hdr{ position:static; }
+  .navspacer{ display:none; height:0; }
+  body.nav-stuck .pnav{
+    position:fixed;
+    top:0; left:0; right:0;
+    z-index:60;
+    background:#fff;
+    border-bottom:1px solid var(--line);
+    box-shadow:0 2px 12px rgb(0 0 0 / .05);
+    padding-inline:var(--wgut);
+    animation:nav-drop .22s ease-out;
+  }
+  body.nav-stuck .navtop{ padding:16px 0 16px; }
+  body.nav-stuck .navspacer{ display:block; }
+}
+@keyframes nav-drop{
+  from{ transform:translateY(-100%); }
+  to  { transform:translateY(0); }
+}
+@media (prefers-reduced-motion:reduce){
+  body.nav-stuck .pnav{ animation:none; }
+}
+
+/* Recommendations block (PDP, signed-in) */
+.recs{ display:none; }
+body.is-signed-in .recs{ display:block; }
+.recs__head{
+  display:flex;
+  align-items:baseline;
+  justify-content:space-between;
+  gap:16px;
+  flex-wrap:wrap;
+  margin:0 0 28px;
+}
+.recs__why{
+  font-size:12px;
+  font-weight:600;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:var(--muted);
+}
+.recs__reason{
+  display:block;
+  margin-top:6px;
+  font-size:11px;
+  font-weight:600;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  color:var(--teal);
+}
+.authtoggle{
+  position:fixed;
+  right:14px;
+  bottom:calc(var(--mobnav-h) + 14px);
+  z-index:65;
+  background:var(--ink);
+  color:#fff;
+  font-size:10px;
+  font-weight:600;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  padding:9px 13px;
+  border-radius:9999px;
+  opacity:.75;
+}
+@media(min-width:1000px){ .authtoggle{ bottom:14px; } }
+.authtoggle:hover{ opacity:1; }
+
+/* --- bottom-edge stacking: sticky ATC bar must not cover the mobile nav --- */
+:root{ --satc-h:0px; }
+@media(max-width:999px){
+  .satcbar{ bottom:calc(var(--mobnav-h) + env(safe-area-inset-bottom,0px)); }
+}
+.authtoggle{ z-index:95; bottom:calc(14px + var(--satc-h)); }
+@media(max-width:999px){
+  .authtoggle{
+    bottom:calc(var(--mobnav-h) + env(safe-area-inset-bottom,0px) + 14px + var(--satc-h));
+  }
+}
 """

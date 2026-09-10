@@ -50,6 +50,19 @@ BAND_1 = [CDN + x for x in [
   'HOMEPAGE_CLINICALS_apec.png?v=1753295713&width=2400']]
 
 ANNOUNCE = 'Early access until Sept 1 | Use code LABOR25'
+# Rails added in the CRO revision. Handles only - product_card() supplies pricing,
+# badges and review counts, so these stay in step with the catalogue.
+# Anti-Puff Eye Cream is deliberately absent from both: it is in SOLD_OUT.
+BESTSELLERS  = ['smooth-marine-cream', 'retinol-rescue-overnight-cream',
+                'deep-moisture-mask', '3-minute-reset']
+NEW_ARRIVALS = ['dna-42-clinicalift-serum', 'pdrn-retinol-liquid-facelift-duo',
+                '7-acid-daily-glow-peel', 'the-longevity-lift-duo']
+# PDP 'past purchases' rail. Reason copy is illustrative until real order data exists.
+RECS = [('deep-moisture-mask',  'Pairs with your Marine Cream'),
+        ('jasmine-vital-cream', 'Completes your morning routine'),
+        ('smooth-marine-cream', 'You reordered this in March'),
+        ('the-renewal-ritual',  'Based on your last two orders')]
+
 FREE_SHIP = 75.0        # placeholder threshold for the sticky panel's progress bar
 SUB_DISCOUNT = 0.15
 
@@ -132,6 +145,13 @@ PAYMENTS = [('amazon','#FF9900'),('amex','#1F72CD'),('apple','#000000'),('diners
 PAY_LABELS = {'amazon':'amazon','amex':'AMEX','apple':'Pay','diners':'Diners','discover':'DISCOVER',
               'gpay':'G Pay','mc':'MC','paypal':'PayPal','shop':'shop','visa':'VISA'}
 
+USD_SUFFIX = re.compile(r'(\$[\d,]+(?:\.\d{2})?)\s*USD\b')
+
+def strip_usd(txt):
+    """Drop a trailing "USD" after a $ amount; the $ already says the currency."""
+    return USD_SUFFIX.sub(r'\1', txt)
+
+
 def money(v):
     return '${:,.2f}'.format(v)
 
@@ -150,7 +170,10 @@ def gate():
       '</div></div>')
 
 def announce():
-    return '<div class="ann">' + ANNOUNCE + '</div>'
+    return ('<div class="ann"><div class="ann__track">'
+            '<span>' + ANNOUNCE + '</span>'
+            '<span aria-hidden="true">' + ANNOUNCE + '</span>'
+            '</div></div>')
 
 def primary_nav():
     out = []
@@ -263,11 +286,70 @@ def page(title, body):
       '<style>' + CSS + '</style></head><body class="locked">'
       + gate() +
       '<div class="site">' + announce() + header() + '<main>' + body + '</main>' + footer() + '</div>'
-      + mobile_drawer() + search_panel() + cart_drawer() + variant_panel() +
+      + mobile_drawer() + search_panel() + cart_drawer() + variant_panel()
+      + mobile_bottom_nav() +
       '<div class="ov"></div>'
       '<script>window.CB_PRODUCTS=' + products_js + ';</script>'
       '<script>' + JS.replace('__PW__', PASSWORD) + '</script>'
       '</body></html>')
+
+def mobile_bottom_nav():
+    """Fixed bottom navigation, shown below 1000px where the header carries only
+    the logo. Reuses the existing drawer/search/cart handlers rather than adding
+    new ones. The auth pill is a demo affordance for the signed-in PDP rail and
+    should be removed once real accounts exist."""
+    return (
+      '<nav class="mobnav" aria-label="Primary">'
+      '<button class="mobnav__item" type="button" data-open="#menu" aria-label="Open navigation menu">'
+      + ICON_BURGER + 'Menu</button>'
+      '<a class="mobnav__item" href="collection.html">' + ICON_GRID + 'Shop</a>'
+      '<button class="mobnav__item" type="button" data-open-search aria-label="Search">'
+      + ICON_SEARCH + 'Search</button>'
+      '<button class="mobnav__item" type="button" data-open="#cart" aria-label="Open cart">'
+      + ICON_BAG + '<span class="mobnav__dot" style="display:none"></span>Cart</button>'
+      '<a class="mobnav__item" href="#" aria-label="My account">' + ICON_USER + 'Account</a>'
+      '</nav>'
+      '<button class="authtoggle" type="button">Signed out &middot; demo</button>')
+
+
+ICON_BURGER = ('<svg width="21" height="21" fill="none" viewBox="0 0 24 24">'
+  '<path d="M1 19h22M1 12h22M1 5h22" stroke="currentColor" stroke-width="1.7" stroke-linecap="square"/></svg>')
+ICON_GRID = ('<svg width="21" height="21" fill="none" viewBox="0 0 24 24">'
+  '<path d="M3.5 3.5h7v7h-7zM13.5 3.5h7v7h-7zM3.5 13.5h7v7h-7zM13.5 13.5h7v7h-7z" '
+  'stroke="currentColor" stroke-width="1.6"/></svg>')
+ICON_SEARCH = ('<svg width="21" height="21" fill="none" viewBox="0 0 24 24">'
+  '<path d="M10.364 3a7.364 7.364 0 1 0 0 14.727 7.364 7.364 0 0 0 0-14.727Z" stroke="currentColor" '
+  'stroke-width="1.6" stroke-miterlimit="10"/><path d="m15.857 15.858 5.143 5.143" stroke="currentColor" '
+  'stroke-width="1.6" stroke-linecap="round"/></svg>')
+ICON_BAG = ('<svg width="21" height="21" fill="none" viewBox="0 0 24 24">'
+  '<path d="M4.5 7.5h15l-1.2 12.2a1.4 1.4 0 0 1-1.4 1.3H7.1a1.4 1.4 0 0 1-1.4-1.3z" stroke="currentColor" '
+  'stroke-width="1.6"/><path d="M8.6 9.6V6.4a3.4 3.4 0 0 1 6.8 0v3.2" stroke="currentColor" '
+  'stroke-width="1.6" stroke-linecap="round"/></svg>')
+ICON_USER = ('<svg width="21" height="21" fill="none" viewBox="0 0 24 24">'
+  '<path d="M16.125 8.75c-.184 2.478-2.063 4.5-4.125 4.5s-3.944-2.021-4.125-4.5c-.187-2.578 1.64-4.5 '
+  '4.125-4.5 2.484 0 4.313 1.969 4.125 4.5Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" '
+  'stroke-linejoin="round"/><path d="M3.017 20.747C3.783 16.5 7.922 14.25 12 14.25s8.217 2.25 8.984 6.497" '
+  'stroke="currentColor" stroke-width="1.6" stroke-miterlimit="10"/></svg>')
+
+
+def product_rail(section_id, heading, handles, extra_class='', reasons=None):
+    """A titled rail of product cards, reusing product_card() so pricing, badges
+    and review counts stay in step with the rest of the site."""
+    cards = ''
+    for h in handles:
+        if h not in BY:
+            raise SystemExit('!! product_rail: unknown handle ' + h)
+        c = product_card(BY[h])
+        if reasons and h in reasons:
+            c = c.replace('</a><div class="price',
+                          '</a><span class="recs__reason">' + reasons[h] + '</span><div class="price', 1)
+        cards += c
+    return ('<section class="sec ' + extra_class + '" id="' + section_id + '">'
+            '<div class="wrap wrap--wide">'
+            '<h2 class="h h2 sec__title">' + heading + '</h2>'
+            '<div class="rail">' + cards + '</div>'
+            '</div></section>')
+
 
 # ---------------------------------------------------------------- cards
 def review_badge(handle):
@@ -276,7 +358,7 @@ def review_badge(handle):
     r = REV.get(handle)
     if not r:
         return ''
-    return ('<span class="pc__rev">&#9733; ' + ('%.1f' % r['rating']) +
+    return ('<span class="pc__rev"><span class="pc__star">&#9733;</span> ' + ('%.1f' % r['rating']) +
             ' <i>(' + str(r['count']) + ')</i></span>')
 
 
@@ -288,9 +370,9 @@ def product_card(p):
         badge = '<span class="badge">Save ' + str(round((1 - p['price'] / p['cmp']) * 100)) + '%</span>'
     if p['cmp']:
         price = ('<div class="price"><b>' + money(p['price']) +
-                 ' USD</b><s>' + money(p['cmp']) + ' USD</s></div>')
+                 '</b><s>' + money(p['cmp']) + '</s></div>')
     else:
-        price = '<div class="price plain"><b>' + money(p['price']) + ' USD</b></div>'
+        price = '<div class="price plain"><b>' + money(p['price']) + '</b></div>'
     title = H.escape(p['title'], quote=True)
     return (
       '<article class="pc" data-type="' + (p['type'] or 'Other') + '" data-price="' + str(p['price']) +
@@ -366,6 +448,9 @@ def home():
       + IC['chevL'] + '</button>'
       '<button type="button" data-rail="#edit-rail" data-dir="1" aria-label="Next">' + IC['chevR'] +
       '</button></div></div></section>'
+
+      + product_rail('bestsellers', 'Bestsellers', BESTSELLERS)
+      + product_rail('new-arrivals', 'New Arrivals', NEW_ARRIVALS, 'sec--tight')
 
       + press_band('band--maroon') +
 
@@ -454,7 +539,10 @@ def product():
     def acc_block(titles, open_first=False):
         out = []
         for i, t in enumerate(titles):
-            body = ACC.get(t, '<p></p>')
+            # The capture in cap/ keeps the store's raw "$5.00 USD" wording; the
+            # site-wide rule is $ only, so strip the suffix at render time rather
+            # than mutating the scrape.
+            body = strip_usd(ACC.get(t, '<p></p>'))
             out.append('<details' + (' open' if (open_first and i == 0) else '') + '>'
                        '<summary>' + t + '<i>+</i></summary>'
                        '<div class="acc__c">' + body + '</div></details>')
@@ -493,7 +581,7 @@ def product():
       '<div class="gal__main"><div class="gal__mrail">' + mains + '</div></div></div>'
       '<div class="pinfo">'
         '<div class="pinfo__top"><h1 class="h">' + p['title'] + '</h1>'
-        '<span class="pinfo__price">' + money(p['price']) + ' USD</span></div>'
+        '<span class="pinfo__price">' + money(p['price']) + '</span></div>'
         '<div class="rr"><span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>'
         '<span class="xxs sub">(6)</span></div>'
         '<p class="afterpay">or 4 interest-free payments of <b>' + money(p['price'] / 4) + '</b> with '
@@ -546,7 +634,27 @@ def product():
       '<h2 class="h h2 sec__title">Recently viewed products</h2>'
       '<div class="grid grid--4">' + recent + '</div></div></section>'
 
-      + sticky_bar(p))
+      + sticky_bar(p)
+
+      + recs_rail())
+
+
+def recs_rail():
+    """'Based on your past purchases' - hidden until body.is-signed-in is set.
+    Real personalisation needs order history; this is the placement and the
+    reason-copy pattern, wired to a demo toggle."""
+    cards = ''
+    for h, why in RECS:
+        c = product_card(BY[h])
+        c = c.replace('</a><div class="price',
+                      '</a><span class="recs__reason">' + why + '</span><div class="price', 1)
+        cards += c
+    return ('<section class="sec recs" id="recs"><div class="wrap wrap--wide">'
+            '<div class="recs__head">'
+            '<h2 class="h h2" style="margin:0">Picked up where you left off</h2>'
+            '<span class="recs__why">Based on your past purchases</span></div>'
+            '<div class="rail">' + cards + '</div></div></section>')
+
 
 def sticky_bar(p):
     """Slim sticky bar shown once the main Add to cart leaves the viewport.
@@ -592,7 +700,7 @@ def pairs_rail(p):
                   '<a class="pw__fig" href="product.html" aria-label="' + title + '">'
                   '<img src="' + q['imgs'][0] + '" alt="' + title + '" loading="lazy"></a>'
                   '<a class="pw__title" href="product.html">' + q['title'] + '</a>'
-                  '<span class="pw__price">' + money(q['price']) + ' USD</span>'
+                  '<span class="pw__price">' + money(q['price']) + '</span>'
                   + note + act + '</article>')
     return ('<section class="pw-wrap">'
             '<div class="pw-hd"><h2 class="h h6">Pairs well with</h2>'
