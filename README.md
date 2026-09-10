@@ -56,6 +56,7 @@ generator — editing the HTML directly will be lost on the next build.
 | Add-to-cart sits on the card baseline, level across every row | `.pc` flex column, `.pc__add { margin-top:auto }` |
 | Sold-out cards render a disabled "Sold out" button instead of an active buy action | `add_button()` |
 | Announcement bar becomes a single-line continuous marquee below 1000px, pausing on hover and static under `prefers-reduced-motion` | `announce()`, `.ann__track` |
+| Press bands (goop / Vogue / Byrdie) become a continuous horizontal marquee below 1000px; desktop keeps the static 3-up grid. Pauses on hover, static under `prefers-reduced-motion`. | `press_band()`, `.press__track` |
 | Mobile header carries the logo only | `.hdr__in` under 1000px |
 | Fixed mobile bottom nav: menu, shop, search, cart, account. Reuses the existing drawer handlers and mirrors the cart count. | `mobile_bottom_nav()`, `.mobnav` |
 | Desktop: announcement and logo scroll away, only the primary nav pins to the top | `body.nav-stuck .pnav`, sticky-nav observer in `parts_js.py` |
