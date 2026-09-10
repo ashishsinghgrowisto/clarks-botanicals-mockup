@@ -1,9 +1,10 @@
 # Clark's Botanicals — interactive mockup
 
 A pixel-close, self-contained static replica of [clarksbotanicals.com](https://clarksbotanicals.com),
-built by Growisto as a CRO prototype. No build step, no dependencies — every page is plain
-HTML with inlined CSS/JS, and every image is localised into `assets/`, so it runs offline
-by opening `index.html` in a browser.
+built by Growisto as a CRO prototype. The published pages have no runtime dependencies —
+every page is plain HTML with inlined CSS/JS, and every image is localised into `assets/`,
+so it runs offline by opening `index.html` in a browser. The HTML itself is generated:
+see [Regenerating](#regenerating) before editing anything.
 
 **Password gate:** `clarks2026` (client-side only — it hides the page, it does not secure it).
 
@@ -42,10 +43,45 @@ progress, subscribe & save with a delivery frequency — and adds to the same ca
 The free-shipping threshold is a placeholder: `FREE_SHIP` in `build/build_mockups.py`
 (the live store does not publish one). Subscription discount is `SUB_DISCOUNT`.
 
+## CRO revision (Sept 2026)
+
+A round of conversion changes on top of the pixel-match replica. All of it lives in the
+generator — editing the HTML directly will be lost on the next build.
+
+| Change | Where |
+| --- | --- |
+| Prices show `$105.00`, never `$105.00 USD`. The header currency selector still reads `USD $`. | `product_card()`, `parts_js.py`, `strip_usd()` for the scraped accordion copy |
+| Rating stars use `--star` (`#C8880A`) for legibility on white | `review_badge()`, `.pc__star` / `.stars` |
+| Card titles clamp to two lines with a reserved min-height, so a short title cannot shorten the card | `.pc__title` |
+| Add-to-cart sits on the card baseline, level across every row | `.pc` flex column, `.pc__add { margin-top:auto }` |
+| Sold-out cards render a disabled "Sold out" button instead of an active buy action | `add_button()` |
+| Announcement bar becomes a single-line continuous marquee below 1000px, pausing on hover and static under `prefers-reduced-motion` | `announce()`, `.ann__track` |
+| Mobile header carries the logo only | `.hdr__in` under 1000px |
+| Fixed mobile bottom nav: menu, shop, search, cart, account. Reuses the existing drawer handlers and mirrors the cart count. | `mobile_bottom_nav()`, `.mobnav` |
+| Desktop: announcement and logo scroll away, only the primary nav pins to the top | `body.nav-stuck .pnav`, sticky-nav observer in `parts_js.py` |
+| Homepage Bestsellers and New Arrivals rails | `product_rail()`, `BESTSELLERS` / `NEW_ARRIVALS` |
+| PDP "past purchases" rail for signed-in visitors | `recs_rail()`, `RECS` |
+
+The rails hold **handles only** — `product_card()` supplies pricing, badges and review
+counts, so they cannot drift from the catalogue. Anti-Puff Eye Cream is excluded from both
+because it is in `SOLD_OUT`.
+
+Two things to remove when this stops being a mockup:
+
+- The **"Signed out · demo"** pill bottom-right. It toggles `body.is-signed-in` in
+  `localStorage` so the PDP recommendation rail can be demonstrated; real accounts replace it.
+- The `RECS` reason copy ("You reordered this in March") is illustrative. Real
+  personalisation needs order history.
+
+On mobile the PDP's sticky add-to-cart bar stacks **above** the bottom nav rather than over
+it — `--satc-h` is measured in JS and keeps the demo pill clear of both.
+
 ## Regenerating
 
 The pages are generated, not hand-edited. Edit the generator and re-run it rather than
-patching the HTML.
+patching the HTML — a direct edit to `home.html` survives until the next build and then
+disappears silently. Output goes to `clarks-mockups/` (gitignored); copy the four HTML
+files to the repository root to publish.
 
 ```bash
 cd build
