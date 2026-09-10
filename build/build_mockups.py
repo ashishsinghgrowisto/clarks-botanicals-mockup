@@ -423,10 +423,16 @@ def category_row():
 
 
 def press_band(cls):
-    inner = ''.join('<div><blockquote>' + q + '</blockquote>'
-                    '<img src="' + l + '" alt="" loading="lazy"></div>' for q, l in PRESS)
+    # Desktop: the three quotes sit in a static 3-up grid. Mobile: the same
+    # markup becomes a continuous marquee, so the set is emitted twice and the
+    # copy is aria-hidden; CSS hides it again above 1000px.
+    item = ''.join('<div><blockquote>' + q + '</blockquote>'
+                   '<img src="' + l + '" alt="" loading="lazy"></div>' for q, l in PRESS)
+    dup = ''.join('<div aria-hidden="true"><blockquote>' + q + '</blockquote>'
+                  '<img src="' + l + '" alt="" loading="lazy"></div>' for q, l in PRESS)
     return ('<section class="band ' + cls + '"><div class="wrap wrap--wide">'
-            '<div class="press">' + inner + '</div></div></section>')
+            '<div class="press"><div class="press__track">' + item + dup +
+            '</div></div></div></section>')
 
 # ---------------------------------------------------------------- pages
 def home():
