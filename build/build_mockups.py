@@ -792,15 +792,19 @@ def localise():
         open(pth, 'w', encoding='utf-8').write(s)
     print('localised %d/%d' % (ok, len(urls)))
 
+def write_page(name, html):
+    # Trailing newline so the output matches what editors and GitHub produce;
+    # without it every hand-touched copy shows a spurious end-of-file diff.
+    with open(os.path.join(OUT, name), 'w', encoding='utf-8') as fh:
+        fh.write(html.rstrip('\n') + '\n')
+
 def main():
     os.makedirs(OUT, exist_ok=True)
-    open(os.path.join(OUT, 'index.html'), 'w', encoding='utf-8').write(hub())
-    open(os.path.join(OUT, 'home.html'), 'w', encoding='utf-8').write(
-        page('Clark&rsquo;s Botanicals', home()))
-    open(os.path.join(OUT, 'collection.html'), 'w', encoding='utf-8').write(
-        page('Best Sellers &ndash; Clark&rsquo;s Botanicals', collection()))
-    open(os.path.join(OUT, 'product.html'), 'w', encoding='utf-8').write(
-        page('DNA-42 Clinicalift Serum&trade; &ndash; Clark&rsquo;s Botanicals', product()))
+    write_page('index.html', hub())
+    write_page('home.html', page('Clark&rsquo;s Botanicals', home()))
+    write_page('collection.html', page('Best Sellers &ndash; Clark&rsquo;s Botanicals', collection()))
+    write_page('product.html',
+               page('DNA-42 Clinicalift Serum&trade; &ndash; Clark&rsquo;s Botanicals', product()))
     print('pages written to', OUT)
     if '--no-assets' not in sys.argv:
         localise()
