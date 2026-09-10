@@ -15,6 +15,9 @@ from parts_js import JS
 P = json.load(open(os.path.join(CAP, 'data_products.json')))
 ACC = dict((t, b) for t, b in json.load(open(os.path.join(CAP, 'pdp_accordions.json'))))
 BY = {p['handle']: p for p in P}
+# Real Okendo rating + review count per handle, scraped from the live PDPs.
+# Products the store shows no reviews for map to None and get no badge.
+REV = json.load(open(os.path.join(CAP, 'reviews.json')))
 
 CDN = 'https://clarksbotanicals.com/cdn/shop/files/'
 LOGO      = CDN + 'Blue_Logo_560_x_160_px.png?v=1786465543&width=560'
@@ -94,6 +97,11 @@ SOLD_OUT = {'anti-puff-eye-cream'}
 EDITORS = ['dna-42-clinicalift-serum','retinol-rescue-overnight-cream','deep-moisture-mask','smooth-marine-cream']
 RELATED = ['3-minute-reset','retinol-rescue-overnight-cream','regeneration-24-7-180-value','deep-moisture-mask']
 RECENT  = ['smooth-marine-cream','retinol-rescue-overnight-cream','jasmine-vital-cream','7-acid-daily-glow-peel']
+# Complete-the-routine products offered under the PDP buy button. Cleanse, treat,
+# moisturise, mask — the steps the serum sits between, not more serums.
+PAIRS   = ['7-acid-daily-glow-peel','smooth-marine-cream','deep-moisture-mask',
+           'retinol-rescue-overnight-cream','jasmine-vital-cream','travel-lip-duo',
+           'anti-puff-eye-cream']
 
 # ---------------------------------------------------------------- icons
 IC = {
@@ -242,7 +250,9 @@ def footer():
 def page(title, body):
     products_js = json.dumps([
       {'handle': p['handle'], 'title': p['title'], 'price': p['price'], 'cmp': p['cmp'],
-       'img': p['imgs'][0], 'opts': p['opts'], 'rev': 6} for p in P])
+       'img': p['imgs'][0], 'opts': p['opts'],
+       'rating': (REV.get(p['handle']) or {}).get('rating'),
+       'rev': (REV.get(p['handle']) or {}).get('count')} for p in P])
     return (
       '<!doctype html><html lang="en"><head><meta charset="utf-8">'
       '<meta name="viewport" content="width=device-width,initial-scale=1">'
@@ -260,6 +270,16 @@ def page(title, body):
       '</body></html>')
 
 # ---------------------------------------------------------------- cards
+def review_badge(handle):
+    """Star rating over the card image, bottom left. Omitted where the store
+    has no reviews for the product rather than inventing one."""
+    r = REV.get(handle)
+    if not r:
+        return ''
+    return ('<span class="pc__rev">&#9733; ' + ('%.1f' % r['rating']) +
+            ' <i>(' + str(r['count']) + ')</i></span>')
+
+
 def product_card(p):
     badge = ''
     if p['handle'] in SOLD_OUT:
@@ -279,6 +299,7 @@ def product_card(p):
       '<a href="product.html" aria-label="' + title + '">'
       '<img src="' + p['imgs'][0] + '" alt="' + title + '" loading="lazy">'
       '<img class="sec" src="' + img_for(p, 1) + '" alt="" loading="lazy"></a>'
+      + review_badge(p['handle']) +
       '</div>'
       '<div class="pc__info">'
       '<a class="pc__title" href="product.html">' + p['title'] + '</a>'
@@ -485,6 +506,7 @@ def product():
         + subs +
         '<button class="btn btn--full" type="button" data-pdp-add="' + p['handle'] + '"'
         ' style="margin-top:20px">Add to cart</button>'
+        + pairs_rail(p) +
         '<div class="acc">' + acc_block(['Description','How to Use','BENEFITS','CLINICALS',
                                          'VISIBLE PROGRESSION','KEY INGREDIENTS']) + '</div>'
         '<div style="margin-top:30px"><p class="h h6" style="margin:0">Don&rsquo;t just take our word for it.</p>'
@@ -542,6 +564,44 @@ def sticky_bar(p):
           '<button class="btn btn--ghost" type="button" data-satcbar-open="buy">Buy now</button>'
         '</div>'
       '</div></div>')
+
+
+def pairs_rail(p):
+    """'Pairs well with' — routine add-ons directly under the PDP Add to cart.
+    Products with options open the shared variant panel; single-variant products
+    drop straight into the cart."""
+    items = ''
+    for h in PAIRS:
+        if h == p['handle'] or h not in BY:
+            continue
+        q = BY[h]
+        title = H.escape(q['title'], quote=True)
+        if h in SOLD_OUT:
+            act = '<button class="pw__add" type="button" disabled>Sold out</button>'
+        elif q['opts']:
+            act = ('<button class="pw__add" type="button" data-quick="' + h + '">'
+                   'Add to cart</button>')
+        else:
+            act = ('<button class="pw__add" type="button" data-add="' + h + '">'
+                   'Add to cart</button>')
+        # always rendered, so buttons across the rail share one baseline
+        note = ('<span class="pw__opt">' +
+                (' &middot; '.join(o['name'] for o in q['opts']) if q['opts'] else '&nbsp;') +
+                '</span>')
+        items += ('<article class="pw" data-handle="' + h + '">'
+                  '<a class="pw__fig" href="product.html" aria-label="' + title + '">'
+                  '<img src="' + q['imgs'][0] + '" alt="' + title + '" loading="lazy"></a>'
+                  '<a class="pw__title" href="product.html">' + q['title'] + '</a>'
+                  '<span class="pw__price">' + money(q['price']) + ' USD</span>'
+                  + note + act + '</article>')
+    return ('<section class="pw-wrap">'
+            '<div class="pw-hd"><h2 class="h h6">Pairs well with</h2>'
+            '<div class="pw-arr">'
+            '<button type="button" data-rail="#pairs-rail" data-dir="-1" aria-label="Previous">'
+            + IC['chevL'] + '</button>'
+            '<button type="button" data-rail="#pairs-rail" data-dir="1" aria-label="Next">'
+            + IC['chevR'] + '</button></div></div>'
+            '<div class="pw-rail rail" id="pairs-rail">' + items + '</div></section>')
 
 
 def variant_panel():

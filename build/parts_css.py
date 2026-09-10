@@ -170,6 +170,13 @@ body.locked .site{visibility:hidden}
 .pc__fig img{width:100%;aspect-ratio:1;object-fit:cover;transition:opacity .35s}
 .pc__fig img.sec{position:absolute;inset:0;opacity:0}
 .pc:hover .pc__fig img.sec{opacity:1}
+.pc__rev{position:absolute;left:8px;bottom:8px;z-index:2;display:inline-flex;align-items:center;
+  gap:4px;background:rgb(255 255 255 / .94);border:1px solid var(--line);
+  backdrop-filter:blur(3px);color:var(--ink);
+  font-size:11px;font-weight:600;line-height:1;letter-spacing:.02em;padding:5px 8px;
+  white-space:nowrap;pointer-events:none}
+.pc__rev i{font-style:normal;font-weight:400;color:var(--muted)}
+@media(min-width:760px){.pc__rev{left:10px;bottom:10px;font-size:12px;padding:6px 10px}}
 .badge{position:absolute;top:8px;left:8px;z-index:2;background:var(--sale);color:#fff;
   font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;padding:7px 13px}
 .pc__info{margin-top:26px;display:grid;justify-items:center;gap:10px;text-align:center}
@@ -427,6 +434,40 @@ body.locked .site{visibility:hidden}
 .cat p{margin:14px 0 0;font-size:11px;font-weight:600;text-transform:uppercase;
   letter-spacing:var(--h-ls);line-height:1.5}
 @media(min-width:760px){.cat p{font-size:12px;margin-top:16px}}
+
+/* ---------- pairs well with (under the PDP buy button) ---------- */
+.pw-wrap{margin:26px 0 4px;border-top:1px solid var(--line);padding-top:20px;min-width:0}
+.pw-hd{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.pw-hd h2{margin:0}
+.pw-arr{display:flex;gap:8px;flex:0 0 auto}
+.pw-arr button{width:30px;height:30px;border:1px solid var(--line);display:grid;place-items:center;
+  background:#fff;transition:border-color .2s}
+.pw-arr button:hover{border-color:var(--ink)}
+.pw-arr svg{width:12px;height:12px}
+.pw-rail{gap:14px;min-width:0}
+.pw-rail>*{flex:0 0 148px;scroll-snap-align:start}
+.pw{display:flex;flex-direction:column}
+.pw__fig{display:block;background:var(--soft);aspect-ratio:1/1;overflow:hidden}
+.pw__fig img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s}
+.pw:hover .pw__fig img{transform:scale(1.04)}
+.pw__title{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+  margin:10px 0 0;font-size:12px;font-weight:600;line-height:1.45;
+  text-decoration:none;color:var(--ink)}
+.pw__title:hover{text-decoration:underline}
+.pw__price{display:block;margin-top:4px;font-size:12px;font-weight:600}
+.pw__opt{display:block;margin:2px 0 10px;min-height:15px;font-size:10px;color:var(--muted);
+  text-transform:uppercase;letter-spacing:.06em;white-space:nowrap;overflow:hidden;
+  text-overflow:ellipsis}
+.pw__add{margin-top:auto;width:100%;min-height:38px;padding:9px 10px;
+  border:1px solid var(--ink);background:#fff;color:var(--ink);cursor:pointer;
+  font-family:inherit;font-size:10px;font-weight:600;text-transform:uppercase;
+  letter-spacing:var(--btn-ls);transition:background .2s,color .2s}
+.pw__add:hover:not(:disabled){background:var(--ink);color:#fff}
+.pw__add:disabled{border-color:var(--line);color:var(--muted);cursor:not-allowed}
+@media(max-width:760px){
+  .pw-rail>*{flex:0 0 136px}
+  .pw-wrap{margin-top:22px}
+}
 
 /* ---------- sticky bar (PDP trigger) ---------- */
 .satcbar{position:fixed;left:0;right:0;bottom:0;z-index:86;background:#fff;

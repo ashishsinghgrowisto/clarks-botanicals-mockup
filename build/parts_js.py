@@ -152,7 +152,8 @@ function vpRender(){
     '<div class="satc__in">' +
       '<div class="satc__hd"><img src="' + p.img + '" alt="">' +
         '<div><h3 class="h">' + p.title + '</h3>' +
-        '<p class="satc__rate"><span class="stars">★★★★★</span>4.9 (' + (p.rev||6) + ' reviews)</p>' +
+        (p.rating ? '<p class="satc__rate"><span class="stars">★★★★★</span>' + p.rating +
+          ' (' + p.rev + ' review' + (p.rev===1?'':'s') + ')</p>' : '') +
         '<p class="satc__price" data-satc-price></p></div></div>' +
       groups +
       '<div class="satc__qty"><p class="satc__lbl" style="margin:0"><b>Quantity</b></p>' +
@@ -224,6 +225,14 @@ window.cbCloseSATC = closeVariant;
 document.addEventListener('click', function(e){
   var q = e.target.closest('[data-quick]');
   if(q){ e.preventDefault(); openVariant(q.dataset.quick, 'cart'); return; }
+  /* single-variant add-on: no options to pick, so skip the panel */
+  var d = e.target.closest('[data-add]');
+  if(d){
+    e.preventDefault();
+    var dp = (window.CB_PRODUCTS||[]).find(function(x){ return x.handle===d.dataset.add; });
+    if(dp) addToCart({handle:dp.handle,title:dp.title,price:dp.price,img:dp.img,opt:'',sub:'',q:1});
+    return;
+  }
   var el = vp(); if(!el || !el.contains(e.target)) return;
   var o = e.target.closest('[data-satc-opt]');
   if(o){ VP.sel[o.dataset.satcOpt] = o.dataset.satcVal; vpPaint(); return; }
