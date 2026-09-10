@@ -362,6 +362,17 @@ def review_badge(handle):
             ' <i>(' + str(r['count']) + ')</i></span>')
 
 
+def add_button(p):
+    """A sold-out product gets a disabled button that says so. Previously the
+    card carried a "Sold out" badge over an active "Add to cart", which opened
+    the variant modal for something nobody can buy."""
+    if p['handle'] in SOLD_OUT:
+        return ('<button class="btn pc__add" type="button" disabled '
+                'aria-disabled="true">Sold out</button>')
+    return ('<button class="btn pc__add" type="button" data-quick="' + p['handle'] +
+            '">Add to cart</button>')
+
+
 def product_card(p):
     badge = ''
     if p['handle'] in SOLD_OUT:
@@ -385,8 +396,8 @@ def product_card(p):
       '</div>'
       '<div class="pc__info">'
       '<a class="pc__title" href="product.html">' + p['title'] + '</a>'
-      + price +
-      '<button class="btn pc__add" type="button" data-quick="' + p['handle'] + '">Add to cart</button>'
+      + price
+      + add_button(p) +
       '</div></article>')
 
 def category_from(types, extra):
