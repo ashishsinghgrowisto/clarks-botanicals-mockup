@@ -816,6 +816,43 @@ body.is-signed-in .recs{ display:block; }
   }
 }
 
+/* 5b — press band: static 3-up on desktop, continuous marquee on mobile */
+.press{ display:block; }
+.press__track{ display:grid; grid-template-columns:repeat(3,1fr); gap:60px; text-align:center; align-items:start; }
+.press__track > [aria-hidden]{ display:none; }
+@media(max-width:999px){
+  .band .wrap{ padding-inline:0; }
+  .press{ overflow:hidden; }
+  .press__track{
+    display:flex;
+    gap:0;
+    width:max-content;
+    align-items:stretch;
+    will-change:transform;
+    animation:press-marquee 32s linear infinite;
+  }
+  .press__track > div{
+    flex:0 0 min(78vw,340px);
+    padding-inline:18px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+  }
+  .press__track > [aria-hidden]{ display:flex; }
+  .press blockquote{ font-size:14px; line-height:1.7; }
+  .press img{ margin-top:18px; }
+  .press:hover .press__track,
+  .press:focus-within .press__track{ animation-play-state:paused; }
+}
+@keyframes press-marquee{
+  from{ transform:translateX(0); }
+  to  { transform:translateX(-50%); }
+}
+@media (prefers-reduced-motion:reduce){
+  .press__track{ animation:none !important; width:auto; display:grid; gap:28px; }
+  .press__track > [aria-hidden]{ display:none !important; }
+}
+
 /* a sold-out card must not offer a buy action */
 .pc__add:disabled{
   background:transparent;
