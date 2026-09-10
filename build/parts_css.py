@@ -815,4 +815,13 @@ body.is-signed-in .recs{ display:block; }
     bottom:calc(var(--mobnav-h) + env(safe-area-inset-bottom,0px) + 14px + var(--satc-h));
   }
 }
+
+/* a sold-out card must not offer a buy action */
+.pc__add:disabled{
+  background:transparent;
+  border:1px solid var(--line);
+  color:var(--muted);
+  cursor:not-allowed;
+}
+.pc__add:disabled:hover{ background:transparent; color:var(--muted); }
 """
