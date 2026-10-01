@@ -373,6 +373,20 @@ def add_button(p):
             '">Add to cart</button>')
 
 
+PDP_FILE = {
+  'dna-42-clinicalift-serum': 'product.html',
+  'jasmine-vital-cream': 'product-jasmine-vital-cream.html',
+  'retinol-rescue-overnight-cream': 'product-retinol-rescue.html',
+  'smooth-marine-cream': 'product-smoothing-marine-cream.html',
+  'deep-moisture-mask': 'product-deep-moisture-mask.html',
+}
+
+
+def pdp_href(handle):
+    """Products with their own page link to it; everything else to the serum."""
+    return PDP_FILE.get(handle, 'product.html')
+
+
 def product_card(p):
     badge = ''
     if p['handle'] in SOLD_OUT:
@@ -389,13 +403,13 @@ def product_card(p):
       '<article class="pc" data-type="' + (p['type'] or 'Other') + '" data-price="' + str(p['price']) +
       '" data-title="' + title + '">'
       '<div class="pc__fig">' + badge +
-      '<a href="product.html" aria-label="' + title + '">'
+      '<a href="' + pdp_href(p['handle']) + '" aria-label="' + title + '">'
       '<img src="' + p['imgs'][0] + '" alt="' + title + '" loading="lazy">'
       '<img class="sec" src="' + img_for(p, 1) + '" alt="" loading="lazy"></a>'
       + review_badge(p['handle']) +
       '</div>'
       '<div class="pc__info">'
-      '<a class="pc__title" href="product.html">' + p['title'] + '</a>'
+      '<a class="pc__title" href="' + pdp_href(p['handle']) + '">' + p['title'] + '</a>'
       + price
       + add_button(p) +
       '</div></article>')
@@ -543,8 +557,8 @@ def collection():
       '<button data-close aria-label="Close">' + IC['close'] + '</button></div>'
       '<div class="panel__bd">' + sopts + '</div></aside>')
 
-def product():
-    p = BY['dna-42-clinicalift-serum']
+def product(handle='dna-42-clinicalift-serum'):
+    p = BY[handle]
     imgs = p['imgs'][:8]
     thumbs = ''.join('<button type="button" data-i="' + str(i) + '" class="' + ('on' if i == 0 else '') + '"'
                      ' aria-label="Image ' + str(i + 1) + '">'
@@ -565,16 +579,8 @@ def product():
                        '<div class="acc__c">' + body + '</div></details>')
         return ''.join(out)
 
-    lede = ('In 42 days, skin appears up to 8 years younger, without irritation.<br><br>'
-            'The first serum powered by Vegan dual PDRN regenerative science and plant-derived exosome '
-            'delivery technology, clinically engineered to visibly lift, redensify, and restore skin by '
-            'activating cellular renewal at its source.<br><br>'
-            'Not slowing how skin ages. Visibly turning back how it looks.<br><br>'
-            'Designed around your skin&rsquo;s natural 42-day turnover cycle, this formula allows collagen '
-            'stimulation, cellular repair, and visible structural renewal to unfold completely and without '
-            'irritation. The result is skin that looks smoother, firmer, and luminous because its own '
-            'vitality has been rebuilt.<br><br>'
-            '42 days. Proven. Measured.')
+    lede = LEDE.get(handle) or ('<b>' + p['title'] + '</b><br><br>' +
+            H.escape(p['desc'][:420], quote=False) + '&hellip;')
 
     sub_price = round(p['price'] * (1 - SUB_DISCOUNT), 2)
     subs = (
@@ -601,7 +607,7 @@ def product():
         '<span class="pinfo__price">' + money(p['price']) + '</span></div>'
         '<div class="rr"><span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>'
         '<span class="xxs sub">(6)</span></div>'
-        + award_band() +
+        + award_band(handle) +
         '<p class="afterpay">or 4 interest-free payments of <b>' + money(p['price'] / 4) + '</b> with '
         '<span class="chipdark">Afterpay</span></p>'
         '<p class="lede">' + lede + '</p>'
@@ -610,21 +616,22 @@ def product():
         '<button type="button" data-step="-1" aria-label="Decrease quantity">&minus;</button>'
         '<span>1</span><button type="button" data-step="1" aria-label="Increase quantity">+</button></span></div>'
         + subs +
-        results_strip() +
+        results_strip(handle) +
         '<button class="btn btn--full" type="button" data-pdp-add="' + p['handle'] + '"'
         ' style="margin-top:16px">Add to cart</button>'
         + trust_strip() +
         pairs_rail(p) +
-        '<div class="acc">' + acc_block(['Description','How to Use','BENEFITS','CLINICALS',
-                                         'VISIBLE PROGRESSION','KEY INGREDIENTS']) + '</div>'
+        '<div class="acc">' + (acc_block(['Description','How to Use','BENEFITS','CLINICALS',
+                                         'VISIBLE PROGRESSION','KEY INGREDIENTS'])
+                               if handle == 'dna-42-clinicalift-serum' else '') + '</div>'
         '<div style="margin-top:30px"><p class="h h6" style="margin:0">Don&rsquo;t just take our word for it.</p>'
         '<div class="vidcard"><div><img src="' + img_for(p, 2) + '" alt="" loading="lazy">'
         '<i><b>' + IC['play'] + '</b></i></div></div></div>'
       '</div></div></div></section>'
 
-      + results_module() +
+      + clinical_band(handle) +
 
-      '<section class="sec" style="background:var(--soft)"><div class="wrap wrap--narrow">'
+      (('<section class="sec" style="background:var(--soft)"><div class="wrap wrap--narrow">'
       '<div style="text-align:center;margin-bottom:26px">'
       '<h2 class="h h2" style="margin:0 0 8px">Before / After</h2>'
       '<p class="xxs sub" style="margin:0">Visible improvement of aging signs after 42 days</p></div>'
@@ -632,7 +639,8 @@ def product():
       '<span class="ba__lbl" style="left:16px">Before</span>'
       '<div class="ba__after"><img src="' + PDP_BA_A + '" alt="After"></div>'
       '<span class="ba__lbl" style="right:16px">After</span>'
-      '<div class="ba__handle"></div></div></div></section>'
+      '<div class="ba__handle"></div></div></div></section>')
+      if handle == 'dna-42-clinicalift-serum' else '') +
 
       '<section class="split"><img src="' + AMALFI + '" alt="Amalfi Coast" loading="lazy">'
       '<div class="split__t"><h2 class="h h2">Amalfi Born Biotechnology&trade;</h2>'
@@ -696,154 +704,207 @@ def sticky_bar(p):
       '</div></div>')
 
 
-# ---------------------------------------------------------------- results module
-# Every figure below comes from the PDP Efficacy and Claims Package (Clark's
-# Botanicals for Growisto, Sept 25 2026). Tier A = clinical on the finished
-# Clark's formula; B = clinical on a key active; C = laboratory; D = consumer
-# survey. No figure appears without its tier and a footnote naming the study.
+# Lede copy per PDP. Only approved wording from the claims package: appearance
+# language, no "reverses aging", no "only"/"first"/"#1" without a dated basis.
+LEDE = {
+ 'dna-42-clinicalift-serum': (
+   'In 42 days, skin appears up to 8 years younger.<br><br>'
+   'A serum powered by vegan dual PDRN regenerative science and plant-derived exosome delivery '
+   'technology, engineered to visibly lift, redensify and restore skin by activating cellular '
+   'renewal at its source.<br><br>'
+   'Not slowing how skin ages. Visibly turning back how it looks.<br><br>'
+   '42 days. Proven. Measured.'),
 
-AWARDS = [
-    ('Harper&rsquo;s Bazaar', 'Beauty Awards 2026 &middot; Best New Serum'),
-    ('Allure',                'Best for Sensitive Skin, 2026'),
-]
+ 'jasmine-vital-cream': (
+   'Nearly a third fewer visible lines and wrinkles in 28 days, measured on the finished '
+   'formula.<br><br>'
+   'Our most-repurchased moisturizer, clinically tested non-irritating and non-sensitizing on a '
+   '50-subject patch test.<br><br>'
+   'The fullest clinical record in the line.'),
 
-# headline, sub, tier, footnote
-RESULTS = [
-  ('Up to 8 years younger',
-   'How much younger skin appears after 42 days',
-   'B',
-   'Randomized, placebo-controlled study of the serum&rsquo;s key regenerative active at 2%, '
-   'women aged 52&ndash;65, twice daily, 42 days. 8.2 years at day 42 and 4.9 years at day 28, '
-   'wrinkle depth compared with a reference dataset of more than 300 women aged 30&ndash;65. '
-   'Results are for the active, not the finished formula.'),
-  ('15.3% less wrinkle depth',
-   'At 42 days (9.2% at 28 days), significantly ahead of placebo',
-   'B',
-   'Primos 3D wrinkle analysis, randomized, placebo-controlled, women aged 52&ndash;65, twice '
-   'daily, 42 days. Results are for the key active at 2%, not the finished formula.'),
-  ('A measurable jawline lift',
-   'Vertical facial reference lines reduced vs placebo',
-   'B',
-   'Visia CR 3D imaging; vertical facial reference lines reduced by more than 1.5% versus '
-   'placebo with the active at 2%. Results are for the active, not the finished formula.'),
-  ('11% less wrinkle depth vs placebo',
-   'In 56 days, with the serum&rsquo;s plant exosome active',
-   'B',
-   'PhytoCellTec&trade; Exosomes at 0.4%, half-face versus placebo, 23 women aged 41&ndash;69, '
-   'twice daily for 56 days, PRIMOS lite. Results are for the active, not the finished formula.'),
-]
+ 'retinol-rescue-overnight-cream': (
+   'Retinol results without the retinol reaction.<br><br>'
+   'A time-release retinol and encapsulated vitamin C delivery system, so renewal disperses '
+   'through the night instead of arriving in one surge. Niacinamide, colloidal oatmeal and arnica '
+   'are formulated to calm the look of redness.<br><br>'
+   'Six weeks of clinical use. Zero adverse effects.'),
 
-MECHANISM = [
-  ('NAD+ recycling',
-   '+111% NAMPT expression, the enzyme that recycles NAD+, in human dermal fibroblasts.', 'C'),
-  ('Mitochondrial support',
-   'Higher ATP in aged skin models and mitochondrial protection under UVA.', 'C'),
-  ('Collagen XVII',
-   'Higher collagen density and Collagen&nbsp;XVII in UV-damaged skin explants.', 'C'),
-  ('Growth-factor signaling',
-   '+161% FGF7, +108% EGF and +64% SOD3 antioxidant defense in keratinocytes.', 'C'),
-  ('Skin density',
-   'Skin density up 6% and a 6% improvement in facial V-shape in 28 days.', 'B'),
-]
+ 'smooth-marine-cream': (
+   '95% saw more hydrated skin in four weeks.<br><br>'
+   'A marine-derived moisturizer with glycolic acid and algae, formulated to smooth and soften '
+   'the look of skin while it hydrates.'),
 
-PDRN_COMPARE = [
-  ('+266%', 'regeneration'),
-  ('+105%', 'wrinkle-improvement efficacy'),
-  ('+95%',  'moisturizing efficacy'),
-]
-
-RETAILERS = ['Bluemercury', 'Credo', 'Saks Fifth Avenue', 'Goop']
-
-TIER_LABEL = {
-  'A': 'Clinical study on the finished Clark&rsquo;s formula',
-  'B': 'Clinical study of a key active, not the finished formula',
-  'C': 'Laboratory testing (in vitro / ex vivo)',
-  'D': 'Consumer perception survey, self-reported',
+ 'deep-moisture-mask': (
+   '91% saw smoother, softer and more moisturized skin after one use.<br><br>'
+   'An intensive treatment mask built for an immediate, visible change in how skin looks '
+   'and feels.'),
 }
 
 
-def award_band():
-    """Reusable award band. Built once, reused on every PDP."""
-    items = ''.join('<div class="awb__i"><b>' + n + '</b><span>' + d + '</span></div>'
-                    for n, d in AWARDS)
-    return '<div class="awb">' + items + '</div>'
+# ---------------------------------------------------------------- clinical results
+# Figures come from the PDP Efficacy and Claims Package (Clark's Botanicals for
+# Growisto, Sept 25 2026) and nowhere else. Tier A = clinical on the finished
+# Clark's formula, B = clinical on a key active, C = laboratory, D = consumer
+# survey. The band is deliberately almost wordless: a timeframe, the number, and
+# three or four words. Everything that qualifies a number lives in the footnotes.
+
+# handle -> {awards, groups: [(timeframe, [(value, label, note_idx)])], notes}
+CLINICAL = {
+
+ 'dna-42-clinicalift-serum': {
+   'awards': [('Harper&rsquo;s Bazaar', 'Best New Serum 2026'),
+              ('Allure', 'Best for Sensitive Skin 2026')],
+   'groups': [
+     ('In 42 days', [('8', 'years younger', '', 1),
+                     ('15.3', 'less wrinkle depth', '%', 1)]),
+     ('In 56 days', [('11', 'less wrinkle depth vs placebo', '%', 2),
+                     ('+6', 'more skin density', '%', 2)]),
+   ],
+   'notes': [
+     'Randomized, placebo-controlled study of the serum&rsquo;s key regenerative active at 2%, '
+     'women aged 52&ndash;65, twice daily, 42 days. Primos 3D wrinkle analysis; 8.2 years at day 42 '
+     'against a reference dataset of 300+ women. Results are for the active, not the finished formula.',
+     'PhytoCellTec&trade; Exosomes at 0.4%, half-face versus placebo, 23 women aged 41&ndash;69, '
+     'twice daily, 56 days, PRIMOS lite. Density by ultrasound, 28 days. Results are for the '
+     'active, not the finished formula.',
+   ],
+ },
+
+ 'jasmine-vital-cream': {
+   'awards': [('Allure', 'Editors&rsquo; Favorites'),
+              ('Harper&rsquo;s Bazaar', 'March 2020')],
+   'groups': [
+     ('In 28 days', [('32', 'fewer visible wrinkles', '%', 1),
+                     ('73', 'best individual result', '%', 1)]),
+     ('Tolerability', [('50', 'subjects patch tested', '', 2),
+                       ('0', 'adverse reactions', '', 2)]),
+   ],
+   'notes': [
+     'Instrumental clinical on the finished formula. n=32 women aged 46&ndash;65, twice daily on '
+     'face and neck after a 7-day washout, Visioscan SEw parameter, 32.45% mean reduction, p&lt;0.05, '
+     'maximum individual reduction 72.94%. Advanced Science Laboratories, Jan 31 2022.',
+     'Repeat insult patch test, open patch, 71 enrolled and 56 completed, ages 20&ndash;76, no '
+     'adverse reactions. Report signed by the laboratory&rsquo;s clinical director, M.D., Feb 23 2022.',
+   ],
+ },
+
+ 'retinol-rescue-overnight-cream': {
+   'awards': [('O, The Oprah Magazine', 'Fall Beauty O-Ward 2017')],
+   'groups': [
+     ('Over 6 weeks', [('0', 'adverse effects', '', 1),
+                       ('0', 'unexpected reactions', '', 1)]),
+     ('Reviews', [('4.9', 'average rating', '', 2),
+                  ('184', 'customer reviews', '', 2)]),
+   ],
+   'notes': [
+     'Clinical tolerability record. AMA Laboratories, Lot Q107, 26 panelists, Chromameter readings '
+     'at weeks 2 and 6, July 17 2017. Retinol results without the retinol reaction.',
+     'Verified customer reviews on clarksbotanicals.com, the deepest review base in the line.',
+   ],
+ },
+
+ 'smooth-marine-cream': {
+   'awards': [('WWD', 'Top 100 Anti-Aging Moisturizers of All Time'),
+              ('Allure', 'Best of Beauty')],
+   'groups': [
+     ('In 4 weeks', [('95', 'saw more hydrated skin', '%', 1)]),
+   ],
+   'notes': [
+     'Consumer perception survey, n=23, 4 weeks, 2018. Self-reported.',
+   ],
+ },
+
+ 'deep-moisture-mask': {
+   'awards': [('Allure', 'Best of Beauty'),
+              ('WWD', 'Beauty Inc. Icons 2023')],
+   'groups': [
+     ('After one use', [('91', 'smoother, softer, more moisturized', '%', 1)]),
+   ],
+   'notes': [
+     'Consumer perception survey, n=22, after a single use. Self-reported.',
+   ],
+ },
+}
+
+# Which tier each group is, for the one-line qualifier under the band
+TIER_NOTE = {
+  'dna-42-clinicalift-serum':
+    'Clinical studies of the serum&rsquo;s key actives, not the finished formula.',
+  'jasmine-vital-cream':
+    'Instrumental clinical study on the finished Jasmine Vital Cream formula.',
+  'retinol-rescue-overnight-cream':
+    'Clinical tolerability study on the finished formula.',
+  'smooth-marine-cream':
+    'Consumer perception survey. Self-reported results.',
+  'deep-moisture-mask':
+    'Consumer perception survey. Self-reported results.',
+}
+
+RETAILERS = ['Bluemercury', 'Credo', 'Saks Fifth Avenue', 'Goop']
 
 
-def results_strip():
-    """Compact proof tiles directly above Add to cart, per the module order:
-    results sit above the fold next to the button."""
+def award_band(handle):
+    """Reusable award band, above the fold on every PDP that has one."""
+    aw = (CLINICAL.get(handle) or {}).get('awards') or []
+    if not aw:
+        return ''
+    return ('<div class="awb">' +
+            ''.join('<div class="awb__i"><b>' + n + '</b><span>' + d + '</span></div>'
+                    for n, d in aw) + '</div>')
+
+
+def clinical_band(handle):
+    """Numbers-first results band. One timeframe per column, the figure large
+    enough to read at a glance, the qualifying detail pushed to the footnotes."""
+    c = CLINICAL.get(handle)
+    if not c:
+        return ''
+    cols = ''
+    for label, stats in c['groups']:
+        items = ''
+        for value, cap, unit, note in stats:
+            u = ('<span class="cb__u">' + unit + '</span>') if unit else ''
+            items += ('<div class="cb__s">'
+                      '<p class="cb__n">' + value + u + '<sup>' + str(note) + '</sup></p>'
+                      '<p class="cb__c">' + cap + '</p></div>')
+        cols += ('<div class="cb__col"><p class="cb__t">' + label + '</p>'
+                 '<div class="cb__ss">' + items + '</div></div>')
+    notes = ''.join('<li><sup>' + str(i + 1) + '</sup>' + n + '</li>'
+                    for i, n in enumerate(c['notes']))
+    return ('<section class="cb" id="results"><div class="wrap wrap--wide">'
+            '<p class="cb__hd">Clinical results</p>'
+            '<div class="cb__g">' + cols + '</div>'
+            '<p class="cb__tier">' + TIER_NOTE.get(handle, '') + '</p>'
+            '<ol class="cb__fn">' + notes + '</ol>'
+            '</div></section>')
+
+
+def results_strip(handle):
+    """The same figures, compressed, directly above Add to cart."""
+    c = CLINICAL.get(handle)
+    if not c:
+        return ''
     tiles = ''
-    for i, (head, sub, tier, _fn) in enumerate(RESULTS):
-        tiles += ('<div class="rs__t"><b>' + head + '</b><span>' + sub +
-                  '</span><sup>' + str(i + 1) + '</sup></div>')
-    return ('<div class="rs"><p class="rs__hd">Clinically studied results'
+    for label, stats in c['groups']:
+        for value, cap, unit, _n in stats:
+            u = unit if unit and unit != '&#9733;' else ''
+            tiles += ('<div class="rs__t"><b>' + value + u + '</b>'
+                      '<span>' + cap + '<i>' + label.lower() + '</i></span></div>')
+    return ('<div class="rs"><p class="rs__hd">Clinical results'
             '<a href="#results">See the studies</a></p>'
             '<div class="rs__g">' + tiles + '</div></div>')
 
 
 def trust_strip():
-    """Repurchase rate, cruelty-free certification, guarantee, stockists."""
+    """Repurchase rate, guarantee, certification, stockists."""
     return (
       '<div class="tst">'
-        '<div class="tst__r"><b>76%</b><span>repurchase rate&mdash;roughly three times the '
-        'luxury benchmark</span></div>'
+        '<div class="tst__r"><b>76%</b><span>repurchase rate</span></div>'
         '<div class="tst__r"><b>60-day</b><span>money-back guarantee</span></div>'
         '<div class="tst__r"><b>Leaping Bunny</b><span>certified cruelty free</span></div>'
       '</div>'
       '<p class="avail">Available at ' +
       ' &middot; '.join('<b>' + r + '</b>' for r in RETAILERS) + '</p>')
-
-
-def results_module():
-    """Full evidence module. Order follows the claims package: award band, result
-    tiles with Tier B footnotes, mechanism block, vegan PDRN comparison,
-    provenance line."""
-    tiles = ''
-    notes = ''
-    for i, (head, sub, tier, fn) in enumerate(RESULTS):
-        n = str(i + 1)
-        tiles += ('<article class="rm__t"><span class="tier tier--' + tier.lower() + '">Tier '
-                  + tier + '</span><b>' + head + '</b><p>' + sub + '</p></article>')
-        notes += '<li id="fn' + n + '"><sup>' + n + '</sup>' + fn + '</li>'
-
-    mech = ''.join('<div class="mech__i"><span class="tier tier--' + t.lower() + '">Tier ' + t +
-                   '</span><b>' + h + '</b><p>' + d + '</p></div>' for h, d, t in MECHANISM)
-
-    pdrn = ''.join('<div class="pdrn__i"><b>' + v + '</b><span>' + l + '</span></div>'
-                   for v, l in PDRN_COMPARE)
-
-    legend = ''.join('<div><b>Tier ' + k + '</b><span>' + v + '</span></div>'
-                     for k, v in sorted(TIER_LABEL.items()))
-
-    return (
-      '<section class="sec rm" id="results"><div class="wrap wrap--narrow">'
-
-      '<div class="rm__hd">'
-      '<h2 class="h h2">The evidence</h2>'
-      '<p class="sub">Every figure on this page carries the study behind it. Results below are '
-      'from randomized, placebo-controlled clinical studies of the serum&rsquo;s key actives.</p>'
-      '</div>'
-
-      '<div class="rm__g">' + tiles + '</div>'
-
-      '<h3 class="h h6 rm__sub">How it works</h3>'
-      '<div class="mech">' + mech + '</div>'
-
-      '<h3 class="h h6 rm__sub">Vegan PDRN vs salmon-derived PDRN</h3>'
-      '<div class="pdrn">' + pdrn + '</div>'
-      '<p class="pdrn__fn">Wound-healing assay series, barley sprout PDRN at 2% versus '
-      'animal-derived PDRN, supplier R&amp;D. Laboratory data (Tier C), not a clinical result.</p>'
-
-      '<p class="prov"><b>Amalfi Born Biotechnology.</b> Our regenerative coastal research '
-      'platform, grown from a working estate and ocean rights on the Amalfi Coast. Brand '
-      'provenance, not study evidence.</p>'
-
-      '<div class="rm__legend"><p class="h h6">How we grade evidence</p>'
-      '<div class="rm__legend-g">' + legend + '</div></div>'
-
-      '<ol class="rm__fn">' + notes + '</ol>'
-
-      '</div></section>')
 
 
 def pairs_rail(p):
@@ -869,9 +930,9 @@ def pairs_rail(p):
                 (' &middot; '.join(o['name'] for o in q['opts']) if q['opts'] else '&nbsp;') +
                 '</span>')
         items += ('<article class="pw" data-handle="' + h + '">'
-                  '<a class="pw__fig" href="product.html" aria-label="' + title + '">'
+                  '<a class="pw__fig" href="' + pdp_href(h) + '" aria-label="' + title + '">'
                   '<img src="' + q['imgs'][0] + '" alt="' + title + '" loading="lazy"></a>'
-                  '<a class="pw__title" href="product.html">' + q['title'] + '</a>'
+                  '<a class="pw__title" href="' + pdp_href(h) + '">' + q['title'] + '</a>'
                   '<span class="pw__price">' + money(q['price']) + '</span>'
                   + note + act + '</article>')
     return ('<section class="pw-wrap">'
@@ -987,8 +1048,9 @@ def main():
     write_page('index.html', hub())
     write_page('home.html', page('Clark&rsquo;s Botanicals', home()))
     write_page('collection.html', page('Best Sellers &ndash; Clark&rsquo;s Botanicals', collection()))
-    write_page('product.html',
-               page('DNA-42 Clinicalift Serum&trade; &ndash; Clark&rsquo;s Botanicals', product()))
+    for h, fname in PDP_FILE.items():
+        write_page(fname, page(H.unescape(BY[h]['title']) + ' &ndash; Clark&rsquo;s Botanicals',
+                               product(h)))
     print('pages written to', OUT)
     if '--no-assets' not in sys.argv:
         localise()

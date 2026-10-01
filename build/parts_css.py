@@ -469,7 +469,7 @@ body.locked .site{visibility:hidden}
   .pw-wrap{margin-top:22px}
 }
 
-/* ---------- award band + evidence module (PDP) ---------- */
+/* ---------- award band + clinical results (PDP) ---------- */
 .awb{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 4px}
 .awb__i{display:flex;flex-direction:column;gap:2px;padding:8px 12px;border:1px solid var(--line);
   background:var(--soft);min-width:0}
@@ -478,20 +478,20 @@ body.locked .site{visibility:hidden}
 .awb__i span{font-size:10px;color:var(--muted);line-height:1.4}
 @media(min-width:760px){.awb__i b{font-size:12px}.awb__i span{font-size:11px}}
 
-/* compact proof tiles above add to cart */
+/* compressed figures above add to cart */
 .rs{margin:22px 0 4px;border-top:1px solid var(--line);padding-top:16px}
 .rs__hd{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:0 0 12px;
   font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:var(--h-ls)}
 .rs__hd a{font-size:10px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--muted);
   border-bottom:1px solid currentColor}
 .rs__hd a:hover{color:var(--ink)}
-.rs__g{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);
-  border:1px solid var(--line)}
-.rs__t{position:relative;background:#fff;padding:12px 13px;min-width:0}
-.rs__t b{display:block;font-size:14px;font-weight:600;line-height:1.3}
-.rs__t span{display:block;margin-top:4px;font-size:10px;color:var(--muted);line-height:1.45}
-.rs__t sup{position:absolute;top:9px;right:10px;font-size:9px;color:var(--muted)}
-@media(min-width:760px){.rs__t b{font-size:15px}.rs__t span{font-size:11px}}
+.rs__g{display:flex;flex-wrap:wrap;gap:1px;background:var(--line);border:1px solid var(--line)}
+.rs__t{background:#fff;padding:12px 14px;flex:1 1 calc(50% - 1px);min-width:0}
+.rs__t b{display:block;font-size:24px;font-weight:600;line-height:1.05;letter-spacing:-.02em}
+.rs__t span{display:block;margin-top:5px;font-size:10px;color:var(--muted);line-height:1.45}
+.rs__t i{display:block;font-style:normal;font-size:9px;text-transform:uppercase;
+  letter-spacing:.08em;margin-top:2px;opacity:.75}
+@media(min-width:760px){.rs__t b{font-size:27px}.rs__t span{font-size:11px}}
 
 /* trust + stockists under the button */
 .tst{display:grid;gap:1px;background:var(--line);border:1px solid var(--line);margin-top:16px}
@@ -502,50 +502,33 @@ body.locked .site{visibility:hidden}
   letter-spacing:.08em;line-height:1.7}
 .avail b{font-weight:600;color:var(--ink)}
 
-/* the evidence section */
-.rm{background:var(--soft)}
-.rm__hd{text-align:center;max-width:620px;margin:0 auto 32px}
-.rm__hd h2{margin:0 0 10px}
-.rm__hd .sub{margin:0;font-size:13px;line-height:1.7}
-.rm__g{display:grid;gap:1px;background:var(--line);border:1px solid var(--line)}
-@media(min-width:700px){.rm__g{grid-template-columns:1fr 1fr}}
-.rm__t{background:#fff;padding:22px 20px}
-.rm__t b{display:block;margin:10px 0 6px;font-size:19px;font-weight:600;line-height:1.25}
-.rm__t p{margin:0;font-size:12px;color:var(--muted);line-height:1.6}
-@media(min-width:760px){.rm__t b{font-size:22px}}
-.tier{display:inline-block;font-size:9px;font-weight:600;text-transform:uppercase;
-  letter-spacing:.1em;padding:3px 7px;border:1px solid var(--line);color:var(--muted);
-  line-height:1.2}
-.tier--a{border-color:var(--teal);color:var(--teal)}
-.tier--b{border-color:var(--ink);color:var(--ink)}
-.rm__sub{margin:40px 0 16px;text-align:center}
-.mech{display:flex;flex-wrap:wrap;gap:1px;background:var(--line);border:1px solid var(--line)}
-.mech__i{background:#fff;padding:18px;flex:1 1 100%}
-@media(min-width:620px){.mech__i{flex:1 1 calc(50% - 1px)}}
-@media(min-width:960px){.mech__i{flex:1 1 calc(33.333% - 1px)}}
-.mech__i b{display:block;margin:9px 0 5px;font-size:13px;font-weight:600}
-.mech__i p{margin:0;font-size:12px;color:var(--muted);line-height:1.6}
-.pdrn{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);
-  border:1px solid var(--line)}
-.pdrn__i{background:#fff;padding:18px 14px;text-align:center}
-.pdrn__i b{display:block;font-size:22px;font-weight:600;line-height:1.1}
-.pdrn__i span{display:block;margin-top:6px;font-size:11px;color:var(--muted);line-height:1.5}
-.pdrn__fn{margin:10px 0 0;font-size:11px;color:var(--muted);line-height:1.6}
-.prov{margin:36px 0 0;padding:18px 20px;background:#fff;border:1px solid var(--line);
-  font-size:12px;color:var(--muted);line-height:1.7}
-.prov b{color:var(--ink);font-weight:600}
-.rm__legend{margin-top:36px;padding-top:24px;border-top:1px solid var(--line)}
-.rm__legend p{margin:0 0 14px}
-.rm__legend-g{display:grid;gap:8px}
-@media(min-width:700px){.rm__legend-g{grid-template-columns:1fr 1fr}}
-.rm__legend-g div{display:flex;gap:10px;align-items:baseline}
-.rm__legend-g b{flex:0 0 46px;font-size:11px;font-weight:600;text-transform:uppercase;
-  letter-spacing:.08em}
-.rm__legend-g span{font-size:11px;color:var(--muted);line-height:1.6}
-.rm__fn{margin:28px 0 0;padding:0;list-style:none;counter-reset:fn}
-.rm__fn li{position:relative;padding-left:18px;margin-bottom:10px;font-size:11px;
-  color:var(--muted);line-height:1.65}
-.rm__fn sup{position:absolute;left:0;top:2px;font-size:10px}
+/* the clinical results band - numbers first, words last */
+.cb{background:var(--soft);padding:56px 0 48px}
+@media(min-width:760px){.cb{padding:80px 0 64px}}
+.cb__hd{margin:0 0 34px;font-size:11px;font-weight:600;text-transform:uppercase;
+  letter-spacing:.18em;color:var(--muted)}
+@media(min-width:760px){.cb__hd{margin-bottom:46px;font-size:12px}}
+.cb__g{display:grid;gap:34px}
+@media(min-width:760px){.cb__g{grid-template-columns:1fr 1fr;gap:0 64px}}
+.cb__col{min-width:0}
+.cb__t{margin:0 0 18px;padding-bottom:14px;border-bottom:1px solid var(--line);
+  font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.16em}
+@media(min-width:760px){.cb__t{font-size:11px}}
+.cb__ss{display:flex;flex-wrap:wrap;gap:26px 40px}
+.cb__s{flex:1 1 140px;min-width:0}
+.cb__n{margin:0;font-size:clamp(46px,8vw,76px);font-weight:400;line-height:.95;
+  letter-spacing:-.04em}
+.cb__u{font-size:.42em;font-weight:500;letter-spacing:0;vertical-align:super;margin-left:2px}
+.cb__n sup{font-size:.16em;vertical-align:super;margin-left:4px;color:var(--muted);
+  letter-spacing:0;font-weight:500}
+.cb__c{margin:10px 0 0;font-size:11px;color:var(--muted);line-height:1.55;max-width:22ch}
+@media(min-width:760px){.cb__c{font-size:12px}}
+.cb__tier{margin:34px 0 0;padding-top:20px;border-top:1px solid var(--line);
+  font-size:11px;color:var(--muted);line-height:1.6}
+.cb__fn{margin:12px 0 0;padding:0;list-style:none}
+.cb__fn li{position:relative;padding-left:16px;margin-bottom:7px;font-size:10px;
+  color:var(--muted);line-height:1.6;max-width:92ch}
+.cb__fn sup{position:absolute;left:0;top:1px;font-size:9px}
 
 /* ---------- sticky bar (PDP trigger) ---------- */
 .satcbar{position:fixed;left:0;right:0;bottom:0;z-index:86;background:#fff;
