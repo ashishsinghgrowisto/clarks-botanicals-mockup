@@ -569,7 +569,7 @@ def product():
             'The first serum powered by Vegan dual PDRN regenerative science and plant-derived exosome '
             'delivery technology, clinically engineered to visibly lift, redensify, and restore skin by '
             'activating cellular renewal at its source.<br><br>'
-            'Not slowing the aging process. Biologically reversing it.<br><br>'
+            'Not slowing how skin ages. Visibly turning back how it looks.<br><br>'
             'Designed around your skin&rsquo;s natural 42-day turnover cycle, this formula allows collagen '
             'stimulation, cellular repair, and visible structural renewal to unfold completely and without '
             'irritation. The result is skin that looks smoother, firmer, and luminous because its own '
@@ -601,6 +601,7 @@ def product():
         '<span class="pinfo__price">' + money(p['price']) + '</span></div>'
         '<div class="rr"><span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>'
         '<span class="xxs sub">(6)</span></div>'
+        + award_band() +
         '<p class="afterpay">or 4 interest-free payments of <b>' + money(p['price'] / 4) + '</b> with '
         '<span class="chipdark">Afterpay</span></p>'
         '<p class="lede">' + lede + '</p>'
@@ -609,15 +610,19 @@ def product():
         '<button type="button" data-step="-1" aria-label="Decrease quantity">&minus;</button>'
         '<span>1</span><button type="button" data-step="1" aria-label="Increase quantity">+</button></span></div>'
         + subs +
+        results_strip() +
         '<button class="btn btn--full" type="button" data-pdp-add="' + p['handle'] + '"'
-        ' style="margin-top:20px">Add to cart</button>'
-        + pairs_rail(p) +
+        ' style="margin-top:16px">Add to cart</button>'
+        + trust_strip() +
+        pairs_rail(p) +
         '<div class="acc">' + acc_block(['Description','How to Use','BENEFITS','CLINICALS',
                                          'VISIBLE PROGRESSION','KEY INGREDIENTS']) + '</div>'
         '<div style="margin-top:30px"><p class="h h6" style="margin:0">Don&rsquo;t just take our word for it.</p>'
         '<div class="vidcard"><div><img src="' + img_for(p, 2) + '" alt="" loading="lazy">'
         '<i><b>' + IC['play'] + '</b></i></div></div></div>'
       '</div></div></div></section>'
+
+      + results_module() +
 
       '<section class="sec" style="background:var(--soft)"><div class="wrap wrap--narrow">'
       '<div style="text-align:center;margin-bottom:26px">'
@@ -691,6 +696,156 @@ def sticky_bar(p):
       '</div></div>')
 
 
+# ---------------------------------------------------------------- results module
+# Every figure below comes from the PDP Efficacy and Claims Package (Clark's
+# Botanicals for Growisto, Sept 25 2026). Tier A = clinical on the finished
+# Clark's formula; B = clinical on a key active; C = laboratory; D = consumer
+# survey. No figure appears without its tier and a footnote naming the study.
+
+AWARDS = [
+    ('Harper&rsquo;s Bazaar', 'Beauty Awards 2026 &middot; Best New Serum'),
+    ('Allure',                'Best for Sensitive Skin, 2026'),
+]
+
+# headline, sub, tier, footnote
+RESULTS = [
+  ('Up to 8 years younger',
+   'How much younger skin appears after 42 days',
+   'B',
+   'Randomized, placebo-controlled study of the serum&rsquo;s key regenerative active at 2%, '
+   'women aged 52&ndash;65, twice daily, 42 days. 8.2 years at day 42 and 4.9 years at day 28, '
+   'wrinkle depth compared with a reference dataset of more than 300 women aged 30&ndash;65. '
+   'Results are for the active, not the finished formula.'),
+  ('15.3% less wrinkle depth',
+   'At 42 days (9.2% at 28 days), significantly ahead of placebo',
+   'B',
+   'Primos 3D wrinkle analysis, randomized, placebo-controlled, women aged 52&ndash;65, twice '
+   'daily, 42 days. Results are for the key active at 2%, not the finished formula.'),
+  ('A measurable jawline lift',
+   'Vertical facial reference lines reduced vs placebo',
+   'B',
+   'Visia CR 3D imaging; vertical facial reference lines reduced by more than 1.5% versus '
+   'placebo with the active at 2%. Results are for the active, not the finished formula.'),
+  ('11% less wrinkle depth vs placebo',
+   'In 56 days, with the serum&rsquo;s plant exosome active',
+   'B',
+   'PhytoCellTec&trade; Exosomes at 0.4%, half-face versus placebo, 23 women aged 41&ndash;69, '
+   'twice daily for 56 days, PRIMOS lite. Results are for the active, not the finished formula.'),
+]
+
+MECHANISM = [
+  ('NAD+ recycling',
+   '+111% NAMPT expression, the enzyme that recycles NAD+, in human dermal fibroblasts.', 'C'),
+  ('Mitochondrial support',
+   'Higher ATP in aged skin models and mitochondrial protection under UVA.', 'C'),
+  ('Collagen XVII',
+   'Higher collagen density and Collagen&nbsp;XVII in UV-damaged skin explants.', 'C'),
+  ('Growth-factor signaling',
+   '+161% FGF7, +108% EGF and +64% SOD3 antioxidant defense in keratinocytes.', 'C'),
+  ('Skin density',
+   'Skin density up 6% and a 6% improvement in facial V-shape in 28 days.', 'B'),
+]
+
+PDRN_COMPARE = [
+  ('+266%', 'regeneration'),
+  ('+105%', 'wrinkle-improvement efficacy'),
+  ('+95%',  'moisturizing efficacy'),
+]
+
+RETAILERS = ['Bluemercury', 'Credo', 'Saks Fifth Avenue', 'Goop']
+
+TIER_LABEL = {
+  'A': 'Clinical study on the finished Clark&rsquo;s formula',
+  'B': 'Clinical study of a key active, not the finished formula',
+  'C': 'Laboratory testing (in vitro / ex vivo)',
+  'D': 'Consumer perception survey, self-reported',
+}
+
+
+def award_band():
+    """Reusable award band. Built once, reused on every PDP."""
+    items = ''.join('<div class="awb__i"><b>' + n + '</b><span>' + d + '</span></div>'
+                    for n, d in AWARDS)
+    return '<div class="awb">' + items + '</div>'
+
+
+def results_strip():
+    """Compact proof tiles directly above Add to cart, per the module order:
+    results sit above the fold next to the button."""
+    tiles = ''
+    for i, (head, sub, tier, _fn) in enumerate(RESULTS):
+        tiles += ('<div class="rs__t"><b>' + head + '</b><span>' + sub +
+                  '</span><sup>' + str(i + 1) + '</sup></div>')
+    return ('<div class="rs"><p class="rs__hd">Clinically studied results'
+            '<a href="#results">See the studies</a></p>'
+            '<div class="rs__g">' + tiles + '</div></div>')
+
+
+def trust_strip():
+    """Repurchase rate, cruelty-free certification, guarantee, stockists."""
+    return (
+      '<div class="tst">'
+        '<div class="tst__r"><b>76%</b><span>repurchase rate&mdash;roughly three times the '
+        'luxury benchmark</span></div>'
+        '<div class="tst__r"><b>60-day</b><span>money-back guarantee</span></div>'
+        '<div class="tst__r"><b>Leaping Bunny</b><span>certified cruelty free</span></div>'
+      '</div>'
+      '<p class="avail">Available at ' +
+      ' &middot; '.join('<b>' + r + '</b>' for r in RETAILERS) + '</p>')
+
+
+def results_module():
+    """Full evidence module. Order follows the claims package: award band, result
+    tiles with Tier B footnotes, mechanism block, vegan PDRN comparison,
+    provenance line."""
+    tiles = ''
+    notes = ''
+    for i, (head, sub, tier, fn) in enumerate(RESULTS):
+        n = str(i + 1)
+        tiles += ('<article class="rm__t"><span class="tier tier--' + tier.lower() + '">Tier '
+                  + tier + '</span><b>' + head + '</b><p>' + sub + '</p></article>')
+        notes += '<li id="fn' + n + '"><sup>' + n + '</sup>' + fn + '</li>'
+
+    mech = ''.join('<div class="mech__i"><span class="tier tier--' + t.lower() + '">Tier ' + t +
+                   '</span><b>' + h + '</b><p>' + d + '</p></div>' for h, d, t in MECHANISM)
+
+    pdrn = ''.join('<div class="pdrn__i"><b>' + v + '</b><span>' + l + '</span></div>'
+                   for v, l in PDRN_COMPARE)
+
+    legend = ''.join('<div><b>Tier ' + k + '</b><span>' + v + '</span></div>'
+                     for k, v in sorted(TIER_LABEL.items()))
+
+    return (
+      '<section class="sec rm" id="results"><div class="wrap wrap--narrow">'
+
+      '<div class="rm__hd">'
+      '<h2 class="h h2">The evidence</h2>'
+      '<p class="sub">Every figure on this page carries the study behind it. Results below are '
+      'from randomized, placebo-controlled clinical studies of the serum&rsquo;s key actives.</p>'
+      '</div>'
+
+      '<div class="rm__g">' + tiles + '</div>'
+
+      '<h3 class="h h6 rm__sub">How it works</h3>'
+      '<div class="mech">' + mech + '</div>'
+
+      '<h3 class="h h6 rm__sub">Vegan PDRN vs salmon-derived PDRN</h3>'
+      '<div class="pdrn">' + pdrn + '</div>'
+      '<p class="pdrn__fn">Wound-healing assay series, barley sprout PDRN at 2% versus '
+      'animal-derived PDRN, supplier R&amp;D. Laboratory data (Tier C), not a clinical result.</p>'
+
+      '<p class="prov"><b>Amalfi Born Biotechnology.</b> Our regenerative coastal research '
+      'platform, grown from a working estate and ocean rights on the Amalfi Coast. Brand '
+      'provenance, not study evidence.</p>'
+
+      '<div class="rm__legend"><p class="h h6">How we grade evidence</p>'
+      '<div class="rm__legend-g">' + legend + '</div></div>'
+
+      '<ol class="rm__fn">' + notes + '</ol>'
+
+      '</div></section>')
+
+
 def pairs_rail(p):
     """'Pairs well with' — routine add-ons directly under the PDP Add to cart.
     Products with options open the shared variant panel; single-variant products
@@ -759,6 +914,20 @@ def hub():
       '<script>' + JS.replace('__PW__', PASSWORD) + '</script></body></html>')
 
 # ---------------------------------------------------------------- localiser
+def sniff_ext(path):
+    """Real image type from the file's magic bytes, or None if unrecognised."""
+    with open(path, 'rb') as fh:
+        head = fh.read(16)
+    if head[:3] == b'\xff\xd8\xff':                       return 'jpg'
+    if head[:8] == b'\x89PNG\r\n\x1a\n':                 return 'png'
+    if head[:6] in (b'GIF87a', b'GIF89a'):                 return 'gif'
+    if head[:4] == b'RIFF' and head[8:12] == b'WEBP':      return 'webp'
+    if head[4:8] == b'ftyp':                               return 'mp4'
+    t = head.lstrip()[:5].lower()
+    if t.startswith(b'<svg') or t.startswith(b'<?xml'):    return 'svg'
+    return None
+
+
 def localise():
     os.makedirs(ASSETS, exist_ok=True)
     cache = {}
@@ -788,6 +957,15 @@ def localise():
         except Exception as e:
             print('  FAIL', u[:90], e)
             continue
+        # The URL path extension can lie: Shopify serves .svg?format=jpg as JPEG.
+        # Trust the bytes, or the file is served with the wrong MIME type and
+        # the browser refuses to render it.
+        real = sniff_ext(dest)
+        if real and real != ext:
+            fixed = os.path.join(ASSETS, stem + '.' + real)
+            os.replace(dest, fixed)
+            print('  ext %s -> %s for %s' % (ext, real, u[:70]))
+            ext, dest = real, fixed
         cache[u] = 'assets/' + stem + '.' + ext
         ok += 1
     for f in files:
