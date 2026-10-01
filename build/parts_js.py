@@ -41,6 +41,7 @@ function openPanel(sel){
 function closeAll(){
   document.querySelectorAll('.panel.on,.sheet.on,.search.on').forEach(function(x){ x.classList.remove('on'); });
   if(window.cbCloseSATC) window.cbCloseSATC();
+  if(window.cbCloseProven) window.cbCloseProven();
   var o = overlay(); if(o) o.classList.remove('on');
   document.body.style.overflow='';
 }
@@ -250,6 +251,34 @@ document.addEventListener('click', function(e){
     addToCart(item);
   }
 });
+
+/* ---------------- variant B: proven results ---------------- */
+function initProven(){
+  var sec = document.querySelector('.pr'); if(!sec) return;
+  var drawer = document.querySelector('[data-pr-drawer]');
+  function pick(group, key){
+    document.querySelectorAll('[data-pr-' + group + ']').forEach(function(b){
+      b.classList.toggle('on', b.dataset['pr' + group.charAt(0).toUpperCase() + group.slice(1)] === key);
+    });
+  }
+  document.addEventListener('click', function(e){
+    var t = e.target.closest('[data-pr-tab]');
+    if(t){ pick('tab', t.dataset.prTab); pick('panel', t.dataset.prTab); return; }
+    var d = e.target.closest('[data-pr-dtab]');
+    if(d){ pick('dtab', d.dataset.prDtab); pick('dpanel', d.dataset.prDtab); return; }
+    if(e.target.closest('[data-pr-open]')){
+      drawer.classList.add('on'); overlay().classList.add('on');
+      document.body.style.overflow='hidden'; return;
+    }
+    if(e.target.closest('[data-pr-close]')){ closeProven(); }
+  });
+  window.cbCloseProven = closeProven;
+  function closeProven(){
+    drawer.classList.remove('on');
+    var o = overlay(); if(o) o.classList.remove('on');
+    document.body.style.overflow='';
+  }
+}
 
 /* ---------------- mobile drawer ---------------- */
 function initDrawer(){
@@ -480,7 +509,7 @@ function initSearch(){
 
 /* ---------------- boot ---------------- */
 document.addEventListener('DOMContentLoaded', function(){
-  gateInit(); metrics(); syncDots(); renderCart();
+  gateInit(); metrics(); syncDots(); renderCart(); initProven();
   initDrawer(); initSliders(); initBA(); initPDP(); initPLP(); initSearch(); initSATC();
   window.addEventListener('resize', metrics);
   window.addEventListener('load', metrics);

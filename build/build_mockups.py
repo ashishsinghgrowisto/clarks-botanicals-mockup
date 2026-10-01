@@ -616,7 +616,6 @@ def product(handle='dna-42-clinicalift-serum'):
         '<button type="button" data-step="-1" aria-label="Decrease quantity">&minus;</button>'
         '<span>1</span><button type="button" data-step="1" aria-label="Increase quantity">+</button></span></div>'
         + subs +
-        results_strip(handle) +
         '<button class="btn btn--full" type="button" data-pdp-add="' + p['handle'] + '"'
         ' style="margin-top:16px">Add to cart</button>'
         + trust_strip() +
@@ -629,7 +628,8 @@ def product(handle='dna-42-clinicalift-serum'):
         '<i><b>' + IC['play'] + '</b></i></div></div></div>'
       '</div></div></div></section>'
 
-      + clinical_band(handle) +
+      + '<p class="vlbl">Layout A &mdash; current</p>' + clinical_band(handle) +
+      '<p class="vlbl">Layout B &mdash; Augustinus Bader pattern</p>' + proven_band(handle) +
 
       (('<section class="sec" style="background:var(--soft)"><div class="wrap wrap--narrow">'
       '<div style="text-align:center;margin-bottom:26px">'
@@ -755,10 +755,10 @@ CLINICAL = {
    'awards': [('Harper&rsquo;s Bazaar', 'Best New Serum 2026'),
               ('Allure', 'Best for Sensitive Skin 2026')],
    'groups': [
-     ('In 42 days', [('8', 'years younger', '', 1),
-                     ('15.3', 'less wrinkle depth', '%', 1)]),
-     ('In 56 days', [('11', 'less wrinkle depth vs placebo', '%', 2),
-                     ('+6', 'more skin density', '%', 2)]),
+     ('In 42 days', [('8', 'years younger', ''),
+                     ('15.3', 'less wrinkle depth', '%')]),
+     ('In 56 days', [('11', 'less wrinkle depth vs placebo', '%'),
+                     ('+6', 'more skin density', '%')]),
    ],
    'notes': [
      'Randomized, placebo-controlled study of the serum&rsquo;s key regenerative active at 2%, '
@@ -774,10 +774,10 @@ CLINICAL = {
    'awards': [('Allure', 'Editors&rsquo; Favorites'),
               ('Harper&rsquo;s Bazaar', 'March 2020')],
    'groups': [
-     ('In 28 days', [('32', 'fewer visible wrinkles', '%', 1),
-                     ('73', 'best individual result', '%', 1)]),
-     ('Tolerability', [('50', 'subjects patch tested', '', 2),
-                       ('None', 'adverse reactions recorded', '', 2)]),
+     ('In 28 days', [('32', 'fewer visible wrinkles', '%'),
+                     ('73', 'best individual result', '%')]),
+     ('Tolerability', [('50', 'subjects patch tested', ''),
+                       ('None', 'adverse reactions recorded', '')]),
    ],
    'notes': [
      'Instrumental clinical on the finished formula. n=32 women aged 46&ndash;65, twice daily on '
@@ -792,10 +792,10 @@ CLINICAL = {
    'awards': [('O, The Oprah Magazine', 'Fall Beauty O-Ward 2017')],
    'groups': [
      ('Clinical tolerability', [('None', 'adverse effects or unexpected reactions, '
-                                 'across 6 weeks of use', '', 1),
-                                ('26', 'panelists monitored', '', 1)]),
-     ('Reviews', [('4.9', 'average rating', '', 2),
-                  ('184', 'customer reviews', '', 2)]),
+                                 'across 6 weeks of use', ''),
+                                ('26', 'panelists monitored', '')]),
+     ('Reviews', [('4.9', 'average rating', ''),
+                  ('184', 'customer reviews', '')]),
    ],
    'notes': [
      'Clinical tolerability record. AMA Laboratories, Lot Q107, 26 panelists, Chromameter readings '
@@ -808,9 +808,9 @@ CLINICAL = {
    'awards': [('WWD', 'Top 100 Anti-Aging Moisturizers of All Time'),
               ('Allure', 'Best of Beauty')],
    'groups': [
-     ('In 4 weeks', [('95', 'saw more hydrated skin', '%', 1)]),
-     ('Reviews', [('4.8', 'average rating', '', 2),
-                  ('258', 'customer reviews', '', 2)]),
+     ('In 4 weeks', [('95', 'saw more hydrated skin', '%')]),
+     ('Reviews', [('4.8', 'average rating', ''),
+                  ('258', 'customer reviews', '')]),
    ],
    'notes': [
      'Consumer perception survey, n=23, 4 weeks, 2018. Self-reported.',
@@ -822,9 +822,9 @@ CLINICAL = {
    'awards': [('Allure', 'Best of Beauty'),
               ('WWD', 'Beauty Inc. Icons 2023')],
    'groups': [
-     ('After one use', [('91', 'smoother, softer, more moisturized', '%', 1)]),
-     ('Reviews', [('4.8', 'average rating', '', 2),
-                  ('133', 'customer reviews', '', 2)]),
+     ('After one use', [('91', 'smoother, softer, more moisturized', '%')]),
+     ('Reviews', [('4.8', 'average rating', ''),
+                  ('133', 'customer reviews', '')]),
    ],
    'notes': [
      'Consumer perception survey, n=22, after a single use. Self-reported.',
@@ -870,6 +870,150 @@ def award_band(handle):
                     for n, d in aw) + '</div>')
 
 
+# ---------------------------------------------------------------- variant B
+# Augustinus Bader "Proven Results" pattern: a dark full-bleed band, three
+# headline figures, an evidence-type toggle, and a drawer holding every approved
+# figure. The toggle maps onto the package's tiers - a clinical result and a
+# laboratory result must never read as the same kind of proof - and a tab only
+# appears when that evidence type actually has figures for the product.
+#
+# set key -> (tab label, [(value, caption)], footnote, [every approved line])
+PROVEN = {
+
+ 'dna-42-clinicalift-serum': [
+   ('clinical', 'Clinical trials',
+    [('8', 'Years younger in 42 days', ''),
+     ('15.3', 'Less wrinkle depth in 42 days', '%'),
+     ('11', 'Less wrinkle depth vs placebo in 56 days', '%')],
+    'Based on randomized, placebo-controlled clinical studies of the serum&rsquo;s key '
+    'actives. Results are for the actives, not the finished formula.',
+    ['Skin appears up to 8 years younger at day 42, and 4.9 years at day 28',
+     'Wrinkle depth reduced 15.3% at day 42, and 9.2% at day 28, significantly ahead of placebo',
+     'A measurable lifting effect at the jawline, vertical facial reference lines reduced vs placebo',
+     'Smoother texture and reduced age-spot area and contrast at day 42',
+     'Visible reduction of crow&rsquo;s feet, nasolabial folds and marionette lines at day 42',
+     'Wrinkle depth reduced 11% versus placebo in 56 days with the plant exosome active',
+     'Skin density up 6%, and a 6% improvement in the V-shape of the face, in 28 days']),
+   ('lab', 'Laboratory',
+    [('+266', 'Regeneration vs salmon-derived PDRN', '%'),
+     ('+111', 'NAMPT expression, the enzyme that recycles NAD+', '%'),
+     ('+161', 'FGF7 growth-factor expression', '%')],
+    'In vitro and ex vivo laboratory testing. Laboratory data is not a clinical result.',
+    ['+266% regeneration versus salmon-derived PDRN in a wound-healing assay',
+     '+105% wrinkle-improvement efficacy and +95% moisturizing efficacy versus salmon-derived PDRN',
+     '+111% NAMPT expression, the enzyme that recycles NAD+, in human dermal fibroblasts',
+     'Higher ATP in aged skin models, and mitochondrial protection under UVA',
+     'Higher collagen density and Collagen XVII in UV-damaged skin explants',
+     '+161% FGF7 and +108% EGF growth-factor expression, and +64% SOD3 antioxidant defense']),
+ ],
+
+ 'jasmine-vital-cream': [
+   ('clinical', 'Clinical trial',
+    [('32', 'Fewer visible wrinkles in 28 days', '%'),
+     ('73', 'Best individual reduction recorded', '%'),
+     ('50', 'Subject patch test, no adverse reactions', '')],
+    'Based on a 28-day instrumental clinical study of 32 women, measured on the finished '
+    'Jasmine Vital Cream formula.',
+    ['Nearly a third fewer visible lines and wrinkles in 28 days, a 32.45% mean reduction, p&lt;0.05',
+     'Individual results up to 72.94% reduction',
+     'Measured by Visioscan SEw on women aged 46&ndash;65, twice daily on face and neck',
+     'Clinically tested non-irritating and non-sensitizing on a 50-subject repeat insult patch test',
+     'No adverse reactions across 56 completed subjects, ages 20&ndash;76']),
+ ],
+
+ 'retinol-rescue-overnight-cream': [
+   ('clinical', 'Clinical trial',
+    [('None', 'Adverse effects across 6 weeks', ''),
+     ('26', 'Panelists monitored', ''),
+     ('6', 'Weeks of clinical use', '')],
+    'Based on a 6-week clinical tolerability study of 26 panelists on the finished formula.',
+    ['Zero adverse effects or unexpected reactions across 6 weeks of clinical use',
+     'Chromameter readings taken at weeks 2 and 6',
+     'Retinol results without the retinol reaction',
+     'Niacinamide, colloidal oatmeal and arnica, formulated to calm the look of redness',
+     'Time-release retinol with encapsulated vitamin C, so renewal disperses through the night']),
+ ],
+
+ 'smooth-marine-cream': [
+   ('user', 'User results',
+    [('95', 'Saw more hydrated skin in 4 weeks', '%'),
+     ('4.8', 'Average customer rating', ''),
+     ('258', 'Customer reviews', '')],
+    'Based on a 4-week consumer perception study of 23 participants. Self-reported.',
+    ['95% saw more hydrated skin in 4 weeks',
+     '4.8 average rating across 258 verified customer reviews',
+     'WWD Top 100 Anti-Aging Moisturizers of All Time',
+     'Allure Best of Beauty']),
+ ],
+
+ 'deep-moisture-mask': [
+   ('user', 'User results',
+    [('91', 'Smoother, softer, more moisturized after one use', '%'),
+     ('4.8', 'Average customer rating', ''),
+     ('133', 'Customer reviews', '')],
+    'Based on a consumer perception study of 22 participants after a single use. Self-reported.',
+    ['91% saw smoother, softer, more supple and more moisturized skin after one use',
+     '4.8 average rating across 133 verified customer reviews',
+     'Allure Best of Beauty',
+     'WWD Beauty Inc. Icons 2023']),
+ ],
+}
+
+
+def proven_band(handle):
+    """Variant B. Dark band, three headline figures, evidence-type toggle, and a
+    drawer with every approved figure for that product."""
+    sets = PROVEN.get(handle)
+    if not sets:
+        return ''
+    p = BY[handle]
+    idx = BAND_IMG.get(handle, 0)
+    img = p['imgs'][idx] if idx < len(p['imgs']) else p['imgs'][0]
+
+    tabs, panels, dtabs, dpanels = '', '', '', ''
+    for i, (key, label, stats, note, every) in enumerate(sets):
+        on = ' on' if i == 0 else ''
+        tabs += ('<button type="button" class="pr__tab' + on + '" data-pr-tab="' + key +
+                 '">' + label + '</button>')
+        figs = ''
+        for value, cap, unit in stats:
+            word = not value.replace('.', '').replace('+', '').isdigit()
+            u = ('<span class="pr__u">' + unit + '</span>') if unit else ''
+            figs += ('<div class="pr__s"><p class="pr__n' + (' pr__n--word' if word else '') +
+                     '">' + value + u + '</p>'
+                     '<p class="pr__c">' + cap + '</p></div>')
+        panels += ('<div class="pr__panel' + on + '" data-pr-panel="' + key + '">'
+                   '<div class="pr__g">' + figs + '</div>'
+                   '<p class="pr__fn">' + note + '</p></div>')
+        dtabs += ('<button type="button" class="prd__tab' + on + '" data-pr-dtab="' + key +
+                  '">' + label + '</button>')
+        dpanels += ('<div class="prd__panel' + on + '" data-pr-dpanel="' + key + '">'
+                    '<ul>' + ''.join('<li>' + x + '</li>' for x in every) + '</ul>'
+                    '<p class="prd__fn">' + note + '</p></div>')
+
+    multi = ' pr--multi' if len(sets) > 1 else ''
+    return (
+      '<section class="pr' + multi + '" id="results-b">'
+        '<div class="pr__bg"><img src="' + img + '" alt="" loading="lazy"></div>'
+        '<div class="pr__in">'
+          '<div class="pr__hd"><h2 class="pr__title">Proven results</h2>'
+          '<div class="pr__tabs">' + tabs + '</div></div>'
+          + panels +
+          '<div class="pr__act">'
+          '<button class="pr__all" type="button" data-pr-open>See all results</button></div>'
+        '</div>'
+      '</section>'
+        '<aside class="prd" data-pr-drawer aria-label="Clinical and user results">'
+          '<div class="prd__hd"><p>Clinical &amp; user results</p>'
+          '<button type="button" data-pr-close aria-label="Close">'
+          '<svg width="15" height="15" fill="none" viewBox="0 0 16 16">'
+          '<path d="m1 1 14 14M1 15 15 1" stroke="currentColor" stroke-width="1.6"/>'
+          '</svg></button></div>'
+          '<div class="prd__tabs">' + dtabs + '</div>'
+          '<div class="prd__bd">' + dpanels + '</div>'
+        '</aside>')
+
+
 def clinical_band(handle):
     """Numbers-first results band, set against the product's own imagery so the
     figures have something to land on. One timeframe per block, the figure large,
@@ -884,20 +1028,22 @@ def clinical_band(handle):
     blocks = ''
     for label, stats in c['groups']:
         items = ''
-        for value, cap, unit, note in stats:
+        for value, cap, unit in stats:
             u = ('<span class="cb__u">' + unit + '</span>') if unit else ''
             # A bare "0" reads as missing data rather than a clean safety record,
             # so word values are set as words and marked as a result.
             word = not value.replace('.', '').replace('+', '').isdigit()
             cls = ' cb__n--word' if word else ''
             items += ('<div class="cb__s' + (' cb__s--word' if word else '') + '">'
-                      '<p class="cb__n' + cls + '">' + value + u +
-                      '<sup>' + str(note) + '</sup></p>'
+                      '<p class="cb__n' + cls + '">' + value + u + '</p>'
                       '<p class="cb__c">' + cap + '</p></div>')
         blocks += ('<div class="cb__col"><p class="cb__t">' + label + '</p>'
                    '<div class="cb__ss">' + items + '</div></div>')
 
-    notes = ''.join('<li><sup>' + str(i + 1) + '</sup>' + n + '</li>'
+    # Footnote markers on the figures made them look annotated rather than
+    # confident, so each note names the block it belongs to instead.
+    labels = [g[0] for g in c['groups']]
+    notes = ''.join('<li><b>' + (labels[i] if i < len(labels) else '') + '.</b> ' + n + '</li>'
                     for i, n in enumerate(c['notes']))
 
     return ('<section class="cb" id="results">'
@@ -909,22 +1055,6 @@ def clinical_band(handle):
               '<p class="cb__tier">' + TIER_NOTE.get(handle, '') + '</p>'
               '<ol class="cb__fn">' + notes + '</ol>'
             '</div></section>')
-
-
-def results_strip(handle):
-    """The same figures, compressed, directly above Add to cart."""
-    c = CLINICAL.get(handle)
-    if not c:
-        return ''
-    tiles = ''
-    for label, stats in c['groups']:
-        for value, cap, unit, _n in stats:
-            u = unit if unit and unit != '&#9733;' else ''
-            tiles += ('<div class="rs__t"><b>' + value + u + '</b>'
-                      '<span>' + cap + '<i>' + label.lower() + '</i></span></div>')
-    return ('<div class="rs"><p class="rs__hd">Clinical results'
-            '<a href="#results">See the studies</a></p>'
-            '<div class="rs__g">' + tiles + '</div></div>')
 
 
 def trust_strip():
