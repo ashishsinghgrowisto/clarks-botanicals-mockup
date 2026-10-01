@@ -502,32 +502,39 @@ body.locked .site{visibility:hidden}
   letter-spacing:.08em;line-height:1.7}
 .avail b{font-weight:600;color:var(--ink)}
 
-/* the clinical results band - numbers first, words last */
-.cb{background:var(--soft);padding:56px 0 48px}
-@media(min-width:760px){.cb{padding:80px 0 64px}}
-.cb__hd{margin:0 0 34px;font-size:11px;font-weight:600;text-transform:uppercase;
+/* the clinical results band - numbers against the product's own imagery */
+.cb{display:grid;background:var(--soft)}
+@media(min-width:900px){.cb{grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:stretch}}
+.cb__media{position:relative;overflow:hidden;background:#e9e9e9;aspect-ratio:4/3}
+@media(min-width:900px){.cb__media{aspect-ratio:auto;min-height:560px}}
+.cb__media img{width:100%;height:100%;object-fit:cover;display:block}
+.cb__body{padding:44px var(--gut) 40px;display:flex;flex-direction:column;justify-content:center}
+@media(min-width:900px){.cb__body{padding:72px clamp(32px,5vw,78px)}}
+.cb__hd{margin:0 0 30px;font-size:11px;font-weight:600;text-transform:uppercase;
   letter-spacing:.18em;color:var(--muted)}
-@media(min-width:760px){.cb__hd{margin-bottom:46px;font-size:12px}}
-.cb__g{display:grid;gap:34px}
-@media(min-width:760px){.cb__g{grid-template-columns:1fr 1fr;gap:0 64px}}
+@media(min-width:900px){.cb__hd{margin-bottom:40px;font-size:12px}}
+.cb__g{display:flex;flex-direction:column;gap:30px}
 .cb__col{min-width:0}
-.cb__t{margin:0 0 18px;padding-bottom:14px;border-bottom:1px solid var(--line);
+.cb__t{margin:0 0 16px;padding-bottom:12px;border-bottom:1px solid var(--line);
   font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.16em}
-@media(min-width:760px){.cb__t{font-size:11px}}
-.cb__ss{display:flex;flex-wrap:wrap;gap:26px 40px}
-.cb__s{flex:1 1 140px;min-width:0}
-.cb__n{margin:0;font-size:clamp(46px,8vw,76px);font-weight:400;line-height:.95;
+@media(min-width:900px){.cb__t{font-size:11px}}
+.cb__ss{display:flex;flex-wrap:wrap;gap:22px 36px}
+.cb__s{flex:1 1 130px;min-width:0}
+.cb__n{margin:0;font-size:clamp(42px,6.2vw,66px);font-weight:400;line-height:.95;
   letter-spacing:-.04em}
 .cb__u{font-size:.42em;font-weight:500;letter-spacing:0;vertical-align:super;margin-left:2px}
-.cb__n sup{font-size:.16em;vertical-align:super;margin-left:4px;color:var(--muted);
+.cb__n sup{font-size:.17em;vertical-align:super;margin-left:4px;color:var(--muted);
   letter-spacing:0;font-weight:500}
-.cb__c{margin:10px 0 0;font-size:11px;color:var(--muted);line-height:1.55;max-width:22ch}
-@media(min-width:760px){.cb__c{font-size:12px}}
-.cb__tier{margin:34px 0 0;padding-top:20px;border-top:1px solid var(--line);
+.cb__n--word{font-size:clamp(30px,3.6vw,42px);letter-spacing:-.01em;display:inline-block;
+  padding-bottom:8px;border-bottom:2px solid var(--teal)}
+.cb__s--word .cb__c{max-width:26ch}
+.cb__c{margin:9px 0 0;font-size:11px;color:var(--muted);line-height:1.55;max-width:20ch}
+@media(min-width:900px){.cb__c{font-size:12px}}
+.cb__tier{margin:30px 0 0;padding-top:18px;border-top:1px solid var(--line);
   font-size:11px;color:var(--muted);line-height:1.6}
-.cb__fn{margin:12px 0 0;padding:0;list-style:none}
-.cb__fn li{position:relative;padding-left:16px;margin-bottom:7px;font-size:10px;
-  color:var(--muted);line-height:1.6;max-width:92ch}
+.cb__fn{margin:10px 0 0;padding:0;list-style:none}
+.cb__fn li{position:relative;padding-left:15px;margin-bottom:6px;font-size:10px;
+  color:var(--muted);line-height:1.6}
 .cb__fn sup{position:absolute;left:0;top:1px;font-size:9px}
 
 /* ---------- sticky bar (PDP trigger) ---------- */

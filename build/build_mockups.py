@@ -777,7 +777,7 @@ CLINICAL = {
      ('In 28 days', [('32', 'fewer visible wrinkles', '%', 1),
                      ('73', 'best individual result', '%', 1)]),
      ('Tolerability', [('50', 'subjects patch tested', '', 2),
-                       ('0', 'adverse reactions', '', 2)]),
+                       ('None', 'adverse reactions recorded', '', 2)]),
    ],
    'notes': [
      'Instrumental clinical on the finished formula. n=32 women aged 46&ndash;65, twice daily on '
@@ -791,8 +791,9 @@ CLINICAL = {
  'retinol-rescue-overnight-cream': {
    'awards': [('O, The Oprah Magazine', 'Fall Beauty O-Ward 2017')],
    'groups': [
-     ('Over 6 weeks', [('0', 'adverse effects', '', 1),
-                       ('0', 'unexpected reactions', '', 1)]),
+     ('Clinical tolerability', [('None', 'adverse effects or unexpected reactions, '
+                                 'across 6 weeks of use', '', 1),
+                                ('26', 'panelists monitored', '', 1)]),
      ('Reviews', [('4.9', 'average rating', '', 2),
                   ('184', 'customer reviews', '', 2)]),
    ],
@@ -808,9 +809,12 @@ CLINICAL = {
               ('Allure', 'Best of Beauty')],
    'groups': [
      ('In 4 weeks', [('95', 'saw more hydrated skin', '%', 1)]),
+     ('Reviews', [('4.8', 'average rating', '', 2),
+                  ('258', 'customer reviews', '', 2)]),
    ],
    'notes': [
      'Consumer perception survey, n=23, 4 weeks, 2018. Self-reported.',
+     'Verified customer reviews on clarksbotanicals.com.',
    ],
  },
 
@@ -819,9 +823,12 @@ CLINICAL = {
               ('WWD', 'Beauty Inc. Icons 2023')],
    'groups': [
      ('After one use', [('91', 'smoother, softer, more moisturized', '%', 1)]),
+     ('Reviews', [('4.8', 'average rating', '', 2),
+                  ('133', 'customer reviews', '', 2)]),
    ],
    'notes': [
      'Consumer perception survey, n=22, after a single use. Self-reported.',
+     'Verified customer reviews on clarksbotanicals.com.',
    ],
  },
 }
@@ -840,6 +847,16 @@ TIER_NOTE = {
     'Consumer perception survey. Self-reported results.',
 }
 
+# Index into the product's own gallery for the band's full-bleed image. Picked
+# for texture and skin, not packshot: the number needs something to sit against.
+BAND_IMG = {
+  'dna-42-clinicalift-serum': 1,      # serum droplet on stone
+  'jasmine-vital-cream': 6,           # lifestyle alt
+  'retinol-rescue-overnight-cream': 5,
+  'smooth-marine-cream': 3,
+  'deep-moisture-mask': 0,
+}
+
 RETAILERS = ['Bluemercury', 'Credo', 'Saks Fifth Avenue', 'Goop']
 
 
@@ -854,28 +871,43 @@ def award_band(handle):
 
 
 def clinical_band(handle):
-    """Numbers-first results band. One timeframe per column, the figure large
-    enough to read at a glance, the qualifying detail pushed to the footnotes."""
+    """Numbers-first results band, set against the product's own imagery so the
+    figures have something to land on. One timeframe per block, the figure large,
+    the qualifying detail in the footnotes."""
     c = CLINICAL.get(handle)
     if not c:
         return ''
-    cols = ''
+    p = BY[handle]
+    idx = BAND_IMG.get(handle, 0)
+    img = p['imgs'][idx] if idx < len(p['imgs']) else p['imgs'][0]
+
+    blocks = ''
     for label, stats in c['groups']:
         items = ''
         for value, cap, unit, note in stats:
             u = ('<span class="cb__u">' + unit + '</span>') if unit else ''
-            items += ('<div class="cb__s">'
-                      '<p class="cb__n">' + value + u + '<sup>' + str(note) + '</sup></p>'
+            # A bare "0" reads as missing data rather than a clean safety record,
+            # so word values are set as words and marked as a result.
+            word = not value.replace('.', '').replace('+', '').isdigit()
+            cls = ' cb__n--word' if word else ''
+            items += ('<div class="cb__s' + (' cb__s--word' if word else '') + '">'
+                      '<p class="cb__n' + cls + '">' + value + u +
+                      '<sup>' + str(note) + '</sup></p>'
                       '<p class="cb__c">' + cap + '</p></div>')
-        cols += ('<div class="cb__col"><p class="cb__t">' + label + '</p>'
-                 '<div class="cb__ss">' + items + '</div></div>')
+        blocks += ('<div class="cb__col"><p class="cb__t">' + label + '</p>'
+                   '<div class="cb__ss">' + items + '</div></div>')
+
     notes = ''.join('<li><sup>' + str(i + 1) + '</sup>' + n + '</li>'
                     for i, n in enumerate(c['notes']))
-    return ('<section class="cb" id="results"><div class="wrap wrap--wide">'
-            '<p class="cb__hd">Clinical results</p>'
-            '<div class="cb__g">' + cols + '</div>'
-            '<p class="cb__tier">' + TIER_NOTE.get(handle, '') + '</p>'
-            '<ol class="cb__fn">' + notes + '</ol>'
+
+    return ('<section class="cb" id="results">'
+            '<div class="cb__media"><img src="' + img + '" alt="' +
+            H.escape(p['title'], quote=True) + '" loading="lazy"></div>'
+            '<div class="cb__body">'
+              '<p class="cb__hd">Clinical results</p>'
+              '<div class="cb__g">' + blocks + '</div>'
+              '<p class="cb__tier">' + TIER_NOTE.get(handle, '') + '</p>'
+              '<ol class="cb__fn">' + notes + '</ol>'
             '</div></section>')
 
 
